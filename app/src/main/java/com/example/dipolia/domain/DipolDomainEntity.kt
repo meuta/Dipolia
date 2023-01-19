@@ -4,7 +4,8 @@ import java.net.InetAddress
 
 data class DipolDomainEntity(
     val id: String,
-    val ip: InetAddress,
+//    val ip: InetAddress,
+    val ip: String,
 
     var c1: List<Double>,
     var c2: List<Double>,
