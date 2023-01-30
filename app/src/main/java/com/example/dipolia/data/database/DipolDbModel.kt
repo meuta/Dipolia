@@ -8,8 +8,8 @@ import java.net.InetAddress
 data class DipolDbModel(
     @PrimaryKey
     val dipolId: String,
-//    val dipolIp: InetAddress,
-    val dipolIp: String,
+    val dipolIp: InetAddress,
+//    val dipolIp: String,
     var r1: Double,
     var g1: Double,
     var b1: Double,

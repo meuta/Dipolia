@@ -11,7 +11,7 @@ class DipoliaMapper {
     fun mapDbModelToEntity(dipolDbModel: DipolDbModel) = DipolDomainEntity(
         id = dipolDbModel.dipolId,
         ip = dipolDbModel.dipolIp,
-        c1 = listOf(dipolDbModel.r1, dipolDbModel.g1, dipolDbModel.b1) ,
+        c1 = listOf(dipolDbModel.r1, dipolDbModel.g1, dipolDbModel.b1),
         c2 = listOf(dipolDbModel.r2, dipolDbModel.g2, dipolDbModel.b2)
     )
 

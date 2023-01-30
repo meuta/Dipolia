@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 
 interface DipoliaRepository {
 
+    fun receiveLocalModeData()
+
     fun getDipolList(): LiveData<List<DipolDomainEntity>>
 
     fun selectDipolItem(itemId: String): DipolDomainEntity
