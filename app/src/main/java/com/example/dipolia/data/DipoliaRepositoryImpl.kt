@@ -19,11 +19,14 @@ class DipoliaRepositoryImpl(application: Application) : DipoliaRepository {
 
     private val receiver = UDPServer()
 
-    override fun receiveLocalModeData() {
+    override suspend fun receiveLocalModeData() {
         val dipolListDto = mutableListOf<DipolDto>()
         while (true) {              //TODO: must move to another thread
-            receiver.receiveStringAndIPFromUDP { string, inetAddress ->
-                val ar = string.split(" ")
+//            receiver.receiveStringAndIPFromUDP { string, inetAddress ->
+            val receivedDipolData = receiver.receiveStringAndIPFromUDP()
+            receivedDipolData?.let {
+//                val ar = it.split(" ")
+                val ar = it.first.split(" ")
                 if (ar[0] == "dipol") {
                     val id = ar[1]
                     var already = 0
@@ -39,7 +42,8 @@ class DipoliaRepositoryImpl(application: Application) : DipoliaRepository {
 //                    black.fromhsv(0.0, 0.0, 0.0)
                         val dipol = DipolDto(
                             id,
-                            inetAddress,
+//                            inetAddress,
+                            it.second,
 //                        black.clone(),
 //                        black.clone(),
 //                        black.clone(),
@@ -47,7 +51,8 @@ class DipoliaRepositoryImpl(application: Application) : DipoliaRepository {
 //                        black.clone(),
 //                        black.clone(),
 //                        false
-                            string
+//                            string
+                            it.first
                         )
 //                    getDipolColorById(id, dipol.c1, dipol.c2)
 
@@ -56,6 +61,8 @@ class DipoliaRepositoryImpl(application: Application) : DipoliaRepository {
                     }
                 }
             }
+
+//            }
         }
     }
 
