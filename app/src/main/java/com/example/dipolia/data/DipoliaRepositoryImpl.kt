@@ -12,55 +12,56 @@ import com.example.dipolia.domain.DipolDomainEntity
 import com.example.dipolia.domain.DipoliaRepository
 import com.example.dipolia.domain.Horn
 
-class DipoliaRepositoryImpl(application: Application) : DipoliaRepository {
+//class DipoliaRepositoryImpl(application: Application) : DipoliaRepository {
+object DipoliaRepositoryImpl: DipoliaRepository {
 
-    private val dipolsDao = AppDatabase.getInstance(application).dipolsDao()
-    private val mapper = DipoliaMapper()
+//    private val dipolsDao = AppDatabase.getInstance(application).dipolsDao()
+//    private val mapper = DipoliaMapper()
 
     private val receiver = UDPServer()
 
     override suspend fun receiveLocalModeData() {
-        val dipolListDto = mutableListOf<DipolDto>()
+//        val dipolListDto = mutableListOf<DipolDto>()
         while (true) {              //TODO: must move to another thread
 //            receiver.receiveStringAndIPFromUDP { string, inetAddress ->
             val receivedDipolData = receiver.receiveStringAndIPFromUDP()
-            receivedDipolData?.let {
-//                val ar = it.split(" ")
-                val ar = it.first.split(" ")
-                if (ar[0] == "dipol") {
-                    val id = ar[1]
-                    var already = 0
-                    for (i in dipolListDto) {
-                        if (i.id == id) {
-                            already = 1
-                            break
-                        }
-                    }
-
-                    if (already == 0) {
-//                    val black = FRGB()
-//                    black.fromhsv(0.0, 0.0, 0.0)
-                        val dipol = DipolDto(
-                            id,
-//                            inetAddress,
-                            it.second,
-//                        black.clone(),
-//                        black.clone(),
-//                        black.clone(),
-//                        black.clone(),
-//                        black.clone(),
-//                        black.clone(),
-//                        false
-//                            string
-                            it.first
-                        )
-//                    getDipolColorById(id, dipol.c1, dipol.c2)
-
-                        dipolListDto.add(dipol)
-//                    refreshRecyclerView()
-                    }
-                }
-            }
+//            receivedDipolData?.let {
+////                val ar = it.split(" ")
+//                val ar = it.first.split(" ")
+//                if (ar[0] == "dipol") {
+//                    val id = ar[1]
+//                    var already = 0
+//                    for (i in dipolListDto) {
+//                        if (i.id == id) {
+//                            already = 1
+//                            break
+//                        }
+//                    }
+//
+//                    if (already == 0) {
+////                    val black = FRGB()
+////                    black.fromhsv(0.0, 0.0, 0.0)
+//                        val dipol = DipolDto(
+//                            id,
+////                            inetAddress,
+//                            it.second,
+////                        black.clone(),
+////                        black.clone(),
+////                        black.clone(),
+////                        black.clone(),
+////                        black.clone(),
+////                        black.clone(),
+////                        false
+////                            string
+//                            it.first
+//                        )
+////                    getDipolColorById(id, dipol.c1, dipol.c2)
+//
+//                        dipolListDto.add(dipol)
+////                    refreshRecyclerView()
+//                    }
+//                }
+//            }
 
 //            }
         }
