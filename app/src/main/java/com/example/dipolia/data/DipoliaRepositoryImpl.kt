@@ -11,6 +11,7 @@ import com.example.dipolia.domain.ColorComponent
 import com.example.dipolia.domain.DipolDomainEntity
 import com.example.dipolia.domain.DipoliaRepository
 import com.example.dipolia.domain.Horn
+import kotlin.concurrent.thread
 
 //class DipoliaRepositoryImpl(application: Application) : DipoliaRepository {
 object DipoliaRepositoryImpl: DipoliaRepository {
@@ -22,8 +23,9 @@ object DipoliaRepositoryImpl: DipoliaRepository {
 
     override suspend fun receiveLocalModeData() {
 //        val dipolListDto = mutableListOf<DipolDto>()
-        while (true) {              //TODO: must move to another thread
-//            receiver.receiveStringAndIPFromUDP { string, inetAddress ->
+//        thread {
+            while (true) {              //TODO: must move to another thread
+//                receiver.receiveStringAndIPFromUDP { string, inetAddress ->
             val receivedDipolData = receiver.receiveStringAndIPFromUDP()
 //            receivedDipolData?.let {
 ////                val ar = it.split(" ")
@@ -63,8 +65,10 @@ object DipoliaRepositoryImpl: DipoliaRepository {
 //                }
 //            }
 
+                }
 //            }
-        }
+//        }
+
     }
 
     override fun getDipolList(): LiveData<List<DipolDomainEntity>> {

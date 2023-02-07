@@ -10,91 +10,111 @@ import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 import java.net.SocketTimeoutException
+import java.nio.channels.DatagramChannel
 import kotlin.concurrent.thread
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 
 class UDPServer {
 
-    //    fun receiveStringAndIPFromUDP(callback: (String, InetAddress) -> Unit) {
-//    suspend fun receiveStringAndIPFromUDP(): Pair<String, InetAddress>? {
-    suspend fun receiveStringAndIPFromUDP() {
-        Log.d("UDPServer", "receiveStringAndIPFromUDP()")
+    private fun openDatagramSocket(port: Int, callback: (DatagramSocket) -> Unit) {
+        Handler(Looper.getMainLooper()).post {           // .post or .postDelay
+            callback.invoke(DatagramSocket(port))
+        }
+    }
 
-//        thread {                //TODO: move threat creating from here!
-        val buffer = ByteArray(2048)
-        var socket: DatagramSocket? = null
-
-        val port = 8002
-
-        val selectorManager = SelectorManager(Dispatchers.IO)
-        val serverSocket = aSocket(selectorManager)
-            .udp()
-//             ?    is it possible write the following:     ?
-            .bind(InetSocketAddress("localhost", port)) {
-                broadcast = true
-                receiveBufferSize = 2048
-            }
-        val localAddress = serverSocket.localAddress
-        Log.d("UDPServer", "Server is listening at $localAddress")
-
-        serverSocket.use {
-            Log.d("UDPServer", "serverSocket.use $it")
-            val receiveChannel = it.openReadChannel()
-            Log.d("UDPServer", "receiveChannel $receiveChannel")
-            while (true) {
-                Log.d("UDPServer", "true")
-                try {
-                    Log.d("UDPServer", "try")
-                    val datagram = it.receive()
-                    Log.d("UDPServer", "Datagram received $datagram")
-                    val packet = datagram.packet
-                    Log.d("UDPServer", "Packet received $packet")
-                    val line = packet.readText()
-                    Log.d("UDPServer", "line = packet.readText() $line")
-                } catch (e: Throwable) {
-                    e.printStackTrace()
-                }
+    private suspend fun openDatagramSocket(port: Int): DatagramSocket =
+        suspendCoroutine { continuation ->
+            openDatagramSocket(port) { datagramSocket ->
+                continuation.resume(datagramSocket)
             }
         }
 
-//        try {
-//            //Keep a socket open to listen to all the UDP traffic that is destined for this port
-//            socket = DatagramSocket(port)            //Inappropriate blocking method call
-//            socket.broadcast = true     //Enable/disable SO_BROADCAST.
-//            val packet = DatagramPacket(buffer, buffer.size - 1)
-//            //           socket.setSoTimeout(1000);   // set the timeout in milliseconds.
-//            var ok = true
-//            try {
-//                socket.receive(packet)            //Inappropriate blocking method call
-//
-//            } catch (e: SocketTimeoutException) {
-//                ok = false
-//                socket.close()
-//                Log.i(" socket", "timeout")
-//            }
-//
-//            if (ok) {
-//                var string = String(packet.data)
-//                string = string.substring(0, packet.length)         //что делает эта строчка?
-//
-////                    Handler(Looper.getMainLooper()).post {           // .post or .postDelay
-////                        callback.invoke(string, packet.address)
-////                    }
-//                return Pair(string, packet.address)                 //will finally be executed??
-//            }
-//
-//        } catch (e: Exception) {
-//            println("open fun receiveUDP catch exception." + e.toString())
-//            e.printStackTrace()
-//        } finally {
-//            socket?.close()
-//        }
-        //For the callback calling on the main thread. Pass a runnable object:
+    private val buffer = ByteArray(2048)
+    private val port = 8002
 
+    private fun receivePacket(socket: DatagramSocket, packet: DatagramPacket, callback: (DatagramPacket) -> Unit) {
+        socket.receive(packet)
+        Log.d("UDPServer", "DatagramPacket $packet ")
+        Handler(Looper.getMainLooper()).post {           // .post or .postDelay
+            callback.invoke(packet)
+        }
+    }
+
+    private suspend fun receivePacket(socket: DatagramSocket, packet: DatagramPacket): DatagramPacket =
+        suspendCoroutine { continuation ->
+            receivePacket(socket, packet) { datagramPacket ->
+                continuation.resume(datagramPacket)
+            }
+        }
+
+    suspend fun receiveStringAndIPFromUDP(): Pair<String, InetAddress>? {
+        Log.d("UDPServer", "receiveStringAndIPFromUDP()")
+
+//        thread {                //TODO: move threat creating from here!
+//        val buffer = ByteArray(2048)
+        var socket: DatagramSocket? = null
+
+
+
+//        val datagramChannel = DatagramChannel.open()
+
+        try {
+            //Keep a socket open to listen to all the UDP traffic that is destined for this port
+//              socket = DatagramSocket(port)           //Inappropriate blocking method call
+            socket = openDatagramSocket(port)
+
+            Log.d("UDPServer", "DatagramSocket($port) $socket ")
+            socket.broadcast = true     //Enable/disable SO_BROADCAST.
+            var packet = DatagramPacket(buffer, buffer.size - 1)
+            //           socket.setSoTimeout(1000);   // set the timeout in milliseconds.
+            Log.d("UDPServer", "DatagramPacket $packet ")
+            var ok = true
+            try {
+                Log.d("UDPServer", "try ")
+
+//                socket.receive(packet)            //Inappropriate blocking method call
+                packet = receivePacket(socket, packet)
+                Log.d("UDPServer", "ReceivedPacket $packet ")
+
+            } catch (e: SocketTimeoutException) {
+                ok = false
+                socket.close()
+                Log.i("UDPServer", "Socket timeout")
+            }
+
+            if (ok) {
+//                Log.d("UDPServer", "Data $string ")
+
+                var string = String(packet.data)
+                Log.d("UDPServer", "String $string ")
+                string = string.substring(0, packet.length)         //что делает эта строчка?
+                Log.d("UDPServer", "substring $string ")
+
+//                Handler(Looper.getMainLooper()).post {           // .post or .postDelay
+//                    callback.invoke(string, packet.address)
+//                }
+                return Pair(string, packet.address)                 //will finally be executed??
+            }
+
+        } catch (e: Exception) {
+            println("open fun receiveUDP catch exception." + e.toString())
+            e.printStackTrace()
+        } finally {
+            socket?.close()
+        }
+        //For the callback calling on the main thread. Pass a runnable object:
+//
 //        }
-//        return null
+        return null
 
     }
+
+//                  (callback: (String, InetAddress) -> Unit) {
+//    suspend fun receiveStringAndIPFromUDP(): Pair<String, InetAddress>? {
+//    suspend fun receiveStringAndIPFromUDP() {
+
 
 }
 
