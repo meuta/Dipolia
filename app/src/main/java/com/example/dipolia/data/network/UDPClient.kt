@@ -19,7 +19,6 @@ class UDPClient {
         // Hack Prevent crash (sending should be done using an async task)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
-//        println("Sending")
 
         try {
             //Open a port to send the package
@@ -95,18 +94,14 @@ class UDPClient {
         val outgoingData = messageStr.toByteArray()
         val outgoingPacket = DatagramPacket(
             outgoingData, outgoingData.size,
-//                InetAddress.getByName("255.255.255.255"),
             getInetAddressByName("255.255.255.255"),
-            //    InetAddress.getByName(Settings.RemoteHost),
             port
         )
         Log.d("UDPClient", "DatagramPacket $outgoingPacket ")
 
         try {
             Log.d("UDPClient", "try ")
-//            socket.send(sendPacket)
             sendPacket(socket, outgoingPacket)
-            //      InetAddress.getByName(Settings.RemoteHost) + ":" + Settings.RemotePort)
         } catch (e: IOException) {
             //            Log.e(FragmentActivity.TAG, "IOException: " + e.message)
         }

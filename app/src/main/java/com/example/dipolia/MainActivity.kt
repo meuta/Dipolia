@@ -1,15 +1,9 @@
 package com.example.dipolia
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.dipolia.data.DipoliaRepositoryImpl
-import com.example.dipolia.data.network.UDPClient
-import com.example.dipolia.domain.useCases.ReceiveLocalModeDataUseCase
 import com.example.dipolia.presentation.LocalModeViewModel
-import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
 

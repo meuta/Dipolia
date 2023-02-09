@@ -1,8 +1,7 @@
 package com.example.dipolia.data
 
 import android.app.Application
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.dipolia.data.database.AppDatabase
 import com.example.dipolia.data.database.DipolDbModel
@@ -15,7 +14,6 @@ import com.example.dipolia.domain.DipolDomainEntity
 import com.example.dipolia.domain.DipoliaRepository
 import com.example.dipolia.domain.Horn
 import kotlinx.coroutines.delay
-import kotlin.concurrent.thread
 
 //class DipoliaRepositoryImpl(application: Application) : DipoliaRepository {
 object DipoliaRepositoryImpl : DipoliaRepository {
@@ -35,68 +33,54 @@ object DipoliaRepositoryImpl : DipoliaRepository {
 
     override suspend fun receiveLocalModeData() {
 
+        val dipolListDto = mutableListOf<DipolDto>()
 
-//        val mainHandler: Handler = Handler(Looper.getMainLooper())
-//
-//        val updateHelloTask = object : Runnable {
-//            override fun run() {
-//                sender.sendUDP("Follow me")
-//                mainHandler.postDelayed(this, 1000)
-//            }
-//        }
-//
-//        mainHandler.post(updateHelloTask)
-
-//        sender.sendUDPSuspend("Follow me")
-
-//        val dipolListDto = mutableListOf<DipolDto>()
-//        thread {
-        while (true) {              //TODO: must move to another thread
-
-//                receiver.receiveStringAndIPFromUDP { string, inetAddress ->
+        while (true) {
             val receivedDipolData = receiver.receiveStringAndIPFromUDP()
-//            receivedDipolData?.let {
-////                val ar = it.split(" ")
-//                val ar = it.first.split(" ")
-//                if (ar[0] == "dipol") {
-//                    val id = ar[1]
-//                    var already = 0
-//                    for (i in dipolListDto) {
-//                        if (i.id == id) {
-//                            already = 1
-//                            break
-//                        }
-//                    }
-//
-//                    if (already == 0) {
-////                    val black = FRGB()
-////                    black.fromhsv(0.0, 0.0, 0.0)
-//                        val dipol = DipolDto(
-//                            id,
-////                            inetAddress,
-//                            it.second,
-////                        black.clone(),
-////                        black.clone(),
-////                        black.clone(),
-////                        black.clone(),
-////                        black.clone(),
-////                        black.clone(),
-////                        false
-////                            string
-//                            it.first
-//                        )
-////                    getDipolColorById(id, dipol.c1, dipol.c2)
-//
-//                        dipolListDto.add(dipol)
-////                    refreshRecyclerView()
-//                    }
-//                }
-//            }
+            Log.d("UDP receiveLocalModeData", "Pair received: $receivedDipolData")
 
+            receivedDipolData?.let {
+                Log.d("UDP receiveLocalModeData", "let")
+
+//                val ar = it.split(" ")
+                val ar = it.first.split(" ")
+                if (ar[0] == "dipol") {
+                    val id = ar[1]
+                    var already = 0
+                    for (i in dipolListDto) {
+                        if (i.id == id) {
+                            already = 1
+                            break
+                        }
+                    }
+
+                    if (already == 0) {
+//                    val black = FRGB()
+//                    black.fromhsv(0.0, 0.0, 0.0)
+                        val dipol = DipolDto(
+                            id,
+//                            inetAddress,
+                            it.second,
+//                        black.clone(),
+//                        black.clone(),
+//                        black.clone(),
+//                        black.clone(),
+//                        black.clone(),
+//                        black.clone(),
+//                        false
+//                            string
+                            it.first
+                        )
+//                    getDipolColorById(id, dipol.c1, dipol.c2)
+
+                        dipolListDto.add(dipol)
+                        Log.d("UDP receiveLocalModeData", "dipol $dipol added")
+                        Log.d("UDP receiveLocalModeData", "dipolListDto $dipolListDto")
+//                    refreshRecyclerView()
+                    }
+                }
+            }
         }
-//            }
-//        }
-
     }
 
     override fun getDipolList(): LiveData<List<DipolDomainEntity>> {

@@ -1,7 +1,6 @@
 package com.example.dipolia.presentation
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.dipolia.data.DipoliaRepositoryImpl
 import com.example.dipolia.domain.useCases.ReceiveLocalModeDataUseCase
 import com.example.dipolia.domain.useCases.SendFollowMeUseCase
@@ -17,8 +16,7 @@ class LocalModeViewModel: ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
-    init {
-//        loadData()     //This code will be executes every time automatically with creating of this object
+    init {  //This code will be executes every time automatically with creating of this object
         scope.launch{
             sendFollowMeUseCase()
         }
@@ -27,10 +25,4 @@ class LocalModeViewModel: ViewModel() {
         }
     }
 
-//    fun getUDPdData(itemId: Int) {
-//        scope.launch {
-//            val item = getShopItemByIdUseCase.getShopItemById(itemId)
-//            _shopItem.value = item
-//        }
-//    }
 }

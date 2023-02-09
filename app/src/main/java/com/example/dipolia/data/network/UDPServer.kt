@@ -52,7 +52,6 @@ class UDPServer {
 
         try {
             //Keep a socket open to listen to all the UDP traffic that is destined for this port
-//              socket = DatagramSocket(port)           //Inappropriate blocking method call
             socket = openDatagramSocket(port)
 
             Log.d("UDPServer", "DatagramSocket($port) $socket ")
@@ -64,7 +63,6 @@ class UDPServer {
             try {
                 Log.d("UDPServer", "try ")
 
-//                socket.receive(packet)            //Inappropriate blocking method call
                 packet = receivePacket(socket, packet)
                 Log.d("UDPServer", "ReceivedPacket $packet ")
 
@@ -75,16 +73,12 @@ class UDPServer {
             }
 
             if (ok) {
-//                Log.d("UDPServer", "Data $string ")
 
                 var string = String(packet.data)
                 Log.d("UDPServer", "String $string ")
                 string = string.substring(0, packet.length)         //что делает эта строчка?
                 Log.d("UDPServer", "substring $string ")
 
-//                Handler(Looper.getMainLooper()).post {           // .post or .postDelay
-//                    callback.invoke(string, packet.address)
-//                }
                 return Pair(string, packet.address)                 //will finally be executed??
             }
 
@@ -96,13 +90,6 @@ class UDPServer {
         }
 
         return null
-
     }
-
-//                  (callback: (String, InetAddress) -> Unit) {
-//    suspend fun receiveStringAndIPFromUDP(): Pair<String, InetAddress>? {
-//    suspend fun receiveStringAndIPFromUDP() {
-
-
 }
 
