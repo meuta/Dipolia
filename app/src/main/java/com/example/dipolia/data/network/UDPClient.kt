@@ -15,6 +15,103 @@ class UDPClient {
 
     private val port = 8002
 
+    private fun openDatagramSocket(callback: (DatagramSocket) -> Unit) {
+        Handler(Looper.getMainLooper()).post {
+            callback.invoke(DatagramSocket())
+        }
+    }
+
+    private suspend fun openDatagramSocket(): DatagramSocket =
+        suspendCoroutine { continuation ->
+            openDatagramSocket { datagramSocket ->
+                continuation.resume(datagramSocket)
+            }
+        }
+
+
+    private fun getInetAddressByName(host: String, callback: (InetAddress) -> Unit) {
+        Handler(Looper.getMainLooper()).post {
+            callback.invoke(InetAddress.getByName(host))
+        }
+    }
+
+    private suspend fun getInetAddressByName(host: String): InetAddress =
+        suspendCoroutine { continuation ->
+            getInetAddressByName(host) { inetAddress ->
+                continuation.resume(inetAddress)
+            }
+        }
+
+    private fun sendPacket(
+        socket: DatagramSocket,
+        packet: DatagramPacket,
+        callback: (DatagramPacket) -> Unit
+    ) {
+        socket.send(packet)
+        Log.d("UDPClient", "DatagramPacket $packet ")
+        Handler(Looper.getMainLooper()).post {
+            callback.invoke(packet)
+        }
+    }
+
+    private suspend fun sendPacket(socket: DatagramSocket, packet: DatagramPacket): DatagramPacket =
+        suspendCoroutine { continuation ->
+            sendPacket(socket, packet) { datagramPacket ->
+                continuation.resume(datagramPacket)
+            }
+        }
+
+    suspend fun sendUDPSuspend(messageStr: String) {
+        Log.d("UDPClient", "sendUDPSuspend($messageStr)")
+        val socket = openDatagramSocket()
+        Log.d("UDPClient", "DatagramSocket($port) $socket ")
+
+        socket.broadcast = true
+        val outgoingData = messageStr.toByteArray()
+        val outgoingPacket = DatagramPacket(
+            outgoingData, outgoingData.size,
+            getInetAddressByName("255.255.255.255"),
+            port
+        )
+        Log.d("UDPClient", "DatagramPacket $outgoingPacket ")
+
+        try {
+            Log.d("UDPClient", "try ")
+            sendPacket(socket, outgoingPacket)
+        } catch (e: IOException) {
+            //            Log.e(FragmentActivity.TAG, "IOException: " + e.message)
+        }
+    }
+
+    suspend fun sendUDPSuspend(messageStr: String, ip: InetAddress) {
+
+        try {
+            Log.d("UDPClient", "sendUDPSuspend($messageStr)")
+            val socket = openDatagramSocket()
+            Log.d("UDPClient", "DatagramSocket($port) $socket ")
+
+            socket.broadcast = true
+            val outgoingData = messageStr.toByteArray()
+            val outgoingPacket = DatagramPacket(
+                outgoingData, outgoingData.size,
+                ip,
+                port
+            )
+            Log.d("UDPClient", "DatagramPacket $outgoingPacket ")
+
+            try {
+                Log.d("UDPClient", "try ")
+                sendPacket(socket, outgoingPacket)
+            } catch (e: IOException) {
+                //            Log.e(FragmentActivity.TAG, "IOException: " + e.message)
+            }
+        } catch (e: IOException) {
+            Log.e("Q", "IOException: " + e.message)
+        }
+    }
+
+
+
     fun sendUDP(messageStr: String) {
         // Hack Prevent crash (sending should be done using an async task)
         val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
@@ -37,76 +134,6 @@ class UDPClient {
             //            Log.e(FragmentActivity.TAG, "IOException: " + e.message)
         }
     }
-
-    private fun openDatagramSocket(callback: (DatagramSocket) -> Unit) {
-        Handler(Looper.getMainLooper()).post {           // .post or .postDelay
-            callback.invoke(DatagramSocket())
-        }
-    }
-
-    private suspend fun openDatagramSocket(): DatagramSocket =
-        suspendCoroutine { continuation ->
-            openDatagramSocket { datagramSocket ->
-                continuation.resume(datagramSocket)
-            }
-        }
-
-
-    private fun getInetAddressByName(host: String, callback: (InetAddress) -> Unit) {
-        Handler(Looper.getMainLooper()).post {           // .post or .postDelay
-            callback.invoke(InetAddress.getByName(host))
-        }
-    }
-
-    private suspend fun getInetAddressByName(host: String): InetAddress =
-        suspendCoroutine { continuation ->
-            getInetAddressByName(host) { inetAddress ->
-                continuation.resume(inetAddress)
-            }
-        }
-
-    private fun sendPacket(
-        socket: DatagramSocket,
-        packet: DatagramPacket,
-        callback: (DatagramPacket) -> Unit
-    ) {
-        socket.send(packet)
-        Log.d("UDPClient", "DatagramPacket $packet ")
-        Handler(Looper.getMainLooper()).post {           // .post or .postDelay
-            callback.invoke(packet)
-        }
-    }
-
-    private suspend fun sendPacket(socket: DatagramSocket, packet: DatagramPacket): DatagramPacket =
-        suspendCoroutine { continuation ->
-            sendPacket(socket, packet) { datagramPacket ->
-                continuation.resume(datagramPacket)
-            }
-        }
-
-    suspend fun sendUDPSuspend(messageStr: String) {
-        Log.d("UDPClient", "sendUDPSuspend($messageStr)")
-//            val socket = DatagramSocket()
-        val socket = openDatagramSocket()
-        Log.d("UDPClient", "DatagramSocket($port) $socket ")
-
-        socket.broadcast = true
-        val outgoingData = messageStr.toByteArray()
-        val outgoingPacket = DatagramPacket(
-            outgoingData, outgoingData.size,
-            getInetAddressByName("255.255.255.255"),
-            port
-        )
-        Log.d("UDPClient", "DatagramPacket $outgoingPacket ")
-
-        try {
-            Log.d("UDPClient", "try ")
-            sendPacket(socket, outgoingPacket)
-        } catch (e: IOException) {
-            //            Log.e(FragmentActivity.TAG, "IOException: " + e.message)
-        }
-    }
-
 
     fun sendUDP(messageStr: String, ip: InetAddress) {
         // Hack Prevent crash (sending should be done using an async task)
