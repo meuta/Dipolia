@@ -1,18 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/black"
+        tools:context=".activities.MainActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_local_mode_activity"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/black"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:titleTextColor="@color/colorHighlighted" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+
+            android:background="@color/black"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_item_list"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_dipol_unselected" />
+
+
+            <LinearLayout
+                android:id="@+id/llLocalSeekbars"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_weight="4"
+                android:baselineAligned="false"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="520dp"
+                        android:orientation="horizontal">
+
+                        <com.example.dipolia.presentation.utils.VerticalSeekBar
+                            android:id="@+id/localSeekBar1"
+                            android:layout_width="0dp"
+                            android:layout_height="500dp"
+                            android:layout_margin="5dp"
+                            android:layout_weight="1"
+                            android:progressDrawable="@drawable/custom_seekbar_local_red"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_red" />
+
+                        <com.example.dipolia.presentation.utils.VerticalSeekBar
+                            android:id="@+id/localSeekBar2"
+                            android:layout_width="0dp"
+                            android:layout_height="500dp"
+                            android:layout_margin="5dp"
+                            android:layout_weight="1"
+                            android:progressDrawable="@drawable/custom_seekbar_local_green"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_green" />
+
+                        <com.example.dipolia.presentation.utils.VerticalSeekBar
+                            android:id="@+id/localSeekBar3"
+                            android:layout_width="0dp"
+                            android:layout_height="500dp"
+                            android:layout_margin="5dp"
+                            android:layout_weight="1"
+                            android:progressDrawable="@drawable/custom_seekbar_local_blue"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_blue" />
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/view_local_color_label_1"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:background="@color/black" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="520dp"
+                        android:orientation="horizontal">
+
+                        <com.example.dipolia.presentation.utils.VerticalSeekBar
+                            android:id="@+id/localSeekBar4"
+                            android:layout_width="0dp"
+                            android:layout_height="500dp"
+                            android:layout_margin="5dp"
+                            android:layout_weight="1"
+                            android:progressDrawable="@drawable/custom_seekbar_local_red"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_red" />
+
+                        <com.example.dipolia.presentation.utils.VerticalSeekBar
+                            android:id="@+id/localSeekBar5"
+                            android:layout_width="0dp"
+                            android:layout_height="500dp"
+                            android:layout_margin="5dp"
+                            android:layout_weight="1"
+                            android:progressDrawable="@drawable/custom_seekbar_local_green"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_green" />
+
+                        <com.example.dipolia.presentation.utils.VerticalSeekBar
+                            android:id="@+id/localSeekBar6"
+                            android:layout_width="0dp"
+                            android:layout_height="500dp"
+                            android:layout_margin="5dp"
+                            android:layout_weight="1"
+                            android:progressDrawable="@drawable/custom_seekbar_local_blue"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_blue" />
+
+                    </LinearLayout>
+
+                    <View
+                        android:id="@+id/view_local_color_label_2"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:background="@color/black" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_test"
+            android:layout_width="200dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:background="@color/colorAccent"
+            android:text="@string/test_btn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+
+            />
+    </LinearLayout>
+</layout>

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.example.dipolia.data.DipoliaRepositoryImpl
 import com.example.dipolia.domain.useCases.ReceiveLocalModeDataUseCase
 import com.example.dipolia.domain.useCases.SendFollowMeUseCase
+import com.example.dipolia.domain.useCases.TestSendLocalModeDataUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,6 +14,7 @@ class LocalModeViewModel: ViewModel() {
     private val repository = DipoliaRepositoryImpl
     private val receiveLocalModeDataUseCase = ReceiveLocalModeDataUseCase(repository)
     private val sendFollowMeUseCase = SendFollowMeUseCase(repository)
+    private val testSendLocalModeDataUseCase = TestSendLocalModeDataUseCase(repository)
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -25,4 +27,9 @@ class LocalModeViewModel: ViewModel() {
         }
     }
 
+    fun testSendLocalModeData(dipolID: String, string: String) {
+        scope.launch {
+            testSendLocalModeDataUseCase(dipolID, string)
+        }
+    }
 }

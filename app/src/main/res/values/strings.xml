@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Dipolia</string>
+    <string name="test_btn">TEST</string>
 </resources>

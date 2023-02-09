@@ -8,6 +8,8 @@ interface DipoliaRepository {
 
     suspend fun receiveLocalModeData()
 
+    suspend fun testSendLocalModeData(dipolID: String, string: String)
+
     fun getDipolList(): LiveData<List<DipolDomainEntity>>
 
     fun selectDipolItem(itemId: String): DipolDomainEntity

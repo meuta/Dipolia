@@ -7,4 +7,34 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+    <color name="gray">#222222</color>
+
+    <color name="colorPrimary">@color/gray</color>
+    <color name="colorPrimaryDark">@color/black</color>
+
+
+    <color name="colorAccent">#3F0F72</color>
+    <color name="colorWhite">#FFFFFF</color>
+
+    <color name="colorSelect">#6E3A9B</color>
+
+    <color name="colorHighlighted">#C4C4C4</color>
+
+    <color name="colorGlobalSeekbarThumb">#5A21CA</color>
+    <color name="colorGlobalSeekbarProgress">#BE411990</color>
+
+    <color name="colorSeekbarThumbRed">#8E0808</color>
+    <color name="colorSeekbarProgressRed">#BE50091C</color>
+
+    <color name="colorSeekbarThumbGreen">#067206</color>
+    <color name="colorSeekbarProgressGreen">#BE0F3608</color>
+
+    <color name="colorSeekbarThumbBlue">#2121C3</color>
+    <color name="colorSeekbarProgressBlue">#8F171D76</color>
+
+    <color name="coloLocalItemBackground">#626262</color>
+
+
 </resources>

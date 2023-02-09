@@ -14,6 +14,11 @@ import com.example.dipolia.domain.DipolDomainEntity
 import com.example.dipolia.domain.DipoliaRepository
 import com.example.dipolia.domain.Horn
 import kotlinx.coroutines.delay
+import java.math.BigDecimal
+import java.math.RoundingMode
+import java.net.InetAddress
+import java.util.*
+import kotlin.random.Random.Default.nextInt
 
 //class DipoliaRepositoryImpl(application: Application) : DipoliaRepository {
 object DipoliaRepositoryImpl : DipoliaRepository {
@@ -82,6 +87,48 @@ object DipoliaRepositoryImpl : DipoliaRepository {
             }
         }
     }
+
+    override suspend fun testSendLocalModeData(dipolID: String, string: String) {
+
+//        val r1 = (BigDecimal(i.c1.r).setScale(3, RoundingMode.HALF_DOWN)).toString()
+//        val g1 = (BigDecimal(i.c1.g).setScale(3, RoundingMode.HALF_DOWN)).toString()
+//        val b1 = (BigDecimal(i.c1.b).setScale(3, RoundingMode.HALF_DOWN)).toString()
+//        val r2 = (BigDecimal(i.c2.r).setScale(3, RoundingMode.HALF_DOWN)).toString()
+//        val g2 = (BigDecimal(i.c2.g).setScale(3, RoundingMode.HALF_DOWN)).toString()
+//        val b2 = (BigDecimal(i.c2.b).setScale(3, RoundingMode.HALF_DOWN)).toString()
+//
+//        val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN)).toString()
+
+        val r1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
+        val g1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
+        val b1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
+        val r2 = (BigDecimal(0.5).setScale(3, RoundingMode.HALF_DOWN)).toString()
+        val g2 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
+        val b2 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
+        var rabbitColorSpeed =0.5
+
+        val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN)).toString()
+
+        val s1: String = "r1=" + r1 + ";g1=" + g1 + ";b1=" + b1 +
+                ";r2=" + r2 + ";g2=" + g2 + ";b2=" + r2 + ";rcs=" + rcs
+
+        val s2: String = "r1=" + r1 + ";g1=" + r2 + ";b1=" + b1 +
+                ";r2=" + r1 + ";g2=" + g2 + ";b2=" + b2 + ";rcs=" + rcs
+
+        val s3: String = "r1=" + g1 + ";g1=" + r1 + ";b1=" + b1 +
+                ";r2=" + r1 + ";g2=" + r2 + ";b2=" + r2 + ";rcs=" + rcs
+
+        val list = arrayListOf<String>(s1, s2, s3)
+//        val s4 = list.random()
+        while (true) {
+            sender.sendUDP(list.random(), InetAddress.getByName("192.168.0.150"))
+            sender.sendUDP(list.random(), InetAddress.getByName("192.168.0.133"))
+            sender.sendUDP(list.random(), InetAddress.getByName("192.168.0.127"))
+            delay(290000)
+        }
+    }
+
+
 
     override fun getDipolList(): LiveData<List<DipolDomainEntity>> {
         TODO("Not yet implemented")
