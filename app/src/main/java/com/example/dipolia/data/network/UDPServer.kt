@@ -3,20 +3,18 @@ package com.example.dipolia.data.network
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import io.ktor.network.selector.*
-import io.ktor.network.sockets.*
-import kotlinx.coroutines.Dispatchers
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 import java.net.SocketTimeoutException
-import java.nio.channels.DatagramChannel
-import kotlin.concurrent.thread
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 
 class UDPServer {
+
+    private val buffer = ByteArray(2048)
+    private val port = 8002
 
     private fun openDatagramSocket(port: Int, callback: (DatagramSocket) -> Unit) {
         Handler(Looper.getMainLooper()).post {           // .post or .postDelay
@@ -31,8 +29,6 @@ class UDPServer {
             }
         }
 
-    private val buffer = ByteArray(2048)
-    private val port = 8002
 
     private fun receivePacket(socket: DatagramSocket, packet: DatagramPacket, callback: (DatagramPacket) -> Unit) {
         socket.receive(packet)
@@ -52,13 +48,7 @@ class UDPServer {
     suspend fun receiveStringAndIPFromUDP(): Pair<String, InetAddress>? {
         Log.d("UDPServer", "receiveStringAndIPFromUDP()")
 
-//        thread {                //TODO: move threat creating from here!
-//        val buffer = ByteArray(2048)
         var socket: DatagramSocket? = null
-
-
-
-//        val datagramChannel = DatagramChannel.open()
 
         try {
             //Keep a socket open to listen to all the UDP traffic that is destined for this port
@@ -104,9 +94,7 @@ class UDPServer {
         } finally {
             socket?.close()
         }
-        //For the callback calling on the main thread. Pass a runnable object:
-//
-//        }
+
         return null
 
     }

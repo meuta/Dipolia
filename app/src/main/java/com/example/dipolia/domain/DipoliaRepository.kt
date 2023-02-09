@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 
 interface DipoliaRepository {
 
+    suspend fun sendFollowMe()
+
     suspend fun receiveLocalModeData()
 
     fun getDipolList(): LiveData<List<DipolDomainEntity>>

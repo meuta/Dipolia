@@ -2,8 +2,11 @@ package com.example.dipolia
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.ViewModelProvider
 import com.example.dipolia.data.DipoliaRepositoryImpl
+import com.example.dipolia.data.network.UDPClient
 import com.example.dipolia.domain.useCases.ReceiveLocalModeDataUseCase
 import com.example.dipolia.presentation.LocalModeViewModel
 import kotlinx.coroutines.runBlocking
@@ -16,11 +19,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        runBlocking {
-//            receiveLocalModeDataUseCase.invoke()
-//        }
-        localModeViewModel = ViewModelProvider(this)[LocalModeViewModel::class.java]
 
+        localModeViewModel = ViewModelProvider(this)[LocalModeViewModel::class.java]
 
     }
 }
