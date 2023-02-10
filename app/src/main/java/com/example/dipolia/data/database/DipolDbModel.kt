@@ -10,10 +10,10 @@ data class DipolDbModel(
     val dipolId: String,
 //    val dipolIp: InetAddress,         //Cannot figure out how to save this field into database. You can consider adding a type converter for it.
     val dipolIp: String,
-    var r1: Double,
-    var g1: Double,
-    var b1: Double,
-    var r2: Double,
-    var g2: Double,
-    var b2: Double
+    var r1: Double = 0.0,
+    var g1: Double = 0.0,
+    var b1: Double = 0.0,
+    var r2: Double = 0.0,
+    var g2: Double = 0.0,
+    var b2: Double = 0.0
 )

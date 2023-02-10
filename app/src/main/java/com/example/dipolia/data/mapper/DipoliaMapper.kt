@@ -1,12 +1,28 @@
 package com.example.dipolia.data.mapper
 
+import android.util.Log
 import com.example.dipolia.data.database.DipolDbModel
 import com.example.dipolia.data.network.DipolDto
 import com.example.dipolia.domain.DipolDomainEntity
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.net.InetAddress
 
 class DipoliaMapper {
+
+    fun mapDtoToDbModel(dipolDto: DipolDto): DipolDbModel {
+        Log.d("TestDipolDbModel", dipolDto.id)
+        return DipolDbModel(
+            dipolDto.id,
+            dipolDto.ip.toString()//,
+//            0.0,
+//            0.0,
+//            0.0,
+//            0.0,
+//            0.0,
+//            0.0
+        )
+    }
 
 //    fun mapDbModelToEntity(dipolDbModel: DipolDbModel) = DipolDomainEntity(
 //        id = dipolDbModel.dipolId,

@@ -35,7 +35,7 @@ class UDPClient {
         }
     }
 
-    private suspend fun getInetAddressByName(host: String): InetAddress =
+    suspend fun getInetAddressByName(host: String): InetAddress =
         suspendCoroutine { continuation ->
             getInetAddressByName(host) { inetAddress ->
                 continuation.resume(inetAddress)

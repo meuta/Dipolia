@@ -1,6 +1,7 @@
 package com.example.dipolia
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.dipolia.databinding.ActivityMainBinding
@@ -19,6 +20,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         localModeViewModel = ViewModelProvider(this)[LocalModeViewModel::class.java]
+
+        localModeViewModel.dipolList.observe(this) {
+//            shopListAdapter.submitList(it)      // Created new thread
+            Log.d("TEST_OF_SUBSCRIBE", it.toString())
+        }
 
         val dipolID = "b4e62d5316ce"
         val string = ""

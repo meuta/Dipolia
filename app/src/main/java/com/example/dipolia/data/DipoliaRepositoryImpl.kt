@@ -3,6 +3,7 @@ package com.example.dipolia.data
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
 import com.example.dipolia.data.database.AppDatabase
 import com.example.dipolia.data.database.DipolDbModel
 import com.example.dipolia.data.mapper.DipoliaMapper
@@ -20,17 +21,17 @@ import java.net.InetAddress
 import java.util.*
 import kotlin.random.Random.Default.nextInt
 
-//class DipoliaRepositoryImpl(application: Application) : DipoliaRepository {
-object DipoliaRepositoryImpl : DipoliaRepository {
+class DipoliaRepositoryImpl(application: Application) : DipoliaRepository {
+//object DipoliaRepositoryImpl : DipoliaRepository {
 
-//    private val dipolsDao = AppDatabase.getInstance(application).dipolsDao()
-//    private val mapper = DipoliaMapper()
+    private val dipolsDao = AppDatabase.getInstance(application).dipolsDao()
+    private val mapper = DipoliaMapper()
 
     private val receiver = UDPServer()
     private val sender = UDPClient()
 
     override suspend fun sendFollowMe() {
-        while (true) {              //TODO: must move to another thread
+        while (true) {
             sender.sendUDPSuspend("Follow me")
             delay(1000)
         }
@@ -50,7 +51,7 @@ object DipoliaRepositoryImpl : DipoliaRepository {
 //                val ar = it.split(" ")
                 val ar = it.first.split(" ")
                 if (ar[0] == "dipol") {
-                    val id = ar[1]
+                    val id = ar[1].substring(0, ar[1].length - 1)
                     var already = 0
                     for (i in dipolListDto) {
                         if (i.id == id) {
@@ -60,27 +61,17 @@ object DipoliaRepositoryImpl : DipoliaRepository {
                     }
 
                     if (already == 0) {
-//                    val black = FRGB()
-//                    black.fromhsv(0.0, 0.0, 0.0)
-                        val dipol = DipolDto(
+
+                        val dipolDto = DipolDto(
                             id,
-//                            inetAddress,
                             it.second,
-//                        black.clone(),
-//                        black.clone(),
-//                        black.clone(),
-//                        black.clone(),
-//                        black.clone(),
-//                        black.clone(),
-//                        false
-//                            string
                             it.first
                         )
-//                    getDipolColorById(id, dipol.c1, dipol.c2)
-
-                        dipolListDto.add(dipol)
-                        Log.d("UDP receiveLocalModeData", "dipol $dipol added")
+                        dipolListDto.add(dipolDto)
+                        Log.d("UDP receiveLocalModeData", "dipol $dipolDto added")
                         Log.d("UDP receiveLocalModeData", "dipolListDto $dipolListDto")
+                        dipolsDao.addDipolItem(mapper.mapDtoToDbModel(dipolDto))
+//                        getDipolList()
 //                    refreshRecyclerView()
                     }
                 }
@@ -100,12 +91,13 @@ object DipoliaRepositoryImpl : DipoliaRepository {
 //        val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN)).toString()
 
         val r1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
+//        val r1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN))
         val g1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
         val b1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
         val r2 = (BigDecimal(0.5).setScale(3, RoundingMode.HALF_DOWN)).toString()
         val g2 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
         val b2 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
-        var rabbitColorSpeed =0.5
+        var rabbitColorSpeed = 0.5
 
         val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN)).toString()
 
@@ -121,17 +113,39 @@ object DipoliaRepositoryImpl : DipoliaRepository {
         val list = arrayListOf<String>(s1, s2, s3)
 //        val s4 = list.random()
         while (true) {
-            sender.sendUDP(list.random(), InetAddress.getByName("192.168.0.150"))
-            sender.sendUDP(list.random(), InetAddress.getByName("192.168.0.133"))
-            sender.sendUDP(list.random(), InetAddress.getByName("192.168.0.127"))
+//            sender.sendUDPSuspend(list.random(), InetAddress.getByName("192.168.0.150"))
+            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.150"))
+
+            dipolsDao.addDipolItem(
+                DipolDbModel(
+                    dipolID,
+                    "/192.168.0.150",
+                    r1.toDouble(),
+                    g1.toDouble(),
+                    b1.toDouble(),
+                    r2.toDouble(),
+                    g2.toDouble(),
+                    b2.toDouble()
+            )
+
+
+            )
+
+            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.133"))
+            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.127"))
             delay(290000)
         }
     }
 
 
+    //    override fun getDipolList(): LiveData<List<DipolDomainEntity>> {
+    override fun getDipolList(): LiveData<List<DipolDbModel>> {
+        Log.d("getDipolList", "were here")
 
-    override fun getDipolList(): LiveData<List<DipolDomainEntity>> {
-        TODO("Not yet implemented")
+        return Transformations.map(dipolsDao.getDipolList()) {
+            Log.d("getDipolList", "$it")
+            it
+        }
     }
 
     override fun selectDipolItem(itemId: String): DipolDomainEntity {
