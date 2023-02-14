@@ -34,8 +34,8 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
     }
 
     fun testSendLocalModeData(dipolID: String, string: String) {
-        scope.launch {
+//        scope.launch {
             testSendLocalModeDataUseCase(dipolID, string)
-        }
+//        }
     }
 }

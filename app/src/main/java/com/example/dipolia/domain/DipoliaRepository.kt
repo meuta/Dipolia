@@ -9,7 +9,8 @@ interface DipoliaRepository {
 
     suspend fun receiveLocalModeData()
 
-    suspend fun testSendLocalModeData(dipolID: String, string: String)
+//    suspend fun testSendLocalModeData(dipolID: String, string: String)
+    fun testSendLocalModeData(dipolID: String, string: String)
 
 //    fun getDipolList(): LiveData<List<DipolDomainEntity>>
     fun getDipolList(): LiveData<List<DipolDbModel>>

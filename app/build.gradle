@@ -17,6 +17,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -56,6 +58,9 @@ dependencies {
 
     implementation "io.ktor:ktor-network:2.2.3"
     implementation "io.ktor:ktor-network-jvm:2.2.3"
+
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
+    implementation 'com.android.support:multidex:1.0.3'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'

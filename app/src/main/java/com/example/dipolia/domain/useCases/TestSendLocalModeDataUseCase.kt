@@ -7,7 +7,8 @@ import com.example.dipolia.domain.Horn
 
 class TestSendLocalModeDataUseCase(private val repository: DipoliaRepository) {
 
-    suspend operator fun invoke(dipolID: String, string: String){
+//    suspend operator fun invoke(dipolID: String, string: String){
+    operator fun invoke(dipolID: String, string: String){
         repository.testSendLocalModeData(dipolID, string)
     }
 }

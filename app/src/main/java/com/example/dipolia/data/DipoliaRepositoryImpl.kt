@@ -4,12 +4,16 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
+import androidx.work.WorkManager
 import com.example.dipolia.data.database.AppDatabase
 import com.example.dipolia.data.database.DipolDbModel
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.network.DipolDto
 import com.example.dipolia.data.network.UDPClient
 import com.example.dipolia.data.network.UDPServer
+import com.example.dipolia.data.workers.RefreshSendUDPWorker
 import com.example.dipolia.domain.ColorComponent
 import com.example.dipolia.domain.DipolDomainEntity
 import com.example.dipolia.domain.DipoliaRepository
@@ -21,7 +25,7 @@ import java.net.InetAddress
 import java.util.*
 import kotlin.random.Random.Default.nextInt
 
-class DipoliaRepositoryImpl(application: Application) : DipoliaRepository {
+class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepository {
 //object DipoliaRepositoryImpl : DipoliaRepository {
 
     private val dipolsDao = AppDatabase.getInstance(application).dipolsDao()
@@ -79,62 +83,75 @@ class DipoliaRepositoryImpl(application: Application) : DipoliaRepository {
         }
     }
 
-    override suspend fun testSendLocalModeData(dipolID: String, string: String) {
+//    override suspend fun testSendLocalModeData(dipolID: String, string: String) {
+    override fun testSendLocalModeData(dipolID: String, string: String) {
 
-//        val r1 = (BigDecimal(i.c1.r).setScale(3, RoundingMode.HALF_DOWN)).toString()
-//        val g1 = (BigDecimal(i.c1.g).setScale(3, RoundingMode.HALF_DOWN)).toString()
-//        val b1 = (BigDecimal(i.c1.b).setScale(3, RoundingMode.HALF_DOWN)).toString()
-//        val r2 = (BigDecimal(i.c2.r).setScale(3, RoundingMode.HALF_DOWN)).toString()
-//        val g2 = (BigDecimal(i.c2.g).setScale(3, RoundingMode.HALF_DOWN)).toString()
-//        val b2 = (BigDecimal(i.c2.b).setScale(3, RoundingMode.HALF_DOWN)).toString()
+////        val r1 = (BigDecimal(i.c1.r).setScale(3, RoundingMode.HALF_DOWN)).toString()
+////        val g1 = (BigDecimal(i.c1.g).setScale(3, RoundingMode.HALF_DOWN)).toString()
+////        val b1 = (BigDecimal(i.c1.b).setScale(3, RoundingMode.HALF_DOWN)).toString()
+////        val r2 = (BigDecimal(i.c2.r).setScale(3, RoundingMode.HALF_DOWN)).toString()
+////        val g2 = (BigDecimal(i.c2.g).setScale(3, RoundingMode.HALF_DOWN)).toString()
+////        val b2 = (BigDecimal(i.c2.b).setScale(3, RoundingMode.HALF_DOWN)).toString()
+////
+////        val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN)).toString()
+//
+//        val r1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
+////        val r1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN))
+//        val g1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
+//        val b1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
+//        val r2 = (BigDecimal(0.5).setScale(3, RoundingMode.HALF_DOWN)).toString()
+//        val g2 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
+//        val b2 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
+//        var rabbitColorSpeed = 0.5
 //
 //        val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN)).toString()
+//
+//        val s1: String = "r1=" + r1 + ";g1=" + g1 + ";b1=" + b1 +
+//                ";r2=" + r2 + ";g2=" + g2 + ";b2=" + r2 + ";rcs=" + rcs
+//
+//        val s2: String = "r1=" + r1 + ";g1=" + r2 + ";b1=" + b1 +
+//                ";r2=" + r1 + ";g2=" + g2 + ";b2=" + b2 + ";rcs=" + rcs
+//
+//        val s3: String = "r1=" + g1 + ";g1=" + r1 + ";b1=" + b1 +
+//                ";r2=" + r1 + ";g2=" + r2 + ";b2=" + r2 + ";rcs=" + rcs
+//
+//        val list = arrayListOf<String>(s1, s2, s3)
+////        val s4 = list.random()
+//        while (true) {
+////            sender.sendUDPSuspend(list.random(), InetAddress.getByName("192.168.0.150"))
+//            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.150"))
+//
+//            dipolsDao.addDipolItem(
+//                DipolDbModel(
+//                    dipolID,
+//                    "/192.168.0.150",
+//                    r1.toDouble(),
+//                    g1.toDouble(),
+//                    b1.toDouble(),
+//                    r2.toDouble(),
+//                    g2.toDouble(),
+//                    b2.toDouble()
+//                )
+//            )
+//
+//            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.133"))
+//            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.127"))
+//            delay(290000)
+//        }
 
-        val r1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
-//        val r1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN))
-        val g1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
-        val b1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
-        val r2 = (BigDecimal(0.5).setScale(3, RoundingMode.HALF_DOWN)).toString()
-        val g2 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
-        val b2 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
-        var rabbitColorSpeed = 0.5
+        val workManager = WorkManager.getInstance(application)
+        workManager.enqueueUniqueWork(
+            RefreshSendUDPWorker.WORK_NAME,
+            ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
+            RefreshSendUDPWorker.makeRequest()
+        )
+//    Log.d("RefreshSendUDPWorker", "makeOneTimeRequest")
 
-        val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN)).toString()
-
-        val s1: String = "r1=" + r1 + ";g1=" + g1 + ";b1=" + b1 +
-                ";r2=" + r2 + ";g2=" + g2 + ";b2=" + r2 + ";rcs=" + rcs
-
-        val s2: String = "r1=" + r1 + ";g1=" + r2 + ";b1=" + b1 +
-                ";r2=" + r1 + ";g2=" + g2 + ";b2=" + b2 + ";rcs=" + rcs
-
-        val s3: String = "r1=" + g1 + ";g1=" + r1 + ";b1=" + b1 +
-                ";r2=" + r1 + ";g2=" + r2 + ";b2=" + r2 + ";rcs=" + rcs
-
-        val list = arrayListOf<String>(s1, s2, s3)
-//        val s4 = list.random()
-        while (true) {
-//            sender.sendUDPSuspend(list.random(), InetAddress.getByName("192.168.0.150"))
-            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.150"))
-
-            dipolsDao.addDipolItem(
-                DipolDbModel(
-                    dipolID,
-                    "/192.168.0.150",
-                    r1.toDouble(),
-                    g1.toDouble(),
-                    b1.toDouble(),
-                    r2.toDouble(),
-                    g2.toDouble(),
-                    b2.toDouble()
-            )
-
-
-            )
-
-            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.133"))
-            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.127"))
-            delay(290000)
-        }
+//        workManager.enqueueUniquePeriodicWork(
+//            RefreshSendUDPWorker.WORK_NAME,
+//            ExistingPeriodicWorkPolicy.REPLACE,  //what to do, if another worker will be started
+//            RefreshSendUDPWorker.makePeriodicRequest()
+//        )
     }
 
 
