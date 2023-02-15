@@ -34,16 +34,25 @@ class RefreshSendUDPWorker(
 
         val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN)).toString()
 
-        val s1: String = "r1=" + r1 + ";g1=" + g1 + ";b1=" + b1 +
+        val s1: String = "r1=" + r2 + ";g1=" + r2 + ";b1=" + b1 +
                 ";r2=" + r2 + ";g2=" + g2 + ";b2=" + r2 + ";rcs=" + rcs
 
-        val s2: String = "r1=" + r1 + ";g1=" + r2 + ";b1=" + b1 +
-                ";r2=" + r1 + ";g2=" + g2 + ";b2=" + b2 + ";rcs=" + rcs
+        val s2: String = "r1=" + r1 + ";g1=" + r2 + ";b1=" + r2 +
+                ";r2=" + r2 + ";g2=" + r2 + ";b2=" + b2 + ";rcs=" + rcs
 
-        val s3: String = "r1=" + g1 + ";g1=" + r1 + ";b1=" + b1 +
+        val s3: String = "r1=" + r2 + ";g1=" + g1 + ";b1=" + r2 +
                 ";r2=" + r1 + ";g2=" + r2 + ";b2=" + r2 + ";rcs=" + rcs
 
-        val list = arrayListOf<String>(s1, s2, s3)
+        val s4: String = "r1=" + r2 + ";g1=" + g1 + ";b1=" + b1 +
+                ";r2=" + r1 + ";g2=" + r2 + ";b2=" + b2 + ";rcs=" + rcs
+
+        val s5: String = "r1=" + r1 + ";g1=" + r2 + ";b1=" + b1 +
+                ";r2=" + r1 + ";g2=" + g2 + ";b2=" + r2 + ";rcs=" + rcs
+
+        val s6: String = "r1=" + r1 + ";g1=" + g1 + ";b1=" + r2 +
+                ";r2=" + r2 + ";g2=" + g2 + ";b2=" + b2 + ";rcs=" + rcs
+
+        val list = arrayListOf<String>(s1, s2, s3, s4, s5, s6)
         while (true) {
             sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.150"))
 
@@ -63,7 +72,7 @@ class RefreshSendUDPWorker(
             sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.133"))
 //            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.127"))
 //            delay(290000)
-            delay(4563)
+            delay(2563)
         }
     }
 
@@ -79,7 +88,7 @@ class RefreshSendUDPWorker(
 
         fun makePeriodicRequest(): PeriodicWorkRequest {
             Log.d("RefreshSendUDPWorker", "makePeriodicRequest")
-            return PeriodicWorkRequestBuilder<RefreshSendUDPWorker>(1, TimeUnit.MINUTES)
+            return PeriodicWorkRequestBuilder<RefreshSendUDPWorker>(8, TimeUnit.MINUTES)
                 .build()
         }
     }
