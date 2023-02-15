@@ -1,7 +1,6 @@
 package com.example.dipolia.domain
 
 import androidx.lifecycle.LiveData
-import com.example.dipolia.data.database.DipolDbModel
 
 interface DipoliaRepository {
 
@@ -12,10 +11,9 @@ interface DipoliaRepository {
 //    suspend fun testSendLocalModeData(dipolID: String, string: String)
     fun testSendLocalModeData(dipolID: String, string: String)
 
-//    fun getDipolList(): LiveData<List<DipolDomainEntity>>
-    fun getDipolList(): LiveData<List<DipolDbModel>>
+    fun getDipolList(): LiveData<List<DipolDomainEntity>>
 
-    fun selectDipolItem(itemId: String): DipolDomainEntity
+    fun selectDipolItem(dipolId: String)
 
     fun changeLocalState(
         dipolItem: DipolDomainEntity,
@@ -23,6 +21,8 @@ interface DipoliaRepository {
         component: ColorComponent,
         componentDiff: Double
     )
+
+    suspend fun editDipolItem(dipolDomainEntity: DipolDomainEntity)
 
     fun updateLocalStateList(idStateList: List<Pair<String, String>>)
 

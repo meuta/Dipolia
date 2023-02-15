@@ -14,23 +14,28 @@ class DipoliaMapper {
         Log.d("TestDipolDbModel", dipolDto.id)
         return DipolDbModel(
             dipolDto.id,
-            dipolDto.ip.toString()//,
+            dipolDto.ip.toString(),
 //            0.0,
 //            0.0,
 //            0.0,
 //            0.0,
 //            0.0,
 //            0.0
+            selected = false
         )
     }
 
-//    fun mapDbModelToEntity(dipolDbModel: DipolDbModel) = DipolDomainEntity(
-//        id = dipolDbModel.dipolId,
-//        ip = dipolDbModel.dipolIp,
-//        c1 = listOf(dipolDbModel.r1, dipolDbModel.g1, dipolDbModel.b1),
-//        c2 = listOf(dipolDbModel.r2, dipolDbModel.g2, dipolDbModel.b2)
-//    )
-//
+    fun mapDbModelToEntity(dipolDbModel: DipolDbModel) = DipolDomainEntity(
+        id = dipolDbModel.dipolId,
+        ip = dipolDbModel.dipolIp,
+        c1 = listOf(dipolDbModel.r1, dipolDbModel.g1, dipolDbModel.b1),
+        c2 = listOf(dipolDbModel.r2, dipolDbModel.g2, dipolDbModel.b2),
+        selected = dipolDbModel.selected
+    ).also {
+        Log.d("mapDbModelToEntity", "$it")
+    }
+
+    //
 //    fun mapEntityToDbModel(dipolDomainEntity: DipolDomainEntity) = DipolDbModel(
 //        dipolId = dipolDomainEntity.id,
 //        dipolIp = dipolDomainEntity.ip,
@@ -42,7 +47,10 @@ class DipoliaMapper {
 //        b2 = dipolDomainEntity.c2[2]
 //    )
 //
-//    fun mapListDbModelToEntity(list: List<DipolDbModel>) = list.map { mapDbModelToEntity(it) }
+    fun mapListDbModelToEntity(list: List<DipolDbModel>) =
+        list.map { mapDbModelToEntity(it) }.also {
+            Log.d("mapListDbModelToEntity", "$it")
+        }
 //
 //    fun mapDbModelToDto(dipolDbModel: DipolDbModel): DipolDto {
 //        var rabbitColorSpeed = 0.5

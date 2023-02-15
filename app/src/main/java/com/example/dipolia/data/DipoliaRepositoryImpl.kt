@@ -19,11 +19,7 @@ import com.example.dipolia.domain.DipolDomainEntity
 import com.example.dipolia.domain.DipoliaRepository
 import com.example.dipolia.domain.Horn
 import kotlinx.coroutines.delay
-import java.math.BigDecimal
-import java.math.RoundingMode
-import java.net.InetAddress
-import java.util.*
-import kotlin.random.Random.Default.nextInt
+
 
 class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepository {
 //object DipoliaRepositoryImpl : DipoliaRepository {
@@ -75,8 +71,6 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
                         Log.d("UDP receiveLocalModeData", "dipol $dipolDto added")
                         Log.d("UDP receiveLocalModeData", "dipolListDto $dipolListDto")
                         dipolsDao.addDipolItem(mapper.mapDtoToDbModel(dipolDto))
-//                        getDipolList()
-//                    refreshRecyclerView()
                     }
                 }
             }
@@ -155,18 +149,36 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
     }
 
 
-    //    override fun getDipolList(): LiveData<List<DipolDomainEntity>> {
-    override fun getDipolList(): LiveData<List<DipolDbModel>> {
+        override fun getDipolList(): LiveData<List<DipolDomainEntity>> {
         Log.d("getDipolList", "were here")
 
-        return Transformations.map(dipolsDao.getDipolList()) {
+        return Transformations.map(dipolsDao.getDipolList()) { it ->
             Log.d("getDipolList", "$it")
-            it
+//            it
+//            mapper.mapListDbModelToEntity(it)
+            it.map{
+                mapper.mapDbModelToEntity(it)
+            }
+
         }
     }
 
-    override fun selectDipolItem(itemId: String): DipolDomainEntity {
-        TODO("Not yet implemented")
+    override fun selectDipolItem(dipolId: String) {
+
+        var oldSelectedItem = dipolsDao.getSelectedDipolItem(true)
+        Log.d("selectDipolItem", " oldSelectedItem: ${oldSelectedItem?.dipolId}")
+
+        var newSelectedItem = dipolsDao.getDipolItemById(dipolId)
+        Log.d("selectDipolItem", " newSelectedItem: ${newSelectedItem.dipolId}")
+
+        if (oldSelectedItem?.dipolId != newSelectedItem.dipolId) {
+            oldSelectedItem = oldSelectedItem?.copy(selected = false)
+            oldSelectedItem?.let {
+                dipolsDao.updateDipolItem(it)
+            }
+            newSelectedItem = newSelectedItem.copy(selected = true)
+            dipolsDao.updateDipolItem(newSelectedItem)
+        }
     }
 
     override fun changeLocalState(
@@ -180,6 +192,10 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 
     override fun updateLocalStateList(idStateList: List<Pair<String, String>>) {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun editDipolItem(dipolDomainEntity: DipolDomainEntity) {
+        TODO()
     }
 
     override fun changeGlobalState(horn: Horn, colorDiff: Double) {

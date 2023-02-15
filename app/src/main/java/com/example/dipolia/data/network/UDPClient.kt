@@ -2,7 +2,6 @@ package com.example.dipolia.data.network
 
 import android.os.Handler
 import android.os.Looper
-import android.os.StrictMode
 import android.util.Log
 import java.io.IOException
 import java.net.DatagramPacket
@@ -105,56 +104,6 @@ class UDPClient {
             } catch (e: IOException) {
                 //            Log.e(FragmentActivity.TAG, "IOException: " + e.message)
             }
-        } catch (e: IOException) {
-            Log.e("Q", "IOException: " + e.message)
-        }
-    }
-
-
-
-    fun sendUDP(messageStr: String) {
-        // Hack Prevent crash (sending should be done using an async task)
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
-
-        try {
-            //Open a port to send the package
-            val socket = DatagramSocket()
-            socket.broadcast = true
-            val sendData = messageStr.toByteArray()
-            val sendPacket = DatagramPacket(
-                sendData, sendData.size,
-                InetAddress.getByName("255.255.255.255"),
-                //    InetAddress.getByName(Settings.RemoteHost),
-                port
-            )
-            socket.send(sendPacket)
-            //      InetAddress.getByName(Settings.RemoteHost) + ":" + Settings.RemotePort)
-        } catch (e: IOException) {
-            //            Log.e(FragmentActivity.TAG, "IOException: " + e.message)
-        }
-    }
-
-    fun sendUDP(messageStr: String, ip: InetAddress) {
-        // Hack Prevent crash (sending should be done using an async task)
-        val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
-//        println("Sending")
-
-        try {
-            //Open a port to send the package
-            val socket = DatagramSocket()
-            socket.broadcast = false
-            val sendData = messageStr.toByteArray()
-            val sendPacket = DatagramPacket(
-                sendData, sendData.size,
-                ip,
-                //    InetAddress.getByName(Settings.RemoteHost),
-                port
-            )
-            socket.send(sendPacket)
-            // println("fun sendBroadcast: packet sent to: " +
-            //      InetAddress.getByName(Settings.RemoteHost) + ":" + Settings.RemotePort)
         } catch (e: IOException) {
             Log.e("Q", "IOException: " + e.message)
         }
