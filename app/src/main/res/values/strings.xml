@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Dipolia</string>
     <string name="test_btn">TEST</string>
+    <string name="refresh_list_btn">REFRESH\nLIST</string>
 </resources>

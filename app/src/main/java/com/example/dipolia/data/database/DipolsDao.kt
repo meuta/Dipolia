@@ -6,8 +6,11 @@ import androidx.room.*
 @Dao
 interface DipolsDao {
 
+    @Query("SELECT * FROM dipols WHERE connected=:connected")
+    fun getDipolListLD(connected: Boolean): LiveData<List<DipolDbModel>>
+
     @Query("SELECT * FROM dipols")
-    fun getDipolList(): LiveData<List<DipolDbModel>>
+    fun getDipolList(): List<DipolDbModel>
 
     @Query("SELECT * FROM dipols WHERE dipolId=:dipolItemId LIMIT 1")
     fun getDipolItemById(dipolItemId: String): DipolDbModel
@@ -23,4 +26,7 @@ interface DipolsDao {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateDipolItem(dipolItemBbModel: DipolDbModel)
+
+//    @Update(onConflict = OnConflictStrategy.REPLACE)
+//    fun refreshConnectedList(dipolListBbModel: List<DipolDbModel>)
 }

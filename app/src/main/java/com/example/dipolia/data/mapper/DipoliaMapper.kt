@@ -21,7 +21,8 @@ class DipoliaMapper {
 //            0.0,
 //            0.0,
 //            0.0
-            selected = false
+            selected = false,
+            connected = true
         )
     }
 

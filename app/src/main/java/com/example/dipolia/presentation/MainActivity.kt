@@ -21,9 +21,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupRecyclerView()
-
         localModeViewModel = ViewModelProvider(this)[LocalModeViewModel::class.java]
+
+        setupRecyclerView()
 
         localModeViewModel.dipolList.observe(this) {
             dipolListAdapter.submitList(it)      // Created new thread
@@ -36,9 +36,15 @@ class MainActivity : AppCompatActivity() {
         binding.btnTest.setOnClickListener {
             localModeViewModel.testSendLocalModeData(dipolID, string)
         }
+
+        binding.btnRefreshList.setOnClickListener {
+            refreshConnectedList()
+        }
     }
 
     private fun setupRecyclerView() {
+
+        refreshConnectedList()
 
         dipolListAdapter = DipolListAdapter()
         with(binding.rvDipolItemList) {
@@ -61,6 +67,10 @@ class MainActivity : AppCompatActivity() {
         dipolListAdapter.onDipolItemClickListener = {
             localModeViewModel.changeSelectedDipol(it.id)
         }
+    }
+
+    private fun refreshConnectedList(){
+        localModeViewModel.refreshConnectedList()
     }
 
 }

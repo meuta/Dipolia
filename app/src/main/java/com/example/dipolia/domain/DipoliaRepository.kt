@@ -28,4 +28,6 @@ interface DipoliaRepository {
 
     fun changeGlobalState(horn: Horn, colorDiff: Double)
 
+    suspend fun refreshConnectedList()
+
 }

@@ -53,8 +53,13 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
                 if (ar[0] == "dipol") {
                     val id = ar[1].substring(0, ar[1].length - 1)
                     var already = 0
+
+
                     for (i in dipolListDto) {
                         if (i.id == id) {
+// connected list control:
+                            dipolsDao.updateDipolItem(mapper.mapDtoToDbModel(i).copy(connected = true))
+
                             already = 1
                             break
                         }
@@ -77,7 +82,18 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
         }
     }
 
-//    override suspend fun testSendLocalModeData(dipolID: String, string: String) {
+    override suspend fun refreshConnectedList() {
+        val notConnectedList = dipolsDao.getDipolList()
+        val refreshedList = notConnectedList
+            .filter { it.connected }
+            .map{ it.copy(connected = false) }
+        for (dipol in refreshedList) {
+            dipolsDao.updateDipolItem(dipol)
+        }
+    }
+
+
+    //    override suspend fun testSendLocalModeData(dipolID: String, string: String) {
     override fun testSendLocalModeData(dipolID: String, string: String) {
 
 ////        val r1 = (BigDecimal(i.c1.r).setScale(3, RoundingMode.HALF_DOWN)).toString()
@@ -152,12 +168,13 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
         override fun getDipolList(): LiveData<List<DipolDomainEntity>> {
         Log.d("getDipolList", "were here")
 
-        return Transformations.map(dipolsDao.getDipolList()) { it ->
+        return Transformations.map(dipolsDao.getDipolListLD(true)) { it ->
             Log.d("getDipolList", "$it")
 //            it
 //            mapper.mapListDbModelToEntity(it)
             it.map{
                 mapper.mapDbModelToEntity(it)
+//                mapper.mapDbModelToEntity(it.copy(connected = false))
             }
 
         }
