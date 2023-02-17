@@ -4,7 +4,6 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.example.dipolia.data.database.AppDatabase
@@ -19,6 +18,7 @@ import com.example.dipolia.domain.DipolDomainEntity
 import com.example.dipolia.domain.DipoliaRepository
 import com.example.dipolia.domain.Horn
 import kotlinx.coroutines.delay
+import java.net.InetAddress
 
 
 class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepository {
@@ -58,7 +58,8 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
                     for (i in dipolListDto) {
                         if (i.id == id) {
 // connected list control:
-                            dipolsDao.updateDipolItem(mapper.mapDtoToDbModel(i).copy(connected = true))
+                            val myDipol = dipolsDao.getDipolItemById(id)
+                            dipolsDao.updateDipolItem(myDipol.copy(connected = true))
 
                             already = 1
                             break
@@ -90,6 +91,16 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
         for (dipol in refreshedList) {
             dipolsDao.updateDipolItem(dipol)
         }
+    }
+
+    override fun getSelectedDipol(): LiveData<DipolDomainEntity?> {
+        return Transformations.map(dipolsDao.getSelectedDipolItemLD(true)) { it ->
+//            it ?: DipolDbModel("", "", false, false)
+            it?.let {
+                mapper.mapDbModelToEntity(it)
+            }
+        }
+//        return dipolsDao.getSelectedDipolItemLD(true)
     }
 
 
@@ -198,14 +209,45 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
         }
     }
 
-    override fun changeLocalState(
-        dipolItem: DipolDomainEntity,
-        horn: Horn,
-        component: ColorComponent,
-        componentDiff: Double
-    ) {
-        TODO("Not yet implemented")
+
+//    override fun changeLocalState(
+//        dipolItem: DipolDomainEntity,
+//        horn: Horn,
+//        component: ColorComponent,
+//        componentDiff: Double
+//    ) {
+    override suspend fun changeLocalState(index: Int, value: Double){
+    Log.d("DipoliaRepositoryImpl", "changeLocalState $index $value")
+
+    val oldDipolItem = dipolsDao.getSelectedDipolItem(true)
+        Log.d("DipoliaRepositoryImpl", "changeLocalState $oldDipolItem")
+
+        oldDipolItem?.let {
+            val newDipolItem = when (index){
+                0 -> oldDipolItem.copy(r1 = value)
+                1 -> oldDipolItem.copy(g1 = value)
+                2 -> oldDipolItem.copy(b1 = value)
+                3 -> oldDipolItem.copy(r2 = value)
+                4 -> oldDipolItem.copy(g2 = value)
+                5 -> oldDipolItem.copy(b2 = value)
+                else -> throw Exception("seekBarIndex is out of range")
+            }
+            dipolsDao.updateDipolItem(newDipolItem)
+            Log.d("DipoliaRepositoryImpl", "changeLocalState newDipolItem $newDipolItem")
+//            val item = dipolsDao.getSelectedDipolItem(true)
+            val rcs = 0.5
+            val s1 = "r1=${newDipolItem.r1};g1=${newDipolItem.g1};b1=${newDipolItem.b1};r2=${newDipolItem.r2};g2=${newDipolItem.g2};b2=${newDipolItem.b2};rcs=$rcs"
+//            sender.sendUDPSuspend(s1, sender.getInetAddressByName(newDipolItem.dipolIp))
+            val address = newDipolItem.dipolIp.substring(1)
+            Log.d("DipoliaRepositoryImpl", "changeLocalState address $address")
+            val inetAddress = sender.getInetAddressByName(address)
+            sender.sendUDPSuspend(s1, inetAddress)
+        }
+
     }
+
+
+
 
     override fun updateLocalStateList(idStateList: List<Pair<String, String>>) {
         TODO("Not yet implemented")

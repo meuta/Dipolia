@@ -5,7 +5,7 @@ import com.example.dipolia.domain.Horn
 
 class ChangeGlobalStateUseCase (private val repository: DipoliaRepository) {
 
-    operator fun invoke(horn: Horn, colorDiff: Double){
+    suspend operator fun invoke(horn: Horn, colorDiff: Double){
         repository.changeGlobalState(horn, colorDiff)
     }
 

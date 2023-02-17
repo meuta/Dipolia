@@ -4,9 +4,6 @@ import android.util.Log
 import com.example.dipolia.data.database.DipolDbModel
 import com.example.dipolia.data.network.DipolDto
 import com.example.dipolia.domain.DipolDomainEntity
-import java.math.BigDecimal
-import java.math.RoundingMode
-import java.net.InetAddress
 
 class DipoliaMapper {
 
@@ -31,6 +28,8 @@ class DipoliaMapper {
         ip = dipolDbModel.dipolIp,
         c1 = listOf(dipolDbModel.r1, dipolDbModel.g1, dipolDbModel.b1),
         c2 = listOf(dipolDbModel.r2, dipolDbModel.g2, dipolDbModel.b2),
+//        c1 = dipolDbModel.colorSet[0],
+//        c2 = dipolDbModel.colorSet[0],
         selected = dipolDbModel.selected
     ).also {
         Log.d("mapDbModelToEntity", "$it")

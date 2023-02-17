@@ -16,4 +16,6 @@ data class DipolDbModel(
     var r2: Double = 0.0,
     var g2: Double = 0.0,
     var b2: Double = 0.0
+//    var colorSet: List<List<Double>> = listOf(listOf(0.0))
+//    var colorSet: MutableList<Double> = mutableListOf(0.0)
 )

@@ -18,6 +18,9 @@ interface DipolsDao {
     @Query("SELECT * FROM dipols WHERE selected=:selected LIMIT 1")
     fun getSelectedDipolItem(selected: Boolean): DipolDbModel?
 
+    @Query("SELECT * FROM dipols WHERE selected=:selected LIMIT 1")
+    fun getSelectedDipolItemLD(selected: Boolean): LiveData<DipolDbModel?>
+
 //    @Update(onConflict = OnConflictStrategy.REPLACE)
 //    fun updateDipolItem(dipolItemBbModel: DipolDbModel)
 

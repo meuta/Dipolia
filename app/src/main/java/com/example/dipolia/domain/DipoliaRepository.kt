@@ -15,12 +15,13 @@ interface DipoliaRepository {
 
     fun selectDipolItem(dipolId: String)
 
-    fun changeLocalState(
-        dipolItem: DipolDomainEntity,
-        horn: Horn,
-        component: ColorComponent,
-        componentDiff: Double
-    )
+//    fun changeLocalState(
+//        dipolItem: DipolDomainEntity,
+//        horn: Horn,
+//        component: ColorComponent,
+//        componentDiff: Double
+//    )
+    suspend fun changeLocalState(index: Int, value: Double)
 
     suspend fun editDipolItem(dipolDomainEntity: DipolDomainEntity)
 
@@ -29,5 +30,7 @@ interface DipoliaRepository {
     fun changeGlobalState(horn: Horn, colorDiff: Double)
 
     suspend fun refreshConnectedList()
+
+    fun getSelectedDipol(): LiveData<DipolDomainEntity?>
 
 }
