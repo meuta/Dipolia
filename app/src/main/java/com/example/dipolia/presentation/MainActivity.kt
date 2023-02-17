@@ -156,6 +156,8 @@ class MainActivity : AppCompatActivity() {
     private fun setupClickListener() {
         dipolListAdapter.onDipolItemClickListener = {
             localModeViewModel.changeSelectedDipol(it.id)
+            Log.d("onDipolItemClickListener", "$it")
+
         }
     }
 
