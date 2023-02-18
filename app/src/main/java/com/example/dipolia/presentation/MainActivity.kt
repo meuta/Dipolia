@@ -5,15 +5,11 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.SeekBar
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.dipolia.databinding.ActivityMainBinding
-import com.example.dipolia.domain.ColorComponent
 import com.example.dipolia.domain.DipolDomainEntity
-import com.example.dipolia.domain.Horn
 import com.example.dipolia.presentation.adaptes.DipolListAdapter
-import java.lang.Exception
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,6 +28,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         localModeViewModel = ViewModelProvider(this)[LocalModeViewModel::class.java]
+        binding.viewModel = localModeViewModel
+        binding.lifecycleOwner = this
 
         setupRecyclerView()
 
@@ -41,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         }
         localModeViewModel.selectedDipol.observe(this) {
             selectedDipol = it      // Created new thread
-            Log.d("TEST_OF_SUBSCRIBE", it.toString())
+            Log.d("TEST_OF_SUBSCRIBE", "selectedDipol: $it")
         }
 
         val dipolID = "b4e62d5316ce"

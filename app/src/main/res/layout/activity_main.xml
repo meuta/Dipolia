@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.dipolia.presentation.LocalModeViewModel" />
+    </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -101,7 +107,8 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
-                        android:background="@color/black" />
+                        app:lableColor="@{viewModel.selectedDipol.c1}"
+                        tools:background="@color/black" />
 
                 </LinearLayout>
 
@@ -155,7 +162,8 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
-                        android:background="@color/black" />
+                        app:lableColor="@{viewModel.selectedDipol.c2}"
+                        tools:background="@color/black" />
 
                 </LinearLayout>
             </LinearLayout>

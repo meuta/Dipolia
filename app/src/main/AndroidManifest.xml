@@ -14,8 +14,10 @@
         android:theme="@style/Theme.Dipolia">
         <activity
             android:name=".presentation.MainActivity"
-            android:exported="true">
-            <intent-filter>
+            android:exported="true"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
