@@ -78,7 +78,8 @@
                             android:layout_weight="1"
                             android:progressDrawable="@drawable/custom_seekbar_local_red"
                             android:splitTrack="false"
-                            android:thumb="@drawable/item_custom_thumb_red" />
+                            android:thumb="@drawable/item_custom_thumb_red"
+                            />
 
                         <com.example.dipolia.presentation.utils.VerticalSeekBar
                             android:id="@+id/localSeekBar2"
@@ -88,7 +89,8 @@
                             android:layout_weight="1"
                             android:progressDrawable="@drawable/custom_seekbar_local_green"
                             android:splitTrack="false"
-                            android:thumb="@drawable/item_custom_thumb_green" />
+                            android:thumb="@drawable/item_custom_thumb_green"
+                            />
 
                         <com.example.dipolia.presentation.utils.VerticalSeekBar
                             android:id="@+id/localSeekBar3"
@@ -98,7 +100,8 @@
                             android:layout_weight="1"
                             android:progressDrawable="@drawable/custom_seekbar_local_blue"
                             android:splitTrack="false"
-                            android:thumb="@drawable/item_custom_thumb_blue" />
+                            android:thumb="@drawable/item_custom_thumb_blue"
+                            />
                     </LinearLayout>
 
                     <View
@@ -132,7 +135,8 @@
                             android:layout_weight="1"
                             android:progressDrawable="@drawable/custom_seekbar_local_red"
                             android:splitTrack="false"
-                            android:thumb="@drawable/item_custom_thumb_red" />
+                            android:thumb="@drawable/item_custom_thumb_red"
+                            />
 
                         <com.example.dipolia.presentation.utils.VerticalSeekBar
                             android:id="@+id/localSeekBar5"
@@ -142,7 +146,8 @@
                             android:layout_weight="1"
                             android:progressDrawable="@drawable/custom_seekbar_local_green"
                             android:splitTrack="false"
-                            android:thumb="@drawable/item_custom_thumb_green" />
+                            android:thumb="@drawable/item_custom_thumb_green"
+                            />
 
                         <com.example.dipolia.presentation.utils.VerticalSeekBar
                             android:id="@+id/localSeekBar6"
@@ -152,7 +157,8 @@
                             android:layout_weight="1"
                             android:progressDrawable="@drawable/custom_seekbar_local_blue"
                             android:splitTrack="false"
-                            android:thumb="@drawable/item_custom_thumb_blue" />
+                            android:thumb="@drawable/item_custom_thumb_blue"
+                            />
 
                     </LinearLayout>
 

@@ -46,7 +46,7 @@ class UDPServer {
         }
 
     suspend fun receiveStringAndIPFromUDP(): Pair<String, InetAddress>? {
-        Log.d("UDPServer", "receiveStringAndIPFromUDP()")
+//        Log.d("UDPServer", "receiveStringAndIPFromUDP()")
 
         var socket: DatagramSocket? = null
 
@@ -54,30 +54,30 @@ class UDPServer {
             //Keep a socket open to listen to all the UDP traffic that is destined for this port
             socket = openDatagramSocket(port)
 
-            Log.d("UDPServer", "DatagramSocket($port) $socket ")
+//            Log.d("UDPServer", "DatagramSocket($port) $socket ")
             socket.broadcast = true     //Enable/disable SO_BROADCAST.
             var packet = DatagramPacket(buffer, buffer.size - 1)
             //           socket.setSoTimeout(1000);   // set the timeout in milliseconds.
-            Log.d("UDPServer", "DatagramPacket $packet ")
+//            Log.d("UDPServer", "DatagramPacket $packet ")
             var ok = true
             try {
-                Log.d("UDPServer", "try ")
+//                Log.d("UDPServer", "try ")
 
                 packet = receivePacket(socket, packet)
-                Log.d("UDPServer", "ReceivedPacket $packet ")
+//                Log.d("UDPServer", "ReceivedPacket $packet ")
 
             } catch (e: SocketTimeoutException) {
                 ok = false
                 socket.close()
-                Log.i("UDPServer", "Socket timeout")
+//                Log.i("UDPServer", "Socket timeout")
             }
 
             if (ok) {
 
                 var string = String(packet.data)
-                Log.d("UDPServer", "String $string ")
+//                Log.d("UDPServer", "String $string ")
                 string = string.substring(0, packet.length)         //что делает эта строчка?
-                Log.d("UDPServer", "substring $string ")
+                Log.d("UDPServer", "message substring $string ")
 
                 return Pair(string, packet.address)                 //will finally be executed??
             }

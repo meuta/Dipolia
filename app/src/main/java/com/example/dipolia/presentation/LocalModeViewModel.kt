@@ -9,6 +9,7 @@ import com.example.dipolia.domain.Horn
 import com.example.dipolia.domain.useCases.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class LocalModeViewModel(application: Application): AndroidViewModel(application) {

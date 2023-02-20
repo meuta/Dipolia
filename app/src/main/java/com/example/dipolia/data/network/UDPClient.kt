@@ -47,7 +47,7 @@ class UDPClient {
         callback: (DatagramPacket) -> Unit
     ) {
         socket.send(packet)
-        Log.d("UDPClient", "DatagramPacket $packet ")
+//        Log.d("UDPClient", "DatagramPacket $packet ")
         Handler(Looper.getMainLooper()).post {
             callback.invoke(packet)
         }
@@ -61,9 +61,9 @@ class UDPClient {
         }
 
     suspend fun sendUDPSuspend(messageStr: String) {
-        Log.d("UDPClient", "sendUDPSuspend($messageStr)")
+        Log.d("UDPClient", "message sendUDPSuspend($messageStr)")
         val socket = openDatagramSocket()
-        Log.d("UDPClient", "DatagramSocket($port) $socket ")
+//        Log.d("UDPClient", "DatagramSocket($port) $socket ")
 
         socket.broadcast = true
         val outgoingData = messageStr.toByteArray()
@@ -72,10 +72,10 @@ class UDPClient {
             getInetAddressByName("255.255.255.255"),
             port
         )
-        Log.d("UDPClient", "DatagramPacket $outgoingPacket ")
+//        Log.d("UDPClient", "DatagramPacket $outgoingPacket ")
 
         try {
-            Log.d("UDPClient", "try ")
+//            Log.d("UDPClient", "try ")
             sendPacket(socket, outgoingPacket)
         } catch (e: IOException) {
             //            Log.e(FragmentActivity.TAG, "IOException: " + e.message)
@@ -85,9 +85,9 @@ class UDPClient {
     suspend fun sendUDPSuspend(messageStr: String, ip: InetAddress) {
 
         try {
-            Log.d("UDPClient", "sendUDPSuspend($messageStr)")
+            Log.d("UDPClient", "message to $ip sendUDPSuspend($messageStr)")
             val socket = openDatagramSocket()
-            Log.d("UDPClient", "DatagramSocket($port) $socket ")
+//            Log.d("UDPClient", "DatagramSocket($port) $socket ")
 
             socket.broadcast = true
             val outgoingData = messageStr.toByteArray()
@@ -96,10 +96,10 @@ class UDPClient {
                 ip,
                 port
             )
-            Log.d("UDPClient", "DatagramPacket $outgoingPacket ")
+//            Log.d("UDPClient", "DatagramPacket $outgoingPacket ")
 
             try {
-                Log.d("UDPClient", "try ")
+//                Log.d("UDPClient", "try ")
                 sendPacket(socket, outgoingPacket)
             } catch (e: IOException) {
                 //            Log.e(FragmentActivity.TAG, "IOException: " + e.message)

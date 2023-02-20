@@ -8,7 +8,7 @@ data class DipolDbModel(
     @PrimaryKey
     val dipolId: String,
     val dipolIp: String,
-    var selected: Boolean,
+    var selected: Boolean = false,
     var connected: Boolean = false,
     var r1: Double = 0.0,
     var g1: Double = 0.0,

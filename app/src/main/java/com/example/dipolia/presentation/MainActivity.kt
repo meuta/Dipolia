@@ -27,21 +27,23 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupRecyclerView()
+
         localModeViewModel = ViewModelProvider(this)[LocalModeViewModel::class.java]
+
         binding.viewModel = localModeViewModel
         binding.lifecycleOwner = this
 
-        setupRecyclerView()
+        localModeViewModel.selectedDipol.observe(this) {
+            selectedDipol = it      // Created new thread
+//            Log.d("TEST_OF_SUBSCRIBE", "selectedDipol: $it")
+            setSeekbarsForSelectedDipol(it)
+        }
 
         localModeViewModel.dipolList.observe(this) {
             dipolListAdapter.submitList(it)      // Created new thread
-//            Log.d("TEST_OF_SUBSCRIBE", it.toString())
+            Log.d("TEST_OF_SUBSCRIBE", it.toString())
         }
-        localModeViewModel.selectedDipol.observe(this) {
-            selectedDipol = it      // Created new thread
-            Log.d("TEST_OF_SUBSCRIBE", "selectedDipol: $it")
-        }
-
         val dipolID = "b4e62d5316ce"
         val string = ""
 
@@ -55,12 +57,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupSeekbars()
-
+        refreshConnectedList()
     }
 
 
     private fun setupSeekbars() {
-        var seekAdapter = object :
+        val seekAdapter = object :
             SeekBar.OnSeekBarChangeListener {
             //            @RequiresApi(Build.VERSION_CODES.Q)
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
@@ -73,13 +75,13 @@ class MainActivity : AppCompatActivity() {
 
             override fun onStartTrackingTouch(seek: SeekBar) {
                 // write custom code for progress is started
-//                onUpdateSeekBar(seek)
+                onUpdateSeekBar(seek)
                 Log.d("seekAdapter", "onStartTrackingTouch ${seek.id}.")
             }
 
             override fun onStopTrackingTouch(seek: SeekBar) {
                 // write custom code for progress is stopped
-//                onUpdateSeekBar()
+                onUpdateSeekBar(seek)
                 Log.d("seekAdapter", "onStopTrackingTouch ${seek.id}")
             }
         }
@@ -132,22 +134,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
 
-        refreshConnectedList()
+//        refreshConnectedList()
 
         dipolListAdapter = DipolListAdapter()
-        with(binding.rvDipolItemList) {
-            adapter = dipolListAdapter
-
-            recycledViewPool.setMaxRecycledViews(
-                DipolListAdapter.VIEW_TYPE_SELECTED,
-                DipolListAdapter.MAX_POOL_SIZE
-            )
-            recycledViewPool.setMaxRecycledViews(
-                DipolListAdapter.VIEW_TYPE_UNSELECTED,
-                DipolListAdapter.MAX_POOL_SIZE
-            )
-        }
-
+//        with(binding.rvDipolItemList) {
+//            adapter = dipolListAdapter
+//            recycledViewPool.setMaxRecycledViews(
+//                DipolListAdapter.VIEW_TYPE_SELECTED,
+//                DipolListAdapter.MAX_POOL_SIZE
+//            )
+//            recycledViewPool.setMaxRecycledViews(
+//                DipolListAdapter.VIEW_TYPE_UNSELECTED,
+//                DipolListAdapter.MAX_POOL_SIZE
+//            )
+//        }
+        binding.rvDipolItemList.adapter = dipolListAdapter
         setupClickListener()
     }
 
@@ -155,8 +156,33 @@ class MainActivity : AppCompatActivity() {
         dipolListAdapter.onDipolItemClickListener = {
             localModeViewModel.changeSelectedDipol(it.id)
             Log.d("onDipolItemClickListener", "$it")
-
+//            setSeekbarsForSelectedDipol()
+//            setSeekbarsForSelectedDipol(it)
         }
+    }
+
+    private fun setSeekbarsForSelectedDipol(dipolDomainEntity: DipolDomainEntity?){
+//        val dipol = selectedDipol
+        Log.d("onDipolItemClickListener", "Seekbars:$dipolDomainEntity")
+        val dipol = dipolDomainEntity ?: DipolDomainEntity("","", listOf(0.0, 0.0, 0.0), listOf(0.0, 0.0, 0.0) )
+        dipol.let {
+            val progress1 = (it.c1[0]*100).toInt()
+            val progress2 = (it.c1[1]*100).toInt()
+            val progress3 = (it.c1[2]*100).toInt()
+            val progress4 = (it.c2[0]*100).toInt()
+            val progress5 = (it.c2[1]*100).toInt()
+            val progress6 = (it.c2[2]*100).toInt()
+            with(binding) {
+                localSeekBar1.progress = progress1
+                localSeekBar2.progress = progress2
+                localSeekBar3.progress = progress3
+                localSeekBar4.progress = progress4
+                localSeekBar5.progress = progress5
+                localSeekBar6.progress = progress6
+            }
+        }
+
+
     }
 
     private fun refreshConnectedList() {
