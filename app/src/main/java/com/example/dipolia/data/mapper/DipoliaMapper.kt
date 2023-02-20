@@ -11,7 +11,7 @@ class DipoliaMapper {
         Log.d("TestDipolDbModel", dipolDto.id)
         return DipolDbModel(
             dipolDto.id,
-            dipolDto.ip.toString(),
+            dipolDto.ip.toString().substring(1),
 //            0.0,
 //            0.0,
 //            0.0,

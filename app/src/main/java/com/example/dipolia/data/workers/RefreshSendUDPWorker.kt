@@ -23,57 +23,36 @@ class RefreshSendUDPWorker(
     private val sender = UDPClient()
 
     override suspend fun doWork(): Result {
-        val r1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
-//        val r1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN))
-        val g1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
-        val b1 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
-        val r2 = (BigDecimal(0.5).setScale(3, RoundingMode.HALF_DOWN)).toString()
-        val g2 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
-        val b2 = (BigDecimal(0.0).setScale(3, RoundingMode.HALF_DOWN)).toString()
+
         var rabbitColorSpeed = 0.5
 
-        val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN)).toString()
-
-        val s1: String = "r1=" + r2 + ";g1=" + r2 + ";b1=" + b1 +
-                ";r2=" + r2 + ";g2=" + g2 + ";b2=" + r2 + ";rcs=" + rcs
-
-        val s2: String = "r1=" + r1 + ";g1=" + r2 + ";b1=" + r2 +
-                ";r2=" + r2 + ";g2=" + r2 + ";b2=" + b2 + ";rcs=" + rcs
-
-        val s3: String = "r1=" + r2 + ";g1=" + g1 + ";b1=" + r2 +
-                ";r2=" + r1 + ";g2=" + r2 + ";b2=" + r2 + ";rcs=" + rcs
-
-        val s4: String = "r1=" + r2 + ";g1=" + g1 + ";b1=" + b1 +
-                ";r2=" + r1 + ";g2=" + r2 + ";b2=" + b2 + ";rcs=" + rcs
-
-        val s5: String = "r1=" + r1 + ";g1=" + r2 + ";b1=" + b1 +
-                ";r2=" + r1 + ";g2=" + g2 + ";b2=" + r2 + ";rcs=" + rcs
-
-        val s6: String = "r1=" + r1 + ";g1=" + g1 + ";b1=" + r2 +
-                ";r2=" + r2 + ";g2=" + g2 + ";b2=" + b2 + ";rcs=" + rcs
-
-        val list = arrayListOf<String>(s1, s2, s3, s4, s5, s6)
         while (true) {
-//            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.150"))
-//            sender.sendUDPSuspend(s6, sender.getInetAddressByName("192.168.0.150"))
 
-//            dipolsDao.addDipolItem(
-//                DipolDbModel(
-//                    dipolID,
-//                    "/192.168.0.150",
-//                    r1.toDouble(),
-//                    g1.toDouble(),
-//                    b1.toDouble(),
-//                    r2.toDouble(),
-//                    g2.toDouble(),
-//                    b2.toDouble()
-//                )
-//            )
+            val dipolList = dipolsDao.getDipolList()
+            for (dipol in dipolList){
+                if (dipol.connected) {
+                    Log.d("worker", "IP = ${dipol.dipolIp}")
+                    val rcs = (BigDecimal(rabbitColorSpeed).setScale(
+                        3,
+                        RoundingMode.HALF_DOWN
+                    ))
 
-            sender.sendUDPSuspend(s6, sender.getInetAddressByName("192.168.0.133"))
-////            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.127"))
-////            delay(290000)
-            delay(562563)
+                    val r1 = (BigDecimal(dipol.r1).setScale(3, RoundingMode.HALF_DOWN))
+                    val g1 = (BigDecimal(dipol.g1).setScale(3, RoundingMode.HALF_DOWN))
+                    val b1 = (BigDecimal(dipol.b1).setScale(3, RoundingMode.HALF_DOWN))
+                    val r2 = (BigDecimal(dipol.r2).setScale(3, RoundingMode.HALF_DOWN))
+                    val g2 = (BigDecimal(dipol.g2).setScale(3, RoundingMode.HALF_DOWN))
+                    val b2 = (BigDecimal(dipol.b2).setScale(3, RoundingMode.HALF_DOWN))
+
+                    val stringToSend: String = "r1=$r1;g1=$g1;b1=$b1;r2=$r2;g2=$g2;b2=$b2;rcs=$rcs"
+
+                    val address = sender.getInetAddressByName(dipol.dipolIp)
+
+                    sender.sendUDPSuspend(stringToSend, address)
+                }
+            }
+
+            delay(100)
         }
     }
 

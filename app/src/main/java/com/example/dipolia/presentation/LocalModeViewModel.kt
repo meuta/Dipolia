@@ -37,8 +37,8 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
         }
     }
 
-    fun testSendLocalModeData(dipolID: String, string: String) {
-            testSendLocalModeDataUseCase(dipolID, string)
+    fun testSendLocalModeData() {
+            testSendLocalModeDataUseCase()
     }
 
     fun changeSelectedDipol(dipolId: String){

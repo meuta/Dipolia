@@ -8,8 +8,7 @@ interface DipoliaRepository {
 
     suspend fun receiveLocalModeData()
 
-//    suspend fun testSendLocalModeData(dipolID: String, string: String)
-    fun testSendLocalModeData(dipolID: String, string: String)
+    fun testSendLocalModeData()
 
     fun getDipolList(): LiveData<List<DipolDomainEntity>>
 
@@ -21,7 +20,7 @@ interface DipoliaRepository {
 //        component: ColorComponent,
 //        componentDiff: Double
 //    )
-    suspend fun changeLocalState(index: Int, value: Double)
+    fun changeLocalState(index: Int, value: Double)
 
     suspend fun editDipolItem(dipolDomainEntity: DipolDomainEntity)
 
