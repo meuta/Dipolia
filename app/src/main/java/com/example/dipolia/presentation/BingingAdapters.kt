@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.SeekBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
@@ -16,7 +15,6 @@ import com.example.dipolia.R
 fun bindLableColor(view: View, colorList: List<Double>?) {
     Log.d("View", "colorlist $colorList $view ")
     val list = colorList ?: listOf(0.0, 0.0, 0.0)
-//    colorList?.let { view.setBackgroundColor(Color.parseColor(colorToUI(colorList))) }
      view.setBackgroundColor(Color.parseColor(colorToUI(list)))
 }
 

@@ -42,10 +42,8 @@ class MainActivity : AppCompatActivity() {
 
         localModeViewModel.dipolList.observe(this) {
             dipolListAdapter.submitList(it)      // Created new thread
-            Log.d("TEST_OF_SUBSCRIBE", it.toString())
+            Log.d("localModeViewModel.testSendLocalModeData(dipolID, string)", it.toString())
         }
-        val dipolID = "b4e62d5316ce"
-        val string = ""
 
         binding.btnTest.setOnClickListener {
 //            localModeViewModel.testSendLocalModeData(dipolID, string)
@@ -57,7 +55,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupSeekbars()
-        refreshConnectedList()
+//        refreshConnectedList()
+        localModeViewModel.testSendLocalModeData()
     }
 
 
