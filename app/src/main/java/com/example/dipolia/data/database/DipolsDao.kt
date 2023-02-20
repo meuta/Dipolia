@@ -30,6 +30,8 @@ interface DipolsDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateDipolItem(dipolItemBbModel: DipolDbModel)
 
+//    @Query("")
+
 //    @Update(onConflict = OnConflictStrategy.REPLACE)
 //    fun refreshConnectedList(dipolListBbModel: List<DipolDbModel>)
 }

@@ -194,17 +194,20 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
     override fun selectDipolItem(dipolId: String) {
 
         var oldSelectedItem = dipolsDao.getSelectedDipolItem(true)
-        Log.d("selectDipolItem", " oldSelectedItem: ${oldSelectedItem?.dipolId}")
+        Log.d("onDipolItemClickListener", " oldSelectedItem: ${oldSelectedItem?.dipolId}")
 
         var newSelectedItem = dipolsDao.getDipolItemById(dipolId)
-        Log.d("selectDipolItem", " newSelectedItem: ${newSelectedItem.dipolId}")
+        Log.d("onDipolItemClickListener", " newSelectedItem: ${newSelectedItem.dipolId}")
 
         if (oldSelectedItem?.dipolId != newSelectedItem.dipolId) {
             oldSelectedItem = oldSelectedItem?.copy(selected = false)
+            Log.d("onDipolItemClickListener", " oldSelectedItemCopied: ${oldSelectedItem?.dipolId}")
+
             oldSelectedItem?.let {
                 dipolsDao.updateDipolItem(it)
             }
             newSelectedItem = newSelectedItem.copy(selected = true)
+            Log.d("onDipolItemClickListener", " newSelectedItemCopied: ${newSelectedItem.dipolId}")
             dipolsDao.updateDipolItem(newSelectedItem)
         }
     }

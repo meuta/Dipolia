@@ -54,7 +54,8 @@ class RefreshSendUDPWorker(
 
         val list = arrayListOf<String>(s1, s2, s3, s4, s5, s6)
         while (true) {
-            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.150"))
+//            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.150"))
+//            sender.sendUDPSuspend(s6, sender.getInetAddressByName("192.168.0.150"))
 
 //            dipolsDao.addDipolItem(
 //                DipolDbModel(
@@ -69,10 +70,10 @@ class RefreshSendUDPWorker(
 //                )
 //            )
 
-            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.133"))
-//            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.127"))
-//            delay(290000)
-            delay(2563)
+            sender.sendUDPSuspend(s6, sender.getInetAddressByName("192.168.0.133"))
+////            sender.sendUDPSuspend(list.random(), sender.getInetAddressByName("192.168.0.127"))
+////            delay(290000)
+            delay(562563)
         }
     }
 

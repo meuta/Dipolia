@@ -31,7 +31,7 @@
                     android:id="@+id/tvItem"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/colorAccent"
+                    app:selectedBackground="@{dipolItem.selected}"
                     android:gravity="center"
                     android:padding="10dp"
                     android:textColor="@color/colorHighlighted"
@@ -44,8 +44,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="2dp"
+                    app:selectedVisibility="@{dipolItem.selected}"
+                    android:visibility="gone"
                     android:background="@drawable/item_selected_background"
-                    android:visibility="visible"
                     tools:visibility="visible" />
             </FrameLayout>
 
