@@ -13,7 +13,7 @@ interface DipolsDao {
     fun getDipolList(): List<DipolDbModel>
 
     @Query("SELECT * FROM dipols WHERE dipolId=:dipolItemId LIMIT 1")
-    fun getDipolItemById(dipolItemId: String): DipolDbModel
+    fun getDipolItemById(dipolItemId: String): DipolDbModel?
 
     @Query("SELECT * FROM dipols WHERE selected=:selected LIMIT 1")
     fun getSelectedDipolItem(selected: Boolean): DipolDbModel?

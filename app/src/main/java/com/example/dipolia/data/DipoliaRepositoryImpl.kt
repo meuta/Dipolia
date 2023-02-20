@@ -43,7 +43,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
             Log.d("UDP receiveLocalModeData", "Pair received: $receivedDipolData")
 
             receivedDipolData?.let {
-                Log.d("UDP receiveLocalModeData", "let")
+//                Log.d("UDP receiveLocalModeData", "let")
 
 //                val ar = it.split(" ")
                 val ar = it.first.split(" ")
@@ -56,7 +56,9 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
                         if (i.id == id) {
 // connected list control:
                             val myDipol = dipolsDao.getDipolItemById(id)
-                            dipolsDao.updateDipolItem(myDipol.copy(connected = true))
+                            myDipol?.let { dipol ->
+                                dipolsDao.updateDipolItem(dipol.copy(connected = true))
+                            }
 
                             already = 1
                             break
@@ -73,7 +75,18 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
                         dipolListDto.add(dipolDto)
                         Log.d("UDP receiveLocalModeData", "dipol $dipolDto added")
                         Log.d("UDP receiveLocalModeData", "dipolListDto $dipolListDto")
-                        dipolsDao.addDipolItem(mapper.mapDtoToDbModel(dipolDto))
+
+                        val itemToAdd = mapper.mapDtoToDbModel(dipolDto)
+                        Log.d("UDP receiveLocalModeData", "itemToAdd = $itemToAdd")
+                        val itemFromDb = dipolsDao.getDipolItemById(dipolDto.id)
+                        Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
+                        if (itemFromDb == null){
+                            dipolsDao.addDipolItem(itemToAdd)
+                        } else{
+                            val itemToAddFromDb = itemFromDb.copy(connected = true)
+                            Log.d("UDP receiveLocalModeData", "itemToAddFromDb = $itemToAddFromDb")
+                            dipolsDao.addDipolItem(itemToAddFromDb)
+                        }
 
                     }
                 }
@@ -82,13 +95,23 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
     }
 
     override suspend fun refreshConnectedList() {
-        val notConnectedList = dipolsDao.getDipolList()
-        val refreshedList = notConnectedList
-            .filter { it.connected }
-            .map{ it.copy(connected = false) }
-        for (dipol in refreshedList) {
-            dipolsDao.updateDipolItem(dipol)
+        while (true) {
+            val notConnectedList = dipolsDao.getDipolList()
+            val refreshedList = notConnectedList
+                .filter { it.connected }
+                .map { it.copy(connected = false) }
+            for (dipol in refreshedList) {
+                dipolsDao.updateDipolItem(dipol)
+            }
+            delay(60000)
         }
+//        val notConnectedList = dipolsDao.getDipolList()
+//            val refreshedList = notConnectedList
+//                .filter { it.connected }
+//                .map { it.copy(connected = false) }
+//            for (dipol in refreshedList) {
+//                dipolsDao.updateDipolItem(dipol)
+//            }
     }
 
     override fun getSelectedDipol(): LiveData<DipolDomainEntity?> {
@@ -141,18 +164,23 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
         Log.d("onDipolItemClickListener", " oldSelectedItem: ${oldSelectedItem?.dipolId}")
 
         var newSelectedItem = dipolsDao.getDipolItemById(dipolId)
-        Log.d("onDipolItemClickListener", " newSelectedItem: ${newSelectedItem.dipolId}")
+        Log.d("onDipolItemClickListener", " newSelectedItem: ${newSelectedItem?.dipolId}")
 
-        if (oldSelectedItem?.dipolId != newSelectedItem.dipolId) {
+        if (oldSelectedItem?.dipolId != newSelectedItem?.dipolId) {
             oldSelectedItem = oldSelectedItem?.copy(selected = false)
             Log.d("onDipolItemClickListener", " oldSelectedItemCopied: ${oldSelectedItem?.dipolId}")
 
             oldSelectedItem?.let {
                 dipolsDao.updateDipolItem(it)
             }
-            newSelectedItem = newSelectedItem.copy(selected = true)
-            Log.d("onDipolItemClickListener", " newSelectedItemCopied: ${newSelectedItem.dipolId}")
-            dipolsDao.updateDipolItem(newSelectedItem)
+            newSelectedItem?.let {
+                val newSelected = it.copy(selected = true)
+                Log.d(
+                    "onDipolItemClickListener",
+                    " newSelectedItemCopied: ${newSelected.dipolId}"
+                )
+                dipolsDao.updateDipolItem(newSelected)
+            }
         }
     }
 

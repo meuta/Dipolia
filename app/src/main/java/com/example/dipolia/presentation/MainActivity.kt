@@ -57,6 +57,8 @@ class MainActivity : AppCompatActivity() {
         setupSeekbars()
 //        refreshConnectedList()
         localModeViewModel.testSendLocalModeData()
+        refreshConnectedList()
+
     }
 
 

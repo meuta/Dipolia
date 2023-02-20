@@ -35,6 +35,7 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
         scope.launch{
             receiveLocalModeDataUseCase ()
         }
+
     }
 
     fun testSendLocalModeData() {
