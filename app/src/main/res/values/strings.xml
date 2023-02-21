@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Dipolia</string>
     <string name="test_btn">TEST</string>
-    <string name="refresh_list_btn">REFRESH\nLIST</string>
+    <string name="refresh_list_btn">REMOVE\nNOT\nCONNECTED\nDIPOLS</string>
+    <string name="please_select_the_dipol">please select the dipol</string>
 </resources>

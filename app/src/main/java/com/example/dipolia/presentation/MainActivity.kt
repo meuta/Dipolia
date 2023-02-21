@@ -7,6 +7,7 @@ import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.dipolia.databinding.ActivityLocalModeBinding
 import com.example.dipolia.databinding.ActivityMainBinding
 import com.example.dipolia.domain.DipolDomainEntity
 import com.example.dipolia.presentation.adaptes.DipolListAdapter
@@ -15,7 +16,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var localModeViewModel: LocalModeViewModel
 
-    private lateinit var binding: ActivityMainBinding
+//    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityLocalModeBinding
 
     private lateinit var dipolListAdapter: DipolListAdapter
 
@@ -24,7 +26,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+//        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityLocalModeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupRecyclerView()
@@ -45,10 +48,10 @@ class MainActivity : AppCompatActivity() {
             Log.d("localModeViewModel.testSendLocalModeData(dipolID, string)", it.toString())
         }
 
-        binding.btnTest.setOnClickListener {
-//            localModeViewModel.testSendLocalModeData(dipolID, string)
-            Toast.makeText(this, "TEST doesn't work now..", Toast.LENGTH_SHORT).show()
-        }
+//        binding.btnTest.setOnClickListener {
+////            localModeViewModel.testSendLocalModeData(dipolID, string)
+//            Toast.makeText(this, "TEST doesn't work now..", Toast.LENGTH_SHORT).show()
+//        }
 
         binding.btnRefreshList.setOnClickListener {
             refreshConnectedList()
@@ -57,7 +60,7 @@ class MainActivity : AppCompatActivity() {
         setupSeekbars()
 //        refreshConnectedList()
         localModeViewModel.testSendLocalModeData()
-        refreshConnectedList()
+//        refreshConnectedList()
 
     }
 

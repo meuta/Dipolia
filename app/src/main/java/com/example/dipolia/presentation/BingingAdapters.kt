@@ -3,12 +3,12 @@ package com.example.dipolia.presentation
 import android.graphics.Color
 import android.util.Log
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.example.dipolia.R
+import com.example.dipolia.domain.DipolDomainEntity
 
 
 @BindingAdapter("lableColor")
@@ -44,9 +44,18 @@ fun setSelectedVisibility(view: View, isSelected: Boolean){
     if (isSelected) {
         view.visibility = VISIBLE
     } else {
-        view.visibility = GONE
+        view.visibility = INVISIBLE
     }
 }
+@BindingAdapter("selectedButtonRemoveVisibility")
+fun setSelectedButtonRemoveVisibility(textView: TextView, list: List<DipolDomainEntity>?){
+    if (list != null && list.isNotEmpty()) {
+        textView.visibility = VISIBLE
+    } else {
+        textView.visibility = INVISIBLE
+    }
+}
+
 
 //@BindingAdapter("progressValue")
 //fun bindProgressValue(seekBar: SeekBar, colorValue:Double?) {
