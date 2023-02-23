@@ -23,6 +23,7 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
     private val refreshConnectedListUseCase = RefreshConnectedListUseCase(repository)
     private val changeLocalStateUseCase = ChangeLocalStateUseCase(repository)
     private val getSelectedDipolUseCase = GetSelectedDipolUseCase(repository)
+    private val unselectDipolUseCase = UnselectDipolUseCase(repository)
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -35,7 +36,6 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
         scope.launch{
             receiveLocalModeDataUseCase ()
         }
-
     }
 
     fun testSendLocalModeData() {
@@ -63,6 +63,12 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
     fun changeLocalState(index: Int, componentValue: Double){
         scope.launch {
             changeLocalStateUseCase(index, componentValue)
+        }
+    }
+
+    fun unselectDipol(){
+        scope.launch {
+            unselectDipolUseCase()
         }
     }
 

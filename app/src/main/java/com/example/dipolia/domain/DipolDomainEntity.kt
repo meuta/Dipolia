@@ -13,6 +13,7 @@ data class DipolDomainEntity(
     var last_set_c1: List<Double?>? = null,
     var last_set_c2: List<Double?>? = null,
 
-    var selected: Boolean = false
+    var selected: Boolean = false,
+    var connected : Boolean = false
 
 )

@@ -30,7 +30,8 @@ class DipoliaMapper {
         c2 = listOf(dipolDbModel.r2, dipolDbModel.g2, dipolDbModel.b2),
 //        c1 = dipolDbModel.colorSet[0],
 //        c2 = dipolDbModel.colorSet[0],
-        selected = dipolDbModel.selected
+        selected = dipolDbModel.selected,
+        connected = dipolDbModel.connected
     ).also {
         Log.d("mapDbModelToEntity", "$it")
     }

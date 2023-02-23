@@ -57,6 +57,10 @@ class MainActivity : AppCompatActivity() {
             refreshConnectedList()
         }
 
+        binding.btnUnselect.setOnClickListener {
+            localModeViewModel.unselectDipol()
+        }
+
         setupSeekbars()
 //        refreshConnectedList()
         localModeViewModel.testSendLocalModeData()

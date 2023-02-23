@@ -32,4 +32,6 @@ interface DipoliaRepository {
 
     fun getSelectedDipol(): LiveData<DipolDomainEntity?>
 
+    fun unselectDipol()
+
 }

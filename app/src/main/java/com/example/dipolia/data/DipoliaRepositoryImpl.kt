@@ -124,6 +124,11 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 //        return dipolsDao.getSelectedDipolItemLD(true)
     }
 
+    override fun unselectDipol() {
+        val selectedDipol = dipolsDao.getSelectedDipolItem(true)
+        selectedDipol?.let { dipolsDao.updateDipolItem(it.copy(selected = false)) }
+    }
+
 
     override fun testSendLocalModeData() {
 
@@ -160,7 +165,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 
     override fun selectDipolItem(dipolId: String) {
 
-        var oldSelectedItem = dipolsDao.getSelectedDipolItem(true)
+        val oldSelectedItem = dipolsDao.getSelectedDipolItem(true)
         Log.d("onDipolItemClickListener", " oldSelectedItem: ${oldSelectedItem?.dipolId}")
 
         val newSelectedItem = dipolsDao.getDipolItemById(dipolId)

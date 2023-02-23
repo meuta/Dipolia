@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.util.Log
 import android.view.View
 import android.view.View.*
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
@@ -47,12 +48,31 @@ fun setSelectedVisibility(view: View, isSelected: Boolean){
         view.visibility = INVISIBLE
     }
 }
+
+@BindingAdapter("selectedDipolControlLayoutVisibility")
+fun setSelectedDipolLayoutVisibility(view: View, isConnected: Boolean){
+    if (isConnected) {
+        view.visibility = VISIBLE
+    } else {
+        view.visibility = INVISIBLE
+    }
+}
+
 @BindingAdapter("selectedButtonRemoveVisibility")
 fun setSelectedButtonRemoveVisibility(textView: TextView, list: List<DipolDomainEntity>?){
     if (list != null && list.isNotEmpty()) {
         textView.visibility = VISIBLE
     } else {
         textView.visibility = INVISIBLE
+    }
+}
+
+@BindingAdapter("selectedDipolFrameLayoutVisibility")
+fun setSelectedDipolAllLayoutVisibility(layout: FrameLayout, list: List<DipolDomainEntity>?){
+    if (list != null && list.isNotEmpty()) {
+        layout.visibility = VISIBLE
+    } else {
+        layout.visibility = INVISIBLE
     }
 }
 
