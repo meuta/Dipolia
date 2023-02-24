@@ -19,7 +19,6 @@ class RefreshSendUDPWorker(
 ) : CoroutineWorker(context, workerParameters) {
 
     private val dipolsDao = AppDatabase.getInstance(context).dipolsDao()
-    private val mapper = DipoliaMapper()
     private val sender = UDPClient()
 
     override suspend fun doWork(): Result {

@@ -36,4 +36,9 @@ interface DipoliaRepository {
 
     suspend fun dipolsConnectionMonitoring()
 
+//    fun workerStartStop()
+    fun workerStartStop()
+
+    fun getIsBroadcast(): LiveData<Boolean>
+
 }

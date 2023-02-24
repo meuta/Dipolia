@@ -12,12 +12,6 @@ class DipoliaMapper {
         return DipolDbModel(
             dipolDto.id,
             dipolDto.ip.toString().substring(1),
-//            0.0,
-//            0.0,
-//            0.0,
-//            0.0,
-//            0.0,
-//            0.0
             selected = false,
             connected = true
         )
@@ -28,8 +22,6 @@ class DipoliaMapper {
         ip = dipolDbModel.dipolIp,
         c1 = listOf(dipolDbModel.r1, dipolDbModel.g1, dipolDbModel.b1),
         c2 = listOf(dipolDbModel.r2, dipolDbModel.g2, dipolDbModel.b2),
-//        c1 = dipolDbModel.colorSet[0],
-//        c2 = dipolDbModel.colorSet[0],
         selected = dipolDbModel.selected,
         connected = dipolDbModel.connected
     ).also {

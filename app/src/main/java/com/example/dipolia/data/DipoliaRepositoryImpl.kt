@@ -97,16 +97,6 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
     }
 
     override suspend fun refreshConnectedList() {
-//        while (true) {
-//            val notConnectedList = dipolsDao.getDipolList()
-//            val refreshedList = notConnectedList
-//                .filter { it.connected }
-//                .map { it.copy(connected = false) }
-//            for (dipol in refreshedList) {
-//                dipolsDao.updateDipolItem(dipol)
-//            }
-//            delay(60000)
-//        }
         val notConnectedList = dipolsDao.getDipolList()
             val refreshedList = notConnectedList
                 .filter { it.connected }
@@ -127,19 +117,49 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 
     }
 
+
+
     override fun getSelectedDipol(): LiveData<DipolDomainEntity?> {
         return Transformations.map(dipolsDao.getSelectedDipolItemLD(true)) { it ->
-//            it ?: DipolDbModel("", "", false, false)
             it?.let {
                 mapper.mapDbModelToEntity(it)
             }
         }
-//        return dipolsDao.getSelectedDipolItemLD(true)
     }
 
     override fun unselectDipol() {
         val selectedDipol = dipolsDao.getSelectedDipolItem(true)
         selectedDipol?.let { dipolsDao.updateDipolItem(it.copy(selected = false)) }
+    }
+
+
+    override fun workerStartStop() {
+        val workManager = WorkManager.getInstance(application)
+        val infoLF = workManager.getWorkInfosForUniqueWork(RefreshSendUDPWorker.WORK_NAME)
+
+        val workerState = infoLF.get()[0].state.toString()
+        Log.d("onClick workerStartStop", "state = $workerState")
+        if (workerState == "RUNNING") {
+            Log.d("onClick workerStartStop", "workerState == \"RUNNING\"")
+            workManager.cancelAllWork()
+        }else{
+            Log.d("onClick workerStartStop", "workerState == \"CANCELED\"")
+            workManager.enqueueUniqueWork(
+                RefreshSendUDPWorker.WORK_NAME,
+                ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
+                RefreshSendUDPWorker.makeRequest()
+            )
+        }
+
+    }
+
+    override fun getIsBroadcast(): LiveData<Boolean> {
+        val workManager = WorkManager.getInstance(application)
+        val infoLD = workManager.getWorkInfosForUniqueWorkLiveData(RefreshSendUDPWorker.WORK_NAME)
+        return Transformations.map(infoLD){
+            it[0].state.toString() == "RUNNING"
+        }
+
     }
 
 
@@ -182,17 +202,10 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 
         if (oldSelectedItem?.dipolId != newSelectedItem?.dipolId) {
 
-//            Log.d("onDipolItemClickListener", " oldSelectedItemCopied: ${oldSelectedItem?.dipolId}")
-
             oldSelectedItem?.let {
                 dipolsDao.updateDipolItem(it.copy(selected = false))
             }
             newSelectedItem?.let {
-//                val newSelected = it.copy(selected = true)
-//                Log.d(
-//                    "onDipolItemClickListener",
-//                    " newSelectedItemCopied: ${newSelected.dipolId}"
-//                )
                 dipolsDao.updateDipolItem(it.copy(selected = true))
             }
         }

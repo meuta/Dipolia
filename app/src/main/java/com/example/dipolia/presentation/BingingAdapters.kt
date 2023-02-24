@@ -77,6 +77,14 @@ fun setSelectedDipolAllLayoutVisibility(layout: FrameLayout, list: List<DipolDom
 }
 
 
+@BindingAdapter("workerButtonText")
+fun setWorkerButtonText(textView: TextView, isRunning: Boolean){
+    if (isRunning) {
+        textView.text = textView.context.getString(R.string.background_work_stop)
+    } else {
+        textView.text = textView.context.getString(R.string.background_work_start)
+    }
+}
 //@BindingAdapter("progressValue")
 //fun bindProgressValue(seekBar: SeekBar, colorValue:Double?) {
 //    Log.d("progressValue", "$colorValue")

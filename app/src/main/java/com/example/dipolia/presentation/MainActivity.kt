@@ -3,8 +3,11 @@ package com.example.dipolia.presentation
 import android.os.Bundle
 import android.util.Log
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.WorkManager
+import com.example.dipolia.data.workers.RefreshSendUDPWorker
 import com.example.dipolia.databinding.ActivityLocalModeBinding
 import com.example.dipolia.domain.DipolDomainEntity
 import com.example.dipolia.presentation.adaptes.DipolListAdapter
@@ -38,9 +41,12 @@ class MainActivity : AppCompatActivity() {
             setSeekbarsForSelectedDipol(it)
         }
 
+        localModeViewModel.isBackGroundWork.observe(this) {
+            Log.d("init", "fromMain: $it")
+        }
+
         localModeViewModel.dipolList.observe(this) {
             dipolListAdapter.submitList(it)      // Created new thread
-            Log.d("localModeViewModel.testSendLocalModeData(dipolID, string)", it.toString())
         }
 
         binding.btnRefreshList.setOnClickListener {
@@ -51,8 +57,13 @@ class MainActivity : AppCompatActivity() {
             localModeViewModel.unselectDipol()
         }
 
+        binding.btnBackgroundWork.setOnClickListener {
+            localModeViewModel.workerStartStop()
+//            Toast.makeText(this, "This button doesn't work now..", Toast.LENGTH_SHORT).show()
+        }
+
         setupSeekbars()
-        localModeViewModel.testSendLocalModeData()
+//        localModeViewModel.testSendLocalModeData()
 
     }
 

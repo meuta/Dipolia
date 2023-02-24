@@ -236,7 +236,8 @@
                 android:textSize="10sp"
                 android:text="@string/refresh_list_btn"
                 android:textColor="@color/colorHighlighted"
-                />
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            />
 
             <TextView
                 android:id="@+id/btn_unselect"
@@ -251,8 +252,26 @@
                 android:textSize="10sp"
                 android:text="@string/unselect_dipol"
                 android:textColor="@color/colorHighlighted"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+
                 />
 
+            <TextView
+                android:id="@+id/btn_background_work"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/gray"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="5dp"
+                android:layout_marginHorizontal="5dp"
+                android:textSize="10sp"
+                app:workerButtonText="@{viewModel.isBackGroundWork()}"
+                android:text="@string/background_work_start"
+                android:textColor="@color/colorHighlighted"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+
+                />
 
         </LinearLayout>
         <View

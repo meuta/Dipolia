@@ -4,4 +4,6 @@
     <string name="refresh_list_btn">REMOVE\nNOT\nCONNECTED\nDIPOLS</string>
     <string name="please_select_the_dipol">please select the dipol</string>
     <string name="unselect_dipol">UNSELECT\nDIPOL</string>
+    <string name="background_work_start">START\nBROADCAST</string>
+    <string name="background_work_stop">STOP\nBROADCAST</string>
 </resources>
