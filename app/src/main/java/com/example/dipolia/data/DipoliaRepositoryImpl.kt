@@ -30,7 +30,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
     override suspend fun sendFollowMe() {
         while (true) {
             sender.sendUDPSuspend("Follow me")
-            delay(500)
+            delay(100)
         }
     }
 
@@ -164,7 +164,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
         override fun getConnectedDipolList(): LiveData<List<DipolDomainEntity>> {
         Log.d("getDipolList", "were here")
 
-        return Transformations.map(dipolsDao.getConnectedDipolListLD(true)) { it ->
+        return Transformations.map(dipolsDao.getConnectedDipolListLD()) { it ->
             Log.d("getDipolList", "$it")
             it.map{
                 mapper.mapDbModelToEntity(it)

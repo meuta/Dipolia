@@ -3,13 +3,9 @@ package com.example.dipolia.presentation
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.example.dipolia.data.DipoliaRepositoryImpl
-import com.example.dipolia.domain.ColorComponent
-import com.example.dipolia.domain.DipolDomainEntity
-import com.example.dipolia.domain.Horn
 import com.example.dipolia.domain.useCases.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class LocalModeViewModel(application: Application): AndroidViewModel(application) {
@@ -75,6 +71,5 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
             unselectDipolUseCase()
         }
     }
-
 
 }

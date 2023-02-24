@@ -6,10 +6,10 @@ import androidx.room.*
 @Dao
 interface DipolsDao {
 
-    @Query("SELECT * FROM dipols WHERE connected =:connected")
-    fun getConnectedDipolListLD(connected: Boolean): LiveData<List<DipolDbModel>>
+    @Query("SELECT * FROM dipols WHERE connected")
+    fun getConnectedDipolListLD(): LiveData<List<DipolDbModel>>
 
-    @Query("SELECT * FROM dipols WHERE lastConnection < strftime('%s','now') - 15 ")
+    @Query("SELECT * FROM dipols WHERE lastConnection < strftime('%s','now') - 5 ")
     fun getNotConnectedDipolList(): List<DipolDbModel>
 
     @Query("SELECT * FROM dipols")
