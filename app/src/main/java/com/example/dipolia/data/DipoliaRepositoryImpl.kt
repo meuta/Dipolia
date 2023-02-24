@@ -30,7 +30,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
     override suspend fun sendFollowMe() {
         while (true) {
             sender.sendUDPSuspend("Follow me")
-            delay(1000)
+            delay(500)
         }
     }
 
@@ -57,7 +57,9 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 // connected list control:
                             val myDipol = dipolsDao.getDipolItemById(id)
                             myDipol?.let { dipol ->
-                                dipolsDao.updateDipolItem(dipol.copy(connected = true))
+                                val timeString = System.currentTimeMillis()/1000
+                                dipolsDao.updateDipolItem(dipol.copy(connected = true, lastConnection = timeString))
+                                Log.d("dipolsDao.updateDipolItem","${dipol.dipolId} ${dipol.connected} ${dipol.lastConnection}")
                             }
 
                             already = 1
@@ -114,6 +116,17 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
             }
     }
 
+    override suspend fun dipolsConnectionMonitoring() {
+        while (true) {
+            val notConnectedList = dipolsDao.getNotConnectedDipolList()
+            for (dipol in notConnectedList){
+                dipolsDao.updateDipolItem(dipol.copy(connected = false))
+            }
+            delay(1000)
+        }
+
+    }
+
     override fun getSelectedDipol(): LiveData<DipolDomainEntity?> {
         return Transformations.map(dipolsDao.getSelectedDipolItemLD(true)) { it ->
 //            it ?: DipolDbModel("", "", false, false)
@@ -148,18 +161,14 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
     }
 
 
-        override fun getDipolList(): LiveData<List<DipolDomainEntity>> {
+        override fun getConnectedDipolList(): LiveData<List<DipolDomainEntity>> {
         Log.d("getDipolList", "were here")
 
-        return Transformations.map(dipolsDao.getDipolListLD(true)) { it ->
+        return Transformations.map(dipolsDao.getConnectedDipolListLD(true)) { it ->
             Log.d("getDipolList", "$it")
-//            it
-//            mapper.mapListDbModelToEntity(it)
             it.map{
                 mapper.mapDbModelToEntity(it)
-//                mapper.mapDbModelToEntity(it.copy(connected = false))
             }
-
         }
     }
 

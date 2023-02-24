@@ -24,6 +24,7 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
     private val changeLocalStateUseCase = ChangeLocalStateUseCase(repository)
     private val getSelectedDipolUseCase = GetSelectedDipolUseCase(repository)
     private val unselectDipolUseCase = UnselectDipolUseCase(repository)
+    private val dipolsConnectionMonitoringUseCase = DipolsConnectionMonitoringUseCase(repository)
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -35,6 +36,9 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
         }
         scope.launch{
             receiveLocalModeDataUseCase ()
+        }
+        scope.launch{
+            dipolsConnectionMonitoringUseCase ()
         }
     }
 

@@ -10,7 +10,7 @@ interface DipoliaRepository {
 
     fun testSendLocalModeData()
 
-    fun getDipolList(): LiveData<List<DipolDomainEntity>>
+    fun getConnectedDipolList(): LiveData<List<DipolDomainEntity>>
 
     fun selectDipolItem(dipolId: String)
 
@@ -33,5 +33,7 @@ interface DipoliaRepository {
     fun getSelectedDipol(): LiveData<DipolDomainEntity?>
 
     fun unselectDipol()
+
+    suspend fun dipolsConnectionMonitoring()
 
 }
