@@ -54,6 +54,13 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
         }
     }
 
+    fun selectFiveLights(fiveLightsId: String){
+        scope.launch {
+            selectDipolUseCase(fiveLightsId)
+        }
+    }
+
+
     fun refreshConnectedList() {
         scope.launch {
             refreshConnectedListUseCase()
@@ -66,9 +73,9 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
 //        component: ColorComponent,
 //        componentDiff: Double
 //    ) {
-    fun changeLocalState(index: Int, componentValue: Double){
+    fun changeLocalState(set: String, index: Int, componentValue: Double){
         scope.launch {
-            changeLocalStateUseCase(index, componentValue)
+            changeLocalStateUseCase(set, index, componentValue)
         }
     }
 

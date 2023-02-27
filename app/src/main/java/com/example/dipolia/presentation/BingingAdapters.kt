@@ -6,11 +6,16 @@ import android.view.View
 import android.view.View.*
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.example.dipolia.R
 import com.example.dipolia.domain.DipolDomainEntity
 
+
+interface OnFiveLightsClickListener{
+    fun onClick(id: String)
+}
 
 @BindingAdapter("lableColor")
 fun bindLableColor(view: View, colorList: List<Double>?) {
@@ -85,6 +90,16 @@ fun setWorkerButtonText(textView: TextView, isRunning: Boolean){
         textView.text = textView.context.getString(R.string.background_work_start)
     }
 }
+
+
+@BindingAdapter("onFiveLightsClickListener")
+fun bindOnFiveLightsClickListener(textView: TextView, clickListener: OnFiveLightsClickListener){
+    textView.setOnClickListener {
+        clickListener.onClick(textView.text.toString())
+    }
+}
+
+
 //@BindingAdapter("progressValue")
 //fun bindProgressValue(seekBar: SeekBar, colorValue:Double?) {
 //    Log.d("progressValue", "$colorValue")

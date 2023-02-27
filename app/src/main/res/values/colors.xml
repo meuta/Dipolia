@@ -35,6 +35,12 @@
     <color name="colorSeekbarThumbBlue">#2121C3</color>
     <color name="colorSeekbarProgressBlue">#8F171D76</color>
 
+    <color name="colorSeekbarThumbWhite">#EDCBCBC0</color>
+    <color name="colorSeekbarProgressWhite">#8F979784</color>
+
+    <color name="colorSeekbarThumbUltraViolet">#451D86</color>
+    <color name="colorSeekbarProgressUltraViolet">#8F311A4D</color>
+
     <color name="coloLocalItemBackground">#626262</color>
 
 

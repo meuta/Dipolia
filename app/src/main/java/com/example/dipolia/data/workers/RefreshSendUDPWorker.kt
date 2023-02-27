@@ -47,6 +47,29 @@ class RefreshSendUDPWorker(
                     sender.sendUDPSuspend(stringToSend, address)
                 }
             }
+            val fiveLigths = dipolsDao.getFiveLightsItemById("b4e62d52abc2")
+            fiveLigths?.let {
+                if (fiveLigths.connected) {
+                    Log.d("worker", "IP = ${fiveLigths.fiveLightsIp}")
+                    val rcs = (BigDecimal(rabbitColorSpeed).setScale(
+                        3,
+                        RoundingMode.HALF_DOWN
+                    ))
+
+                    val r = (BigDecimal(fiveLigths.r).setScale(3, RoundingMode.HALF_DOWN))
+                    val g = (BigDecimal(fiveLigths.g).setScale(3, RoundingMode.HALF_DOWN))
+                    val b = (BigDecimal(fiveLigths.b).setScale(3, RoundingMode.HALF_DOWN))
+                    val w = (BigDecimal(fiveLigths.w).setScale(3, RoundingMode.HALF_DOWN))
+                    val u = (BigDecimal(fiveLigths.uv).setScale(3, RoundingMode.HALF_DOWN))
+
+
+                    val stringToSend: String = "r=$r;g=$g;b=$b;w=$w;u=$u;rcs=$rcs"
+
+                    val address = sender.getInetAddressByName(fiveLigths.fiveLightsIp)
+
+                    sender.sendUDPSuspend(stringToSend, address)
+                }
+            }
 
             delay(100)
         }

@@ -10,6 +10,7 @@ import androidx.work.WorkManager
 import com.example.dipolia.data.workers.RefreshSendUDPWorker
 import com.example.dipolia.databinding.ActivityLocalModeBinding
 import com.example.dipolia.domain.DipolDomainEntity
+import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.presentation.adaptes.DipolListAdapter
 
 class MainActivity : AppCompatActivity() {
@@ -21,7 +22,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dipolListAdapter: DipolListAdapter
 
     private lateinit var seekBarList: List<SeekBar>
+    private lateinit var seekBarFiveLightsList: List<SeekBar>
     private var selectedDipol: DipolDomainEntity? = null
+    private var fiveLightsDomainEntity: FiveLightsDomainEntity? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
 
         localModeViewModel.selectedDipol.observe(this) {
-            selectedDipol = it      // Created new thread
+            selectedDipol = it
 //            Log.d("TEST_OF_SUBSCRIBE", "selectedDipol: $it")
             setSeekbarsForSelectedDipol(it)
         }
@@ -51,6 +54,7 @@ class MainActivity : AppCompatActivity() {
 
         localModeViewModel.fiveLights.observe(this) {
             Log.d("TEST_OF_SUBSCRIBE", "fiveLights: $it")
+            fiveLightsDomainEntity = it
         }
 
         binding.btnRefreshList.setOnClickListener {
@@ -106,8 +110,16 @@ class MainActivity : AppCompatActivity() {
             localSeekBar6.setOnSeekBarChangeListener(seekAdapter)
             seekBarList = listOf(localSeekBar1, localSeekBar2, localSeekBar3,localSeekBar4, localSeekBar5, localSeekBar6)
 
+            localSeekBarFiveLights1.setOnSeekBarChangeListener(seekAdapter)
+            localSeekBarFiveLights2.setOnSeekBarChangeListener(seekAdapter)
+            localSeekBarFiveLights3.setOnSeekBarChangeListener(seekAdapter)
+            localSeekBarFiveLights4.setOnSeekBarChangeListener(seekAdapter)
+            localSeekBarFiveLights5.setOnSeekBarChangeListener(seekAdapter)
+            seekBarFiveLightsList = listOf(localSeekBarFiveLights1, localSeekBarFiveLights2, localSeekBarFiveLights3,localSeekBarFiveLights4, localSeekBarFiveLights5)
+
         }
         Log.d("setupSeekbars", "seekBarList $seekBarList")
+        Log.d("setupSeekbars", "seekBarFiveLightsList $seekBarFiveLightsList")
     }
 
 
@@ -118,8 +130,10 @@ class MainActivity : AppCompatActivity() {
 
         val valuePerCent = value / 100.0
 
-        val seekBarIndex = seekBarList.indexOf(seekBar)
-        Log.d("onUpdateSeekBar", "seekBarIndex = $seekBarIndex")
+        if (seekBar in seekBarList){
+            val seekBarIndex = seekBarList.indexOf(seekBar)
+            Log.d("onUpdateSeekBar", "seekBarIndex = $seekBarIndex")
+
 
 //        val horn = when (seekBarIndex) {
 //            in 0..2 -> Horn.FIRST
@@ -132,13 +146,38 @@ class MainActivity : AppCompatActivity() {
 //            2 -> ColorComponent.BLUE
 //            else -> throw Exception("seekBarIndex is out of range")
 //        }
-        selectedDipol?.let {
-            Log.d("onUpdateSeekBar", "selectedDipol = $it")
+            selectedDipol?.let {
+                Log.d("onUpdateSeekBar", "selectedDipol = $it")
 
-            // Need to save to db firstly
+                // Need to save to db firstly
 
-            localModeViewModel.changeLocalState(seekBarIndex, valuePerCent )
+                localModeViewModel.changeLocalState("dipol", seekBarIndex, valuePerCent )
+            }
+        } else if (seekBar in seekBarFiveLightsList){
+            val seekBarIndex = seekBarFiveLightsList.indexOf(seekBar)
+            Log.d("onUpdateSeekBar", "seekBarFiveLightsIndex = $seekBarIndex")
+
+
+//        val horn = when (seekBarIndex) {
+//            in 0..2 -> Horn.FIRST
+//            in 3..5 -> Horn.SECOND
+//            else -> throw Exception("seekBarIndex is out of range")
+//        }
+//        val component  = when (seekBarIndex % 3) {
+//            0 -> ColorComponent.RED
+//            1 -> ColorComponent.GREEN
+//            2 -> ColorComponent.BLUE
+//            else -> throw Exception("seekBarIndex is out of range")
+//        }
+            fiveLightsDomainEntity?.let {
+                Log.d("onUpdateSeekBar", "selectedDipol = $it")
+
+                // Need to save to db firstly
+
+                localModeViewModel.changeLocalState("fiveLights", seekBarIndex, valuePerCent )
+            }
         }
+
 
     }
 

@@ -21,7 +21,7 @@ interface DipoliaRepository {
 //        component: ColorComponent,
 //        componentDiff: Double
 //    )
-    fun changeLocalState(index: Int, value: Double)
+    fun changeLocalState(set: String, index: Int, value: Double)
 
     suspend fun editDipolItem(dipolDomainEntity: DipolDomainEntity)
 

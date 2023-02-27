@@ -13,9 +13,9 @@ class ChangeLocalStateUseCase(private val repository: DipoliaRepository) {
 //        component: ColorComponent,
 //        componentDiff: Double
 //    ){
-    operator fun invoke(index: Int, componentValue: Double){
+    operator fun invoke(set: String, index: Int, componentValue: Double){
 //        repository.changeLocalState(dipolItem, horn, component, componentDiff)
-        repository.changeLocalState(index, componentValue)
+        repository.changeLocalState(set, index, componentValue)
     }
 
 }
