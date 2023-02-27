@@ -24,10 +24,12 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
     private val dipolsConnectionMonitoringUseCase = DipolsConnectionMonitoringUseCase(repository)
     private val workerStartStopUseCase = WorkerStartStopUseCase(repository)
     private val getIsBroadcastUseCase = GetIsBroadcastUseCase(repository)
+    private val getFiveLightsUseCase = GetFiveLightsUseCase(repository)
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
     val dipolList = getDipolListUseCase()
+    val fiveLights = getFiveLightsUseCase()
     val selectedDipol = getSelectedDipolUseCase()
     val isBackGroundWork = getIsBroadcastUseCase()
     init {  //This code will be executes every time automatically with creating of this object

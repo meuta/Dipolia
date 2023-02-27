@@ -2,8 +2,10 @@ package com.example.dipolia.data.mapper
 
 import android.util.Log
 import com.example.dipolia.data.database.DipolDbModel
+import com.example.dipolia.data.database.FiveLightsDbModel
 import com.example.dipolia.data.network.DipolDto
 import com.example.dipolia.domain.DipolDomainEntity
+import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 
 class DipoliaMapper {
 
@@ -12,6 +14,16 @@ class DipoliaMapper {
         return DipolDbModel(
             dipolDto.id,
             dipolDto.ip.toString().substring(1),
+            selected = false,
+            connected = true
+        )
+    }
+
+    fun mapFiveLightsDtoToDbModel(fiveLightsDto: DipolDto): FiveLightsDbModel {
+        Log.d("TestDipolDbModel", fiveLightsDto.id)
+        return FiveLightsDbModel(
+            fiveLightsDto.id,
+            fiveLightsDto.ip.toString().substring(1),
             selected = false,
             connected = true
         )
@@ -26,6 +38,16 @@ class DipoliaMapper {
         connected = dipolDbModel.connected
     ).also {
         Log.d("mapDbModelToEntity", "$it")
+    }
+
+    fun mapFiveLightsDbModelToEntity(fiveLightsDbModel: FiveLightsDbModel) = FiveLightsDomainEntity(
+        id = fiveLightsDbModel.fiveLightsId,
+        ip = fiveLightsDbModel.fiveLightsIp,
+        c = listOf(fiveLightsDbModel.r, fiveLightsDbModel.g, fiveLightsDbModel.b, fiveLightsDbModel.w, fiveLightsDbModel.uv),
+        selected = fiveLightsDbModel.selected,
+        connected = fiveLightsDbModel.connected
+    ).also {
+        Log.d("mapFiveLightsDbModelToEntity", "$it")
     }
 
     //

@@ -49,6 +49,10 @@ class MainActivity : AppCompatActivity() {
             dipolListAdapter.submitList(it)      // Created new thread
         }
 
+        localModeViewModel.fiveLights.observe(this) {
+            Log.d("TEST_OF_SUBSCRIBE", "fiveLights: $it")
+        }
+
         binding.btnRefreshList.setOnClickListener {
             refreshConnectedList()
         }

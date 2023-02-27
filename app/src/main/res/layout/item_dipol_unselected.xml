@@ -13,8 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:background="?attr/selectableItemBackground"
-        android:elevation="@dimen/item_card_cv_elevation"
-        android:orientation="vertical">
+        android:elevation="@dimen/item_card_cv_elevation">
 
         <LinearLayout
             android:layout_width="match_parent"

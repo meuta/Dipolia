@@ -4,13 +4,10 @@ import android.content.Context
 import android.util.Log
 import androidx.work.*
 import com.example.dipolia.data.database.AppDatabase
-import com.example.dipolia.data.database.DipolDbModel
-import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.network.UDPClient
 import kotlinx.coroutines.delay
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.net.InetAddress
 import java.util.concurrent.TimeUnit
 
 class RefreshSendUDPWorker(

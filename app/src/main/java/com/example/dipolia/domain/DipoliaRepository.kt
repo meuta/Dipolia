@@ -1,6 +1,7 @@
 package com.example.dipolia.domain
 
 import androidx.lifecycle.LiveData
+import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 
 interface DipoliaRepository {
 
@@ -31,6 +32,8 @@ interface DipoliaRepository {
     suspend fun refreshConnectedList()
 
     fun getSelectedDipol(): LiveData<DipolDomainEntity?>
+
+    fun getFiveLights(): LiveData<FiveLightsDomainEntity?>
 
     fun unselectDipol()
 
