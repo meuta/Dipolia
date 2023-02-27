@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
         localModeViewModel.fiveLights.observe(this) {
             Log.d("TEST_OF_SUBSCRIBE", "fiveLights: $it")
             fiveLightsDomainEntity = it
+            setFiveLightsSeekbars(it)
         }
 
         binding.btnRefreshList.setOnClickListener {
@@ -227,6 +228,27 @@ class MainActivity : AppCompatActivity() {
                 localSeekBar4.progress = progress4
                 localSeekBar5.progress = progress5
                 localSeekBar6.progress = progress6
+            }
+        }
+
+    }
+
+    private fun setFiveLightsSeekbars(fiveLightsDomainEntity: FiveLightsDomainEntity?){
+//        val dipol = selectedDipol
+        Log.d("onDipolItemClickListener", "setFiveLightsSeekbars")
+        val fiveLights = fiveLightsDomainEntity ?: FiveLightsDomainEntity("","", listOf(0.0, 0.0, 0.0, 0.0, 0.0) )
+        fiveLights.let {
+            val progress1 = (it.c[0]*100).toInt()
+            val progress2 = (it.c[1]*100).toInt()
+            val progress3 = (it.c[2]*100).toInt()
+            val progress4 = (it.c[3]*100).toInt()
+            val progress5 = (it.c[4]*100).toInt()
+            with(binding) {
+                localSeekBarFiveLights1.progress = progress1
+                localSeekBarFiveLights2.progress = progress2
+                localSeekBarFiveLights3.progress = progress3
+                localSeekBarFiveLights4.progress = progress4
+                localSeekBarFiveLights5.progress = progress5
             }
         }
 
