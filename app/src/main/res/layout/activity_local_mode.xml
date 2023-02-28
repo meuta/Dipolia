@@ -132,13 +132,13 @@
             android:id="@+id/current_dipol_layout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:selectedDipolFrameLayoutVisibility="@{viewModel.dipolList}"
             app:layout_constraintStart_toEndOf="@+id/rv_dipol_item_list"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/app_bar_layout"
             app:layout_constraintBottom_toTopOf="@id/view_buttons_divider"
             tools:visibility="visible"
             >
+
             <TextView
                 android:id="@+id/view_please_select"
                 android:layout_width="match_parent"
@@ -279,7 +279,7 @@
                 android:id="@+id/five_lights_control_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:selectedDipolControlLayoutVisibility="@{viewModel.fiveLights.selected}"
+                app:selectedFiveLightsControlLayoutVisibility="@{viewModel.fiveLights.selected}"
                 tools:visibility="visible">
 
                 <LinearLayout

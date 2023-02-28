@@ -56,7 +56,18 @@ fun setSelectedVisibility(view: View, isSelected: Boolean){
 
 @BindingAdapter("selectedDipolControlLayoutVisibility")
 fun setSelectedDipolLayoutVisibility(view: View, isConnected: Boolean){
+    Log.d("setSelectedDipolLayoutVisibility", "$isConnected")
     if (isConnected) {
+        view.visibility = VISIBLE
+    } else {
+        view.visibility = INVISIBLE
+    }
+}
+
+@BindingAdapter("selectedFiveLightsControlLayoutVisibility")
+fun setSelectedFiveLightsLayoutVisibility(view: View, isSelected: Boolean){
+    Log.d("setSelectedFiveLightsLayoutVisibility", "$isSelected")
+    if (isSelected) {
         view.visibility = VISIBLE
     } else {
         view.visibility = INVISIBLE
