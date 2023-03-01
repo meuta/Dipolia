@@ -4,14 +4,12 @@ import android.graphics.Color
 import android.util.Log
 import android.view.View
 import android.view.View.*
-import android.widget.FrameLayout
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.example.dipolia.R
 import com.example.dipolia.domain.DipolDomainEntity
-import com.example.dipolia.domain.entities.LampDomainEntity
+import com.example.dipolia.domain.entities.LampType
 
 
 interface OnFiveLightsClickListener{
@@ -86,6 +84,26 @@ fun setSelectedDipolLayoutVisibility(view: View, isConnected: Boolean){
     }
 }
 
+@BindingAdapter("dipolControlLayoutVisibility")
+fun setDipolControlLayoutVisibility(view: View, lampType: LampType?){
+    Log.d("setDipolControlLayoutVisibility", "$lampType")
+    if (lampType == LampType.DIPOl) {
+        view.visibility = VISIBLE
+    } else {
+        view.visibility = INVISIBLE
+    }
+}
+
+@BindingAdapter("fiveLightsControlLayoutVisibility")
+fun setFiveLightsLayoutVisibility(view: View, lampType: LampType?){
+    Log.d("setFiveLightsControlLayoutVisibility", "$lampType")
+    if (lampType == LampType.FIVE_LIGHTS) {
+        view.visibility = VISIBLE
+    } else {
+        view.visibility = INVISIBLE
+    }
+}
+
 @BindingAdapter("selectedFiveLightsControlLayoutVisibility")
 fun setSelectedFiveLightsLayoutVisibility(view: View, isSelected: Boolean){
     Log.d("setSelectedFiveLightsLayoutVisibility", "$isSelected")
@@ -98,20 +116,10 @@ fun setSelectedFiveLightsLayoutVisibility(view: View, isSelected: Boolean){
 
 @BindingAdapter("selectedButtonRemoveVisibility")
 fun setSelectedButtonRemoveVisibility(textView: TextView, list: List<DipolDomainEntity>?){
-//fun setSelectedButtonRemoveVisibility(textView: TextView, list: List<LampDomainEntity>?){
     if (list != null && list.isNotEmpty()) {
         textView.visibility = VISIBLE
     } else {
         textView.visibility = INVISIBLE
-    }
-}
-
-@BindingAdapter("selectedDipolFrameLayoutVisibility")
-fun setSelectedDipolAllLayoutVisibility(layout: FrameLayout, list: List<DipolDomainEntity>?){
-    if (list != null && list.isNotEmpty()) {
-        layout.visibility = VISIBLE
-    } else {
-        layout.visibility = INVISIBLE
     }
 }
 
@@ -133,15 +141,3 @@ fun bindOnFiveLightsClickListener(textView: TextView, clickListener: OnFiveLight
     }
 }
 
-
-//@BindingAdapter("progressValue")
-//fun bindProgressValue(seekBar: SeekBar, colorValue:Double?) {
-//    Log.d("progressValue", "$colorValue")
-////    colorValue?.let { seekBar.progress = colorValueToProgress(colorValue) }
-//
-//}
-
-//private fun colorValueToProgress(colorValue: Double) :Int{
-//    val progress = (colorValue*100).toInt()
-//    return progress
-//}

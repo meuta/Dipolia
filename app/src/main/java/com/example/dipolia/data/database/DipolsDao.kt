@@ -7,9 +7,6 @@ import com.example.dipolia.domain.entities.LampType
 @Dao
 interface DipolsDao {
 
-//    @Query("SELECT * FROM dipols WHERE connected")
-//    fun getConnectedDipolListLD(): LiveData<List<DipolDbModel>>
-
     @Query("SELECT * FROM lamps")
     fun getLampsTable(): LiveData<List<LampDbModel>>
 
@@ -52,8 +49,14 @@ interface DipolsDao {
     @Query("SELECT * FROM lamps WHERE selected=:selected LIMIT 1")
     fun getLampSelectedItem(selected: Boolean): LampDbModel?
 
-    @Query("SELECT * FROM dipols WHERE selected=:selected LIMIT 1")
-    fun getSelectedDipolItemLD(selected: Boolean): LiveData<DipolDbModel?>
+    @Query("SELECT * FROM lamps WHERE selected=:selected and connected=:connected LIMIT 1")
+    fun getLampSelectedConnectedItem(selected: Boolean, connected: Boolean): LampDbModel?
+
+    @Query("SELECT * FROM lamps WHERE selected=:selected and connected=:connected LIMIT 1")
+    fun getLampSelectedConnectedItemLD(selected: Boolean, connected: Boolean): LiveData<LampDbModel?>
+
+    @Query("SELECT * FROM lamps WHERE lampType=:lampType AND selected=:selected LIMIT 1")
+    fun getSelectedDipolItemLD(selected: Boolean, lampType: LampType): LiveData<LampDbModel?>
 
     @Query("SELECT * FROM fiveLights LIMIT 1")
     fun getFiveLightsItemLD(): LiveData<FiveLightsDbModel?>

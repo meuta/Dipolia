@@ -2,8 +2,8 @@
     <string name="app_name">Dipolia</string>
     <string name="test_btn">TEST</string>
     <string name="refresh_list_btn">REMOVE\nNOT\nCONNECTED\nDIPOLS</string>
-    <string name="please_select_the_dipol">please select the dipol</string>
-    <string name="unselect_dipol">UNSELECT\nDIPOL</string>
+    <string name="please_select_the_lamp">please select the lamp</string>
+    <string name="unselect_lamp">UNSELECT\nLAMP</string>
     <string name="background_work_start">START\nBROADCAST</string>
     <string name="background_work_stop">STOP\nBROADCAST</string>
 </resources>

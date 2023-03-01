@@ -6,11 +6,11 @@ import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.work.WorkManager
-import com.example.dipolia.data.workers.RefreshSendUDPWorker
 import com.example.dipolia.databinding.ActivityLocalModeBinding
 import com.example.dipolia.domain.DipolDomainEntity
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
+import com.example.dipolia.domain.entities.LampDomainEntity
+import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.presentation.adaptes.DipolListAdapter
 
 class MainActivity : AppCompatActivity() {
@@ -24,7 +24,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var seekBarList: List<SeekBar>
     private lateinit var seekBarFiveLightsList: List<SeekBar>
     private var selectedDipol: DipolDomainEntity? = null
-    private var fiveLightsDomainEntity: FiveLightsDomainEntity? = null
+    private var selectedLamp: LampDomainEntity? = null
+    private var selectedConnectedLampType: LampType? = null
+    private var selectedFiveLights: FiveLightsDomainEntity? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +46,21 @@ class MainActivity : AppCompatActivity() {
             setSeekbarsForSelectedDipol(it)
         }
 
+        localModeViewModel.fiveLights.observe(this) {
+            Log.d("TEST_OF_SUBSCRIBE", "fiveLights: $it")
+            selectedFiveLights = it
+            setFiveLightsSeekbars(it)
+        }
+
+        localModeViewModel.selectedLamp.observe(this) {
+            selectedLamp = it
+//            Log.d("TEST_OF_SUBSCRIBE", "selectedDipol: $it")
+        }
+
+        localModeViewModel.selectedConnectedLampType.observe(this) {
+            selectedConnectedLampType = it
+        }
+
         localModeViewModel.isBackGroundWork.observe(this) {
             Log.d("init", "fromMain: $it")
         }
@@ -54,21 +71,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         localModeViewModel.allLampsList.observe(this) { list ->
-            Log.d("TEST_OF_SUBSCRIBE", "allLampsList: ${list.map { it -> it.selected }}")
+            Log.d("TEST_OF_SUBSCRIBE", "allLampsListSelectedItem: ${list.map { it -> it.selected }}")
         }
 
-        localModeViewModel.fiveLights.observe(this) {
-            Log.d("TEST_OF_SUBSCRIBE", "fiveLights: $it")
-            fiveLightsDomainEntity = it
-            setFiveLightsSeekbars(it)
-        }
 
         binding.btnRefreshList.setOnClickListener {
             refreshConnectedList()
         }
 
         binding.btnUnselect.setOnClickListener {
-            localModeViewModel.unselectDipol()
+            localModeViewModel.unselectLamp()
         }
 
         binding.btnBackgroundWork.setOnClickListener {
@@ -77,7 +89,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupSeekbars()
-//        localModeViewModel.testSendLocalModeData()
+        localModeViewModel.testSendLocalModeData()
 
     }
 
@@ -175,7 +187,7 @@ class MainActivity : AppCompatActivity() {
 //            2 -> ColorComponent.BLUE
 //            else -> throw Exception("seekBarIndex is out of range")
 //        }
-            fiveLightsDomainEntity?.let {
+            selectedFiveLights?.let {
                 Log.d("onUpdateSeekBar", "selectedDipol = $it")
 
                 // Need to save to db firstly
@@ -210,13 +222,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupClickListener() {
         dipolListAdapter.onDipolItemClickListener = {
-            localModeViewModel.changeSelectedDipol(it.id)
+            localModeViewModel.selectItem(it.id)
             Log.d("onDipolItemClickListener", "$it")
         }
     }
 
     private fun setSeekbarsForSelectedDipol(dipolDomainEntity: DipolDomainEntity?){
-//        val dipol = selectedDipol
         Log.d("onDipolItemClickListener", "Seekbars:$dipolDomainEntity")
         val dipol = dipolDomainEntity ?: DipolDomainEntity("","", listOf(0.0, 0.0, 0.0), listOf(0.0, 0.0, 0.0) )
         dipol.let {
@@ -239,7 +250,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setFiveLightsSeekbars(fiveLightsDomainEntity: FiveLightsDomainEntity?){
-//        val dipol = selectedDipol
         Log.d("onDipolItemClickListener", "setFiveLightsSeekbars")
         val fiveLights = fiveLightsDomainEntity ?: FiveLightsDomainEntity("","", listOf(0.0, 0.0, 0.0, 0.0, 0.0) )
         fiveLights.let {

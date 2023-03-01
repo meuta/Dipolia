@@ -3,6 +3,7 @@ package com.example.dipolia.domain
 import androidx.lifecycle.LiveData
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
+import com.example.dipolia.domain.entities.LampType
 
 interface DipoliaRepository {
 
@@ -13,16 +14,9 @@ interface DipoliaRepository {
     fun testSendLocalModeData()
 
     fun getConnectedDipolList(): LiveData<List<DipolDomainEntity>>
-//    fun getConnectedDipolList(): LiveData<List<LampDomainEntity>>
 
-    fun selectDipolItem(dipolId: String)
+    fun selectLamp(lampId: String)
 
-//    fun changeLocalState(
-//        dipolItem: DipolDomainEntity,
-//        horn: Horn,
-//        component: ColorComponent,
-//        componentDiff: Double
-//    )
     fun changeLocalState(set: String, index: Int, value: Double)
 
     suspend fun editDipolItem(dipolDomainEntity: DipolDomainEntity)
@@ -35,7 +29,7 @@ interface DipoliaRepository {
 
     fun getSelectedDipol(): LiveData<DipolDomainEntity?>
 
-    fun getFiveLights(): LiveData<FiveLightsDomainEntity?>
+    fun getConnectedFiveLights(): LiveData<FiveLightsDomainEntity?>
 
     fun unselectDipol()
 
@@ -46,5 +40,11 @@ interface DipoliaRepository {
     fun getIsBroadcast(): LiveData<Boolean?>
 
     fun getLampsTable(): LiveData<List<LampDomainEntity>>
+
+    fun getSelectedLamp(): LiveData<LampDomainEntity?>
+
+    fun unselectLamp()
+
+    fun getSelectedConnectedLampType(): LiveData<LampType?>
 
 }

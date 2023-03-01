@@ -82,7 +82,7 @@
                         app:selectedBackground="@{viewModel.fiveLights.selected}"
                         android:gravity="center"
                         android:padding="10dp"
-                        app:onFiveLightsClickListener="@{(string) -> viewModel.selectFiveLights(string)}"
+                        app:onFiveLightsClickListener="@{(string) -> viewModel.selectItem(string)}"
                         android:textColor="@color/colorHighlighted"
                         android:textSize="16sp"
                         android:text="@{viewModel.fiveLights.id}"
@@ -144,9 +144,9 @@
                 android:id="@+id/view_please_select"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="@string/please_select_the_dipol"
+                android:text="@string/please_select_the_lamp"
                 android:gravity="center"
-                app:selectedDipolControlLayoutVisibility="@{!viewModel.selectedDipol.connected}"
+                app:selectedDipolControlLayoutVisibility="@{!viewModel.selectedLamp.connected}"
                 tools:visibility="visible"
                 />
 
@@ -154,7 +154,7 @@
                 android:id="@+id/dipol_control_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:selectedDipolControlLayoutVisibility="@{viewModel.selectedDipol.connected}"
+                app:dipolControlLayoutVisibility="@{viewModel.selectedConnectedLampType}"
                 tools:visibility="visible">
 
 
@@ -280,7 +280,7 @@
                 android:id="@+id/five_lights_control_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:selectedFiveLightsControlLayoutVisibility="@{viewModel.fiveLights.selected}"
+                app:fiveLightsControlLayoutVisibility="@{viewModel.selectedConnectedLampType}"
                 tools:visibility="visible">
 
                 <LinearLayout
@@ -408,12 +408,12 @@
                 android:layout_height="match_parent"
                 android:background="@color/gray"
                 android:gravity="center"
-                app:selectedDipolControlLayoutVisibility="@{viewModel.selectedDipol.connected}"
+                app:selectedDipolControlLayoutVisibility="@{viewModel.selectedLamp.connected}"
                 android:paddingVertical="10dp"
                 android:paddingHorizontal="5dp"
                 android:layout_marginHorizontal="5dp"
                 android:textSize="10sp"
-                android:text="@string/unselect_dipol"
+                android:text="@string/unselect_lamp"
                 android:textColor="@color/colorHighlighted"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
 
