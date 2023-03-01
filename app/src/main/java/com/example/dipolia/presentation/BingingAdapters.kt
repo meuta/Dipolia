@@ -84,6 +84,16 @@ fun setSelectedDipolLayoutVisibility(view: View, isConnected: Boolean){
     }
 }
 
+@BindingAdapter("selectedPleaseSelectTextViewVisibility")
+fun setSelectedPleaseSelectTextViewVisibility(view: View, lampType: LampType?){
+    Log.d("setSelectedPleaseSelectTextViewVisibility", "$lampType")
+    if (lampType == LampType.UNKNOWN_LAMP_TYPE) {
+        view.visibility = VISIBLE
+    } else {
+        view.visibility = INVISIBLE
+    }
+}
+
 @BindingAdapter("dipolControlLayoutVisibility")
 fun setDipolControlLayoutVisibility(view: View, lampType: LampType?){
     Log.d("setDipolControlLayoutVisibility", "$lampType")

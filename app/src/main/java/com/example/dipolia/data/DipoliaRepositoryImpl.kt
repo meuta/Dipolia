@@ -148,8 +148,13 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
         return Transformations.map(dipolsDao.getConnectedLampsListByTypeLD(LampType.FIVE_LIGHTS)) { it ->
             Log.d("getFiveLights", "$it")
             it?.let {
-                mapper.mapLampDbModelToFiveLightsEntity(it[0])
+                if (it.isNotEmpty()) {
+                    mapper.mapLampDbModelToFiveLightsEntity(it[0])
+                } else{
+                    null
+                }
             }
+
         }
     }
 
