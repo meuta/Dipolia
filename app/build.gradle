@@ -63,6 +63,7 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
 
 //    kapt "com.android.databinding:compiler:$android_plugin_version"
+    implementation 'com.google.code.gson:gson:2.9.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'

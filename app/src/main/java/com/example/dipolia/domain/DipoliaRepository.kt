@@ -2,6 +2,7 @@ package com.example.dipolia.domain
 
 import androidx.lifecycle.LiveData
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
+import com.example.dipolia.domain.entities.LampDomainEntity
 
 interface DipoliaRepository {
 
@@ -12,6 +13,7 @@ interface DipoliaRepository {
     fun testSendLocalModeData()
 
     fun getConnectedDipolList(): LiveData<List<DipolDomainEntity>>
+//    fun getConnectedDipolList(): LiveData<List<LampDomainEntity>>
 
     fun selectDipolItem(dipolId: String)
 
@@ -39,9 +41,10 @@ interface DipoliaRepository {
 
     suspend fun dipolsConnectionMonitoring()
 
-//    fun workerStartStop()
     fun workerStartStop()
 
-    fun getIsBroadcast(): LiveData<Boolean>
+    fun getIsBroadcast(): LiveData<Boolean?>
+
+    fun getLampsTable(): LiveData<List<LampDomainEntity>>
 
 }

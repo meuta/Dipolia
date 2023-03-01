@@ -5,7 +5,7 @@ import com.example.dipolia.data.DipoliaRepositoryImpl
 
 class GetIsBroadcastUseCase(private val repository: DipoliaRepositoryImpl) {
 
-    operator fun invoke(): LiveData<Boolean> {
+    operator fun invoke(): LiveData<Boolean?> {
         return repository.getIsBroadcast()
     }
 }

@@ -4,7 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "fiveLights")
-
 data class FiveLightsDbModel(
     @PrimaryKey
     val fiveLightsId: String,

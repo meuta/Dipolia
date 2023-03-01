@@ -25,10 +25,12 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
     private val workerStartStopUseCase = WorkerStartStopUseCase(repository)
     private val getIsBroadcastUseCase = GetIsBroadcastUseCase(repository)
     private val getFiveLightsUseCase = GetFiveLightsUseCase(repository)
+    private val getAllLampsTableUseCase = GetAllLampsTableUseCase(repository)
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
     val dipolList = getDipolListUseCase()
+    val allLampsList = getAllLampsTableUseCase()
     val fiveLights = getFiveLightsUseCase()
     val selectedDipol = getSelectedDipolUseCase()
     val isBackGroundWork = getIsBroadcastUseCase()
@@ -39,9 +41,9 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
         scope.launch{
             receiveLocalModeDataUseCase ()
         }
-        scope.launch{
-            dipolsConnectionMonitoringUseCase ()
-        }
+//        scope.launch{
+//            dipolsConnectionMonitoringUseCase ()
+//        }
     }
 
 //    fun testSendLocalModeData() {

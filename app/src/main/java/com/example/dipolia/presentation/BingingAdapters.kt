@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.example.dipolia.R
 import com.example.dipolia.domain.DipolDomainEntity
+import com.example.dipolia.domain.entities.LampDomainEntity
 
 
 interface OnFiveLightsClickListener{
@@ -22,6 +23,27 @@ fun bindLableColor(view: View, colorList: List<Double>?) {
     Log.d("View", "colorlist $colorList $view ")
     val list = colorList ?: listOf(0.0, 0.0, 0.0)
      view.setBackgroundColor(Color.parseColor(colorToUI(list)))
+}
+
+@BindingAdapter("fiveLightsLableColor")
+fun bindFiveLightsLableColor(view: View, colorList: List<Double>?) {
+    Log.d("View", "colorlist $colorList $view ")
+    val list = colorList ?: listOf(0.0, 0.0, 0.0, 0.0, 0.0)
+     view.setBackgroundColor(Color.parseColor(colorFiveLightsToUI(list)))
+}
+
+private fun colorFiveLightsToUI(colorList: List<Double>): String {
+
+    val string = String.format(
+        "#" + "%02x%02x%02x",
+        (colorList[0] * 255 * 2 / 3 + colorList[3] * 255 / 3).toInt(),
+        (colorList[1] * 255 * 2 / 3 + colorList[3] * 255 / 3).toInt(),
+        (colorList[2] * 255 * 2 / 3 + colorList[3] * 255 / 3).toInt()
+//        (colorList[3] * 255).toInt(),
+//        (colorList[4] * 255).toInt()
+    )
+    Log.d("bindFiveLightsLableColor", "colorToUI $string")
+    return string
 }
 
 private fun colorToUI(colorList: List<Double>): String {
@@ -76,6 +98,7 @@ fun setSelectedFiveLightsLayoutVisibility(view: View, isSelected: Boolean){
 
 @BindingAdapter("selectedButtonRemoveVisibility")
 fun setSelectedButtonRemoveVisibility(textView: TextView, list: List<DipolDomainEntity>?){
+//fun setSelectedButtonRemoveVisibility(textView: TextView, list: List<LampDomainEntity>?){
     if (list != null && list.isNotEmpty()) {
         textView.visibility = VISIBLE
     } else {

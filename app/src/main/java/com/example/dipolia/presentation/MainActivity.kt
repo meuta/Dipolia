@@ -49,7 +49,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         localModeViewModel.dipolList.observe(this) {
+            Log.d("TEST_OF_SUBSCRIBE", "dipolList: $it")
             dipolListAdapter.submitList(it)      // Created new thread
+        }
+
+        localModeViewModel.allLampsList.observe(this) { list ->
+            Log.d("TEST_OF_SUBSCRIBE", "allLampsList: ${list.map { it -> it.selected }}")
         }
 
         localModeViewModel.fiveLights.observe(this) {
