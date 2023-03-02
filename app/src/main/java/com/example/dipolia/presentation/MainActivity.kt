@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         localModeViewModel.fiveLights.observe(this) {
-            Log.d("TEST_OF_SUBSCRIBE", "fiveLights: $it")
+//            Log.d("TEST_OF_SUBSCRIBE", "fiveLights: $it")
             selectedFiveLights = it
             setFiveLightsSeekbars(it)
         }
@@ -62,11 +62,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         localModeViewModel.isBackGroundWork.observe(this) {
-            Log.d("init", "fromMain: $it")
+//            Log.d("init", "fromMain: $it")
         }
 
         localModeViewModel.dipolList.observe(this) {
-            Log.d("TEST_OF_SUBSCRIBE", "dipolList: $it")
+//            Log.d("TEST_OF_SUBSCRIBE", "dipolList: $it")
             dipolListAdapter.submitList(it)      // Created new thread
         }
 
@@ -97,13 +97,10 @@ class MainActivity : AppCompatActivity() {
     private fun setupSeekbars() {
         val seekAdapter = object :
             SeekBar.OnSeekBarChangeListener {
-            //            @RequiresApi(Build.VERSION_CODES.Q)
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
                 // write custom code for progress is changed
                 onUpdateSeekBar(seek)
-//                val myId = seek.sourceLayoutResId
                 Log.d("seekAdapter", "onProgressChanged ${seek.id}")
-//                Log.d("seekAdapter","onProgressChanged ${myId}")
             }
 
             override fun onStartTrackingTouch(seek: SeekBar) {
@@ -136,8 +133,8 @@ class MainActivity : AppCompatActivity() {
             seekBarFiveLightsList = listOf(localSeekBarFiveLights1, localSeekBarFiveLights2, localSeekBarFiveLights3,localSeekBarFiveLights4, localSeekBarFiveLights5)
 
         }
-        Log.d("setupSeekbars", "seekBarList $seekBarList")
-        Log.d("setupSeekbars", "seekBarFiveLightsList $seekBarFiveLightsList")
+//        Log.d("setupSeekbars", "seekBarList $seekBarList")
+//        Log.d("setupSeekbars", "seekBarFiveLightsList $seekBarFiveLightsList")
     }
 
 
@@ -152,18 +149,6 @@ class MainActivity : AppCompatActivity() {
             val seekBarIndex = seekBarList.indexOf(seekBar)
             Log.d("onUpdateSeekBar", "seekBarIndex = $seekBarIndex")
 
-
-//        val horn = when (seekBarIndex) {
-//            in 0..2 -> Horn.FIRST
-//            in 3..5 -> Horn.SECOND
-//            else -> throw Exception("seekBarIndex is out of range")
-//        }
-//        val component  = when (seekBarIndex % 3) {
-//            0 -> ColorComponent.RED
-//            1 -> ColorComponent.GREEN
-//            2 -> ColorComponent.BLUE
-//            else -> throw Exception("seekBarIndex is out of range")
-//        }
             selectedDipol?.let {
                 Log.d("onUpdateSeekBar", "selectedDipol = $it")
 
@@ -175,47 +160,18 @@ class MainActivity : AppCompatActivity() {
             val seekBarIndex = seekBarFiveLightsList.indexOf(seekBar)
             Log.d("onUpdateSeekBar", "seekBarFiveLightsIndex = $seekBarIndex")
 
-
-//        val horn = when (seekBarIndex) {
-//            in 0..2 -> Horn.FIRST
-//            in 3..5 -> Horn.SECOND
-//            else -> throw Exception("seekBarIndex is out of range")
-//        }
-//        val component  = when (seekBarIndex % 3) {
-//            0 -> ColorComponent.RED
-//            1 -> ColorComponent.GREEN
-//            2 -> ColorComponent.BLUE
-//            else -> throw Exception("seekBarIndex is out of range")
-//        }
             selectedFiveLights?.let {
                 Log.d("onUpdateSeekBar", "selectedDipol = $it")
-
-                // Need to save to db firstly
 
                 localModeViewModel.changeLocalState("fiveLights", seekBarIndex, valuePerCent )
             }
         }
-
-
     }
 
 
     private fun setupRecyclerView() {
 
-//        refreshConnectedList()
-
         dipolListAdapter = DipolListAdapter()
-//        with(binding.rvDipolItemList) {
-//            adapter = dipolListAdapter
-//            recycledViewPool.setMaxRecycledViews(
-//                DipolListAdapter.VIEW_TYPE_SELECTED,
-//                DipolListAdapter.MAX_POOL_SIZE
-//            )
-//            recycledViewPool.setMaxRecycledViews(
-//                DipolListAdapter.VIEW_TYPE_UNSELECTED,
-//                DipolListAdapter.MAX_POOL_SIZE
-//            )
-//        }
         binding.rvDipolItemList.adapter = dipolListAdapter
         setupClickListener()
     }
@@ -228,7 +184,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setSeekbarsForSelectedDipol(dipolDomainEntity: DipolDomainEntity?){
-        Log.d("onDipolItemClickListener", "Seekbars:$dipolDomainEntity")
+//        Log.d("onDipolItemClickListener", "Seekbars:$dipolDomainEntity")
         val dipol = dipolDomainEntity ?: DipolDomainEntity("","", listOf(0.0, 0.0, 0.0), listOf(0.0, 0.0, 0.0) )
         dipol.let {
             val progress1 = (it.c1[0]*100).toInt()
@@ -250,7 +206,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setFiveLightsSeekbars(fiveLightsDomainEntity: FiveLightsDomainEntity?){
-        Log.d("onDipolItemClickListener", "setFiveLightsSeekbars")
+//        Log.d("onDipolItemClickListener", "setFiveLightsSeekbars")
         val fiveLights = fiveLightsDomainEntity ?: FiveLightsDomainEntity("","", listOf(0.0, 0.0, 0.0, 0.0, 0.0) )
         fiveLights.let {
             val progress1 = (it.c[0]*100).toInt()

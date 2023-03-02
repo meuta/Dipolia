@@ -61,7 +61,7 @@ class UDPClient {
         }
 
     suspend fun sendUDPSuspend(messageStr: String) {
-        Log.d("UDPClient", "message sendUDPSuspend($messageStr)")
+//        Log.d("UDPClient", "message sendUDPSuspend($messageStr)")
         val socket = openDatagramSocket()
 //        Log.d("UDPClient", "DatagramSocket($port) $socket ")
 
@@ -85,7 +85,7 @@ class UDPClient {
     suspend fun sendUDPSuspend(messageStr: String, ip: InetAddress) {
 
         try {
-            Log.d("UDPClient", "message to $ip sendUDPSuspend($messageStr)")
+//            Log.d("UDPClient", "message to $ip sendUDPSuspend($messageStr)")
             val socket = openDatagramSocket()
 //            Log.d("UDPClient", "DatagramSocket($port) $socket ")
 

@@ -28,7 +28,7 @@ class RefreshSendUDPWorker(
             val lampList = dipolsDao.getLampsList()
             for (lamp in lampList) {
                 if (lamp.connected) {
-                    Log.d("worker", "IP = ${lamp.lampId}")
+//                    Log.d("worker", "IP = ${lamp.lampId}")
                     val rcs = (BigDecimal(rabbitColorSpeed).setScale(
                         3,
                         RoundingMode.HALF_DOWN
@@ -69,12 +69,12 @@ class RefreshSendUDPWorker(
         const val WORK_NAME = "RefreshSendUDPWorker"
 
         fun makeRequest(): OneTimeWorkRequest {
-            Log.d("RefreshSendUDPWorker", "makeOneTimeRequest")
+//            Log.d("RefreshSendUDPWorker", "makeOneTimeRequest")
             return OneTimeWorkRequestBuilder<RefreshSendUDPWorker>().build()
         }
 
         fun makePeriodicRequest(): PeriodicWorkRequest {
-            Log.d("RefreshSendUDPWorker", "makePeriodicRequest")
+//            Log.d("RefreshSendUDPWorker", "makePeriodicRequest")
             return PeriodicWorkRequestBuilder<RefreshSendUDPWorker>(8, TimeUnit.MINUTES)
                 .build()
         }

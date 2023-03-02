@@ -44,14 +44,14 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
         val lampListDto = mutableListOf<LampDto>()
         while (true) {
             val receivedDipolData = receiver.receiveStringAndIPFromUDP()
-            Log.d("UDP receiveLocalModeData", "Pair received: $receivedDipolData")
+//            Log.d("UDP receiveLocalModeData", "Pair received: $receivedDipolData")
 
             receivedDipolData?.let {
 //                Log.d("UDP receiveLocalModeData", "let")
 
                 val ar = it.first.split(" ")
                 val lampTypeString = ar[0]
-                Log.d("UDP receiveLocalModeData", "lampTypeString = $lampTypeString")
+//                Log.d("UDP receiveLocalModeData", "lampTypeString = $lampTypeString")
 
                 if (lampTypeString == "dipol" || lampTypeString == "5lights") {
                     val id = ar[1].substring(0, ar[1].length - 1)
@@ -87,25 +87,20 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
                             "5lights" -> LampType.FIVE_LIGHTS
                             else -> LampType.UNKNOWN_LAMP_TYPE
                         }
-                        val lampDto = LampDto(
-                            id,
-                            it.second,
-                            lampType,
-                            it.first
-                        )
+                        val lampDto = LampDto(id, it.second, lampType, it.first)
                         lampListDto.add(lampDto)
-                        Log.d("UDP receiveLocalModeData", "dipol $lampDto added")
-                        Log.d("UDP receiveLocalModeData", "dipolListDto $lampListDto")
+//                        Log.d("UDP receiveLocalModeData", "dipol $lampDto added")
+//                        Log.d("UDP receiveLocalModeData", "dipolListDto $lampListDto")
 
                         val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
-                        Log.d("UDP receiveLocalModeData", "itemToAdd = $itemToAdd")
+//                        Log.d("UDP receiveLocalModeData", "itemToAdd = $itemToAdd")
                         val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
-                        Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
+//                        Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
                         if (itemFromDb == null) {
                             dipolsDao.addLampItem(itemToAdd)
                         } else {
                             val itemToAddFromDb = itemFromDb.copy(connected = true)
-                            Log.d("UDP receiveLocalModeData", "itemToAddFromDb = $itemToAddFromDb")
+//                            Log.d("UDP receiveLocalModeData", "itemToAddFromDb = $itemToAddFromDb")
                             dipolsDao.addLampItem(itemToAddFromDb)
                         }
                     }
@@ -146,7 +141,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 
     override fun getConnectedFiveLights(): LiveData<FiveLightsDomainEntity?> {
         return Transformations.map(dipolsDao.getConnectedLampsListByTypeLD(LampType.FIVE_LIGHTS)) { it ->
-            Log.d("getFiveLights", "$it")
+//            Log.d("getFiveLights", "$it")
             it?.let {
                 if (it.isNotEmpty()) {
                     mapper.mapLampDbModelToFiveLightsEntity(it[0])
@@ -244,7 +239,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 
     override fun getConnectedDipolList(): LiveData<List<DipolDomainEntity>> {
         return Transformations.map(dipolsDao.getConnectedLampsListByTypeLD(LampType.DIPOl)) { it ->
-            Log.d("getDipolList", "$it")
+//            Log.d("getDipolList", "$it")
             it.map {
                 mapper.mapLampDbModelToDipolEntity(it)
             }
@@ -276,38 +271,38 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
     }
 
     override fun changeLocalState(set: String, index: Int, value: Double) {
-        Log.d("DipoliaRepositoryImpl", "changeLocalState $set $index $value")
+//        Log.d("DipoliaRepositoryImpl", "changeLocalState $set $index $value")
         if (set == "dipol") {
             val dipolItem = dipolsDao.getLampSelectedItem(true)
-            Log.d("DipoliaRepositoryImpl", "changeLocalState $dipolItem")
+//            Log.d("DipoliaRepositoryImpl", "changeLocalState $dipolItem")
 
             dipolItem?.let {
                 var colorList = dipolItem.colorList.colors.toMutableList()
                 if (colorList.isEmpty()) {
                     colorList = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
                 }
-                Log.d("changeLocalState", "colorList $colorList")
+//                Log.d("changeLocalState", "colorList $colorList")
                 colorList[index] = value
                 val newDipolItem = dipolItem.copy(colorList = ColorList(colorList))
 
                 dipolsDao.updateLampItem(newDipolItem)
-                Log.d("DipoliaRepositoryImpl", "changeLocalState newDipolItem $newDipolItem")
+//                Log.d("DipoliaRepositoryImpl", "changeLocalState newDipolItem $newDipolItem")
             }
         } else if (set == "fiveLights") {
             val fiveLightsItem = dipolsDao.getLampSelectedItem(true)
-            Log.d("DipoliaRepositoryImpl", "changeLocalState $fiveLightsItem")
+//            Log.d("DipoliaRepositoryImpl", "changeLocalState $fiveLightsItem")
 
             fiveLightsItem?.let {
                 var colorList = fiveLightsItem.colorList.colors.toMutableList()
                 if (colorList.isEmpty()) {
                     colorList = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0)
                 }
-                Log.d("changeLocalState", "colorList $colorList")
+//                Log.d("changeLocalState", "colorList $colorList")
                 colorList[index] = value
                 val newFiveLightsItem = fiveLightsItem.copy(colorList = ColorList(colorList))
 
                 dipolsDao.updateLampItem(newFiveLightsItem)
-                Log.d("DipoliaRepositoryImpl", "changeLocalState newFiveLightsItem $newFiveLightsItem")
+//                Log.d("DipoliaRepositoryImpl", "changeLocalState newFiveLightsItem $newFiveLightsItem")
             }
         }
     }

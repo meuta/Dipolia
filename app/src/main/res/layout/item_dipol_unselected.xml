@@ -58,7 +58,7 @@
                     android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    app:lableColor="@{dipolItem.c1}"
+                    app:dipolLableColor="@{dipolItem.c1}"
                     android:background="@color/gray" />
 
                 <View
@@ -68,7 +68,7 @@
                     android:layout_gravity="center"
                     android:layout_marginStart="2dp"
                     android:layout_weight="1"
-                    app:lableColor="@{dipolItem.c2}"
+                    app:dipolLableColor="@{dipolItem.c2}"
                     android:background="@color/gray" />
 
             </LinearLayout>

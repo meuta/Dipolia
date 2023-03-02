@@ -16,16 +16,16 @@ interface OnFiveLightsClickListener{
     fun onClick(id: String)
 }
 
-@BindingAdapter("lableColor")
-fun bindLableColor(view: View, colorList: List<Double>?) {
-    Log.d("View", "colorlist $colorList $view ")
+@BindingAdapter("dipolLableColor")
+fun bindDipolLableColor(view: View, colorList: List<Double>?) {
+//    Log.d("View", "colorlist $colorList $view ")
     val list = colorList ?: listOf(0.0, 0.0, 0.0)
      view.setBackgroundColor(Color.parseColor(colorToUI(list)))
 }
 
 @BindingAdapter("fiveLightsLableColor")
 fun bindFiveLightsLableColor(view: View, colorList: List<Double>?) {
-    Log.d("View", "colorlist $colorList $view ")
+//    Log.d("View", "colorlist $colorList $view ")
     val list = colorList ?: listOf(0.0, 0.0, 0.0, 0.0, 0.0)
      view.setBackgroundColor(Color.parseColor(colorFiveLightsToUI(list)))
 }
@@ -40,7 +40,7 @@ private fun colorFiveLightsToUI(colorList: List<Double>): String {
 //        (colorList[3] * 255).toInt(),
 //        (colorList[4] * 255).toInt()
     )
-    Log.d("bindFiveLightsLableColor", "colorToUI $string")
+//    Log.d("bindFiveLightsLableColor", "colorToUI $string")
     return string
 }
 
@@ -52,8 +52,17 @@ private fun colorToUI(colorList: List<Double>): String {
         (colorList[1] * 255).toInt(),
         (colorList[2] * 255).toInt()
     )
-    Log.d("bindLableColor", "colorToUI $string")
+//    Log.d("bindLableColor", "colorToUI $string")
     return string
+}
+
+@BindingAdapter("fiveLightsItemVisibility")
+fun setFiveLightsItemVisibility(view: View, isConnected: Boolean){
+    if (isConnected) {
+        view.visibility = VISIBLE
+    } else {
+        view.visibility = INVISIBLE
+    }
 }
 
 @BindingAdapter("selectedBackground")
@@ -74,9 +83,9 @@ fun setSelectedVisibility(view: View, isSelected: Boolean){
     }
 }
 
-@BindingAdapter("selectedDipolControlLayoutVisibility")
-fun setSelectedDipolLayoutVisibility(view: View, isConnected: Boolean){
-    Log.d("setSelectedDipolLayoutVisibility", "$isConnected")
+@BindingAdapter("lampControlLayoutVisibility")
+fun setLampControlLayoutVisibility(view: View, isConnected: Boolean){
+//    Log.d("setSelectedDipolLayoutVisibility", "$isConnected")
     if (isConnected) {
         view.visibility = VISIBLE
     } else {
@@ -84,10 +93,11 @@ fun setSelectedDipolLayoutVisibility(view: View, isConnected: Boolean){
     }
 }
 
-@BindingAdapter("selectedPleaseSelectTextViewVisibility")
-fun setSelectedPleaseSelectTextViewVisibility(view: View, lampType: LampType?){
-    Log.d("setSelectedPleaseSelectTextViewVisibility", "$lampType")
-    if (lampType == LampType.UNKNOWN_LAMP_TYPE) {
+
+@BindingAdapter("pleaseSelectTextViewVisibility")
+fun setPleaseSelectTextViewVisibility(view: View, lampType: LampType?){
+//    Log.d("setSelectedPleaseSelectTextViewVisibility", "$lampType")
+    if (lampType == LampType.DIPOl || lampType == LampType.FIVE_LIGHTS) {
         view.visibility = VISIBLE
     } else {
         view.visibility = INVISIBLE
@@ -96,7 +106,7 @@ fun setSelectedPleaseSelectTextViewVisibility(view: View, lampType: LampType?){
 
 @BindingAdapter("dipolControlLayoutVisibility")
 fun setDipolControlLayoutVisibility(view: View, lampType: LampType?){
-    Log.d("setDipolControlLayoutVisibility", "$lampType")
+//    Log.d("setDipolControlLayoutVisibility", "$lampType")
     if (lampType == LampType.DIPOl) {
         view.visibility = VISIBLE
     } else {
@@ -105,8 +115,8 @@ fun setDipolControlLayoutVisibility(view: View, lampType: LampType?){
 }
 
 @BindingAdapter("fiveLightsControlLayoutVisibility")
-fun setFiveLightsLayoutVisibility(view: View, lampType: LampType?){
-    Log.d("setFiveLightsControlLayoutVisibility", "$lampType")
+fun setFiveLightsControlLayoutVisibility(view: View, lampType: LampType?){
+//    Log.d("setFiveLightsControlLayoutVisibility", "$lampType")
     if (lampType == LampType.FIVE_LIGHTS) {
         view.visibility = VISIBLE
     } else {
@@ -114,15 +124,6 @@ fun setFiveLightsLayoutVisibility(view: View, lampType: LampType?){
     }
 }
 
-@BindingAdapter("selectedFiveLightsControlLayoutVisibility")
-fun setSelectedFiveLightsLayoutVisibility(view: View, isSelected: Boolean){
-    Log.d("setSelectedFiveLightsLayoutVisibility", "$isSelected")
-    if (isSelected) {
-        view.visibility = VISIBLE
-    } else {
-        view.visibility = INVISIBLE
-    }
-}
 
 @BindingAdapter("selectedButtonRemoveVisibility")
 fun setSelectedButtonRemoveVisibility(textView: TextView, list: List<DipolDomainEntity>?){

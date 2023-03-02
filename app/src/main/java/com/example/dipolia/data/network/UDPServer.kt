@@ -32,7 +32,7 @@ class UDPServer {
 
     private fun receivePacket(socket: DatagramSocket, packet: DatagramPacket, callback: (DatagramPacket) -> Unit) {
         socket.receive(packet)
-        Log.d("UDPServer", "DatagramPacket $packet ")
+//        Log.d("UDPServer", "DatagramPacket $packet ")
         Handler(Looper.getMainLooper()).post {           // .post or .postDelay
             callback.invoke(packet)
         }
@@ -77,7 +77,7 @@ class UDPServer {
                 var string = String(packet.data)
 //                Log.d("UDPServer", "String $string ")
                 string = string.substring(0, packet.length)         //что делает эта строчка?
-                Log.d("UDPServer", "message substring $string ")
+//                Log.d("UDPServer", "message substring $string ")
 
                 return Pair(string, packet.address)                 //will finally be executed??
             }
