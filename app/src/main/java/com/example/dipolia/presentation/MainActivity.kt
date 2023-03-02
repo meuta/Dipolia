@@ -12,6 +12,7 @@ import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.presentation.adaptes.DipolListAdapter
+import kotlinx.coroutines.delay
 
 class MainActivity : AppCompatActivity() {
 
@@ -71,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         localModeViewModel.allLampsList.observe(this) { list ->
-            Log.d("TEST_OF_SUBSCRIBE", "allLampsListSelectedItem: ${list.map { it -> it.selected }}")
+            Log.d("TEST_OF_SUBSCRIBE", "allLampsListSelectedItem: ${list.map { "${it.id}, ${it.connected}, ${it.selected}"}}")
         }
 
 

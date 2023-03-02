@@ -72,7 +72,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
                                 )
                                 Log.d(
                                     "dipolsDao.updateLampItem",
-                                    "${lamp.lampId} ${lamp.connected} ${lamp.lastConnection}"
+                                    "${lamp.lampId} ${lamp.connected} ${lamp.selected} ${lamp.lastConnection}"
                                 )
                             }
 
@@ -106,6 +106,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
                     }
                 }
             }
+//            delay(10)
         }
     }
 
@@ -253,19 +254,27 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
         Log.d("onItemClickListener", " oldSelectedItem: ${oldSelectedItem?.lampId} ${oldSelectedItem?.selected}")
 
         var newSelectedItem = dipolsDao.getLampItemById(lampId)
-        Log.d("onItemClickListener", " newSelectedItem: ${newSelectedItem?.lampId} ${oldSelectedItem?.selected}")
+        Log.d("onItemClickListener", " newSelectedItem: ${newSelectedItem?.lampId} ${newSelectedItem?.selected}")
 
         newSelectedItem?.let {
             if (oldSelectedItem?.lampId != it.lampIp) {
-                oldSelectedItem = oldSelectedItem?.copy(selected = false)
-                Log.d("onItemClickListener", " oldSelectedItemCopied: ${oldSelectedItem?.lampId} ${oldSelectedItem?.selected}")
+                val oldSelectedItemToUpdate = oldSelectedItem?.copy(selected = false)
+                Log.d("onItemClickListener", " oldSelectedItemToUpdate: ${oldSelectedItemToUpdate?.lampId} ${oldSelectedItemToUpdate?.selected}")
 
-                oldSelectedItem?.let {
-                    dipolsDao.updateLampItem(it)
+                oldSelectedItemToUpdate?.let {item ->
+                    val rowsOldsUpdated1 = dipolsDao.updateLampItem(item)
+                    val rowsOldsUpdated2 = dipolsDao.updateLampItem(item)
+                    val rowsOldsUpdated3 = dipolsDao.updateLampItem(item)
+//                    Log.d("onItemClickListener", " Dao updateSelectedItem: ${item.lampId} ${item.selected}")
+                    Log.d("onItemClickListener", "SelectedItem: rowsOldsUpdated  $rowsOldsUpdated1 $rowsOldsUpdated2 $rowsOldsUpdated3")
                 }
-                val item = it.copy(selected = true)
-                Log.d("onDipolItemClickListener", " newSelectedItemCopied: ${it.lampId} ${oldSelectedItem?.selected}")
-                dipolsDao.updateLampItem(item)
+                val newSelectedItemToUpdate = it.copy(selected = true)
+                Log.d("onItemClickListener", " newSelectedItemToUpdate: ${newSelectedItemToUpdate.lampId} ${newSelectedItemToUpdate.selected}")
+                val rowsNewsUpdated1 = dipolsDao.updateLampItem(newSelectedItemToUpdate)
+                val rowsNewsUpdated2 = dipolsDao.updateLampItem(newSelectedItemToUpdate)
+                val rowsNewsUpdated3 = dipolsDao.updateLampItem(newSelectedItemToUpdate)
+                Log.d("onItemClickListener", "SelectedItem: rowsNewsUpdated $rowsNewsUpdated1 $rowsNewsUpdated2 $rowsNewsUpdated3 ")
+
             }
         }
     }

@@ -80,6 +80,6 @@ interface DipolsDao {
     fun updateFiveLightsItem(fiveLightsDbModel: FiveLightsDbModel)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateLampItem(lampDbModel: LampDbModel)
+    fun updateLampItem(lampDbModel: LampDbModel): Int
 
 }
