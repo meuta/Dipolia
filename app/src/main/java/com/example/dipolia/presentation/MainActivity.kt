@@ -153,8 +153,6 @@ class MainActivity : AppCompatActivity() {
             selectedDipol?.let {
                 Log.d("onUpdateSeekBar", "selectedDipol = $it")
 
-                // Need to save to db firstly
-
                 localModeViewModel.changeLocalState("dipol", seekBarIndex, valuePerCent )
             }
         } else if (seekBar in seekBarFiveLightsList){
