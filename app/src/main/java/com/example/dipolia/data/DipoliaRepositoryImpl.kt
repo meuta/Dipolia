@@ -115,7 +115,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
                         }
                     }
                 }
-                    }
+            }
         }
     }
 
@@ -294,13 +294,13 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
             Log.d("DipoliaRepositoryImpl", "changeLocalState $dipolItem")
 
             dipolItem?.let {
-                if (it.lampType == LampType.DIPOl) {            // ! need to fix this trash crutch !
+                if (it.lampType == LampType.DIPOl) {            // some crutch
                     var colorList = dipolItem.colorList.colors.toMutableList()
                     if (colorList.isEmpty()) {
                         colorList = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
                     }
 //                Log.d("changeLocalState", "colorList $colorList")
-                    colorList[index] = value
+                    colorList[index] = value                    // here was crush before crutch. IndexOutOfBoundsException: Index: 5, Size: 5
                     val newDipolItem = dipolItem.copy(colorList = ColorList(colorList))
 
                     dipolsDao.updateLampItem(newDipolItem)
@@ -312,7 +312,8 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 //            Log.d("DipoliaRepositoryImpl", "changeLocalState $fiveLightsItem")
 
             fiveLightsItem?.let {
-                var colorList = fiveLightsItem.colorList.colors.toMutableList()
+                if (it.lampType == LampType.FIVE_LIGHTS) {            // second crutch
+                    var colorList = fiveLightsItem.colorList.colors.toMutableList()
                 if (colorList.isEmpty()) {
                     colorList = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0)
                 }
@@ -322,6 +323,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 
                 dipolsDao.updateLampItem(newFiveLightsItem)
 //                Log.d("DipoliaRepositoryImpl", "changeLocalState newFiveLightsItem $newFiveLightsItem")
+                }
             }
         }
     }
