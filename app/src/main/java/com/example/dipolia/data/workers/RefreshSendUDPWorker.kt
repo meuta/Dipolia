@@ -27,7 +27,7 @@ class RefreshSendUDPWorker(
 
             val lampList = dipolsDao.getLampsList()
             for (lamp in lampList) {
-                if (lamp.connected) {
+//                if (lamp.connected) {
 //                    Log.d("worker", "IP = ${lamp.lampId}")
                     val rcs = (BigDecimal(rabbitColorSpeed).setScale(
                         3,
@@ -56,7 +56,7 @@ class RefreshSendUDPWorker(
 
                     val address = sender.getInetAddressByName(lamp.lampIp)
                     sender.sendUDPSuspend(stringToSend, address)
-                }
+//                }
             }
 
             delay(100)

@@ -11,6 +11,8 @@ interface DipoliaRepository {
 
     suspend fun receiveLocalModeData()
 
+//    fun getLampListUpdatedByDb(): LiveData<List<LampDomainEntity>>
+
     fun testSendLocalModeData()
 
     fun getConnectedDipolList(): LiveData<List<DipolDomainEntity>>

@@ -41,39 +41,43 @@ class MainActivity : AppCompatActivity() {
         binding.viewModel = localModeViewModel
         binding.lifecycleOwner = this
 
-        localModeViewModel.selectedDipol.observe(this) {
-            selectedDipol = it
-//            Log.d("TEST_OF_SUBSCRIBE", "selectedDipol: $it")
-            setSeekbarsForSelectedDipol(it)
-        }
-
-        localModeViewModel.fiveLights.observe(this) {
-//            Log.d("TEST_OF_SUBSCRIBE", "fiveLights: $it")
-            selectedFiveLights = it
-            setFiveLightsSeekbars(it)
-        }
-
-        localModeViewModel.selectedLamp.observe(this) {
-            selectedLamp = it
-//            Log.d("TEST_OF_SUBSCRIBE", "selectedDipol: $it")
-        }
-
-        localModeViewModel.selectedConnectedLampType.observe(this) {
-            selectedConnectedLampType = it
-        }
-
-        localModeViewModel.isBackGroundWork.observe(this) {
-//            Log.d("init", "fromMain: $it")
-        }
-
-        localModeViewModel.dipolList.observe(this) {
-//            Log.d("TEST_OF_SUBSCRIBE", "dipolList: $it")
-            dipolListAdapter.submitList(it)      // Created new thread
-        }
-
+//        localModeViewModel.connectedUpdatedFromDbLampsList.observe(this) {
+//            Log.d("TEST_OF_SUBSCRIBE", "UpdatedFromDb: $it")
+//        }
         localModeViewModel.allLampsList.observe(this) { list ->
-            Log.d("TEST_OF_SUBSCRIBE", "allLampsListSelectedItem: ${list.map { "${it.id}, ${it.connected}, ${it.selected}"}}")
+            Log.d("TEST_OF_SUBSCRIBE", "allLampsListSelectedItem: ${list.map { "${it.id}, ${it.selected}"}}")
         }
+//        localModeViewModel.selectedDipol.observe(this) {
+//            selectedDipol = it
+////            Log.d("TEST_OF_SUBSCRIBE", "selectedDipol: $it")
+//            setSeekbarsForSelectedDipol(it)
+//        }
+//
+//        localModeViewModel.fiveLights.observe(this) {
+////            Log.d("TEST_OF_SUBSCRIBE", "fiveLights: $it")
+//            selectedFiveLights = it
+//            setFiveLightsSeekbars(it)
+//        }
+//
+//        localModeViewModel.selectedLamp.observe(this) {
+//            selectedLamp = it
+////            Log.d("TEST_OF_SUBSCRIBE", "selectedDipol: $it")
+//        }
+//
+//        localModeViewModel.selectedConnectedLampType.observe(this) {
+//            selectedConnectedLampType = it
+//        }
+//
+//        localModeViewModel.isBackGroundWork.observe(this) {
+////            Log.d("init", "fromMain: $it")
+//        }
+//
+//        localModeViewModel.dipolList.observe(this) {
+////            Log.d("TEST_OF_SUBSCRIBE", "dipolList: $it")
+//            dipolListAdapter.submitList(it)      // Created new thread
+//        }
+
+
 
 
         binding.btnRefreshList.setOnClickListener {
@@ -89,8 +93,8 @@ class MainActivity : AppCompatActivity() {
 //            Toast.makeText(this, "This button doesn't work now..", Toast.LENGTH_SHORT).show()
         }
 
-        setupSeekbars()
-        localModeViewModel.testSendLocalModeData()
+//        setupSeekbars()
+//        localModeViewModel.testSendLocalModeData()
 
     }
 

@@ -27,11 +27,15 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
     private val getAllLampsTableUseCase = GetAllLampsTableUseCase(repository)
     private val unselectLampUseCase = UnselectLampUseCase(repository)
     private val getSelectedConnectedLampTypeUseCase = GetSelectedConnectedLampTypeUseCase(repository)
+    private val getUpdatedFromDbLampsListUseCase = GetUpdatedFromDbLampsListUseCase(repository)
 
     private val scope = CoroutineScope(Dispatchers.IO)
+//    val connectedUpdatedFromDbLampsList = getUpdatedFromDbLampsListUseCase()
+
+    val allLampsList = getAllLampsTableUseCase()
 
     val dipolList = getDipolListUseCase()
-    val allLampsList = getAllLampsTableUseCase()
+
     val fiveLights = getFiveLightsUseCase()
     val selectedDipol = getSelectedDipolUseCase()
     val selectedConnectedLampType = getSelectedConnectedLampTypeUseCase()
@@ -44,9 +48,9 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
         scope.launch{
             receiveLocalModeDataUseCase ()
         }
-        scope.launch{
-            dipolsConnectionMonitoringUseCase ()
-        }
+//        scope.launch{
+//            dipolsConnectionMonitoringUseCase ()
+//        }
     }
 
     fun testSendLocalModeData() {

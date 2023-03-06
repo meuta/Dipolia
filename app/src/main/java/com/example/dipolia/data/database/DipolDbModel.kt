@@ -9,7 +9,7 @@ data class DipolDbModel(
     val dipolId: String,
     val dipolIp: String,
     var selected: Boolean = false,
-    var connected: Boolean = false,
+//    var connected: Boolean = false,
     var lastConnection: Long = 0,
     var r1: Double = 0.0,
     var g1: Double = 0.0,

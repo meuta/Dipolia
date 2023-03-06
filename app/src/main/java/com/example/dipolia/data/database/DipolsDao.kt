@@ -10,13 +10,15 @@ interface DipolsDao {
     @Query("SELECT * FROM lamps")
     fun getLampsTable(): LiveData<List<LampDbModel>>
 
-    @Query("SELECT * FROM lamps WHERE lampType = :lampType AND connected")
+//    @Query("SELECT * FROM lamps WHERE lampType = :lampType AND connected")
+    @Query("SELECT * FROM lamps WHERE lampType = :lampType")
     fun getConnectedLampsListByTypeLD(lampType: LampType): LiveData<List<LampDbModel>>
 
     @Query("SELECT * FROM lamps WHERE lampType = :lampType LIMIT 1")
     fun getFiveLightsByTypeLD(lampType: LampType): LiveData<LampDbModel>
 
-    @Query("SELECT * FROM lamps WHERE connected")
+//    @Query("SELECT * FROM lamps WHERE connected")
+    @Query("SELECT * FROM lamps")
     fun getConnectedLampsListLD(): LiveData<List<LampDbModel>>
 
     @Query("SELECT * FROM dipols WHERE lastConnection < strftime('%s','now') - 5 ")
@@ -49,11 +51,15 @@ interface DipolsDao {
     @Query("SELECT * FROM lamps WHERE selected=:selected LIMIT 1")
     fun getLampSelectedItem(selected: Boolean): LampDbModel?
 
-    @Query("SELECT * FROM lamps WHERE selected=:selected and connected=:connected LIMIT 1")
-    fun getLampSelectedConnectedItem(selected: Boolean, connected: Boolean): LampDbModel?
+//    @Query("SELECT * FROM lamps WHERE selected=:selected and connected=:connected LIMIT 1")
+    @Query("SELECT * FROM lamps WHERE selected=:selected LIMIT 1")
+//    fun getLampSelectedConnectedItem(selected: Boolean, connected: Boolean): LampDbModel?
+    fun getLampSelectedConnectedItem(selected: Boolean): LampDbModel?
 
-    @Query("SELECT * FROM lamps WHERE selected=:selected and connected=:connected LIMIT 1")
-    fun getLampSelectedConnectedItemLD(selected: Boolean, connected: Boolean): LiveData<LampDbModel?>
+//    @Query("SELECT * FROM lamps WHERE selected=:selected and connected=:connected LIMIT 1")
+//    fun getLampSelectedConnectedItemLD(selected: Boolean, connected: Boolean): LiveData<LampDbModel?>
+    @Query("SELECT * FROM lamps WHERE selected=:selected LIMIT 1")
+    fun getLampSelectedConnectedItemLD(selected: Boolean): LiveData<LampDbModel?>
 
     @Query("SELECT * FROM lamps WHERE lampType=:lampType AND selected=:selected LIMIT 1")
     fun getSelectedDipolItemLD(selected: Boolean, lampType: LampType): LiveData<LampDbModel?>

@@ -16,7 +16,7 @@ class DipoliaMapper {
             lampDto.id,
             lampDto.ip.toString().substring(1),
             selected = false,
-            connected = true,
+//            connected = true,
             lampType = lampDto.lampType,
             colorList = ColorList(emptyList<Double>())
         )
@@ -27,8 +27,7 @@ class DipoliaMapper {
         ip = lampDbModel.lampIp,
         lampType = lampDbModel.lampType,
         c = lampDbModel.colorList,
-        selected = lampDbModel.selected,
-        connected = lampDbModel.connected
+        selected = lampDbModel.selected
     ).also {
 //        Log.d("mapLampDbModelToEntity", "$it")
     }
@@ -49,8 +48,8 @@ class DipoliaMapper {
             ip = lampDbModel.lampIp,
             c1 = c1,
             c2 = c2,
-            selected = lampDbModel.selected,
-            connected = lampDbModel.connected
+            selected = lampDbModel.selected//,
+//            connected = lampDbModel.connected
         ).also {
 //            Log.d("mapLampDbModelToDipolEntity", "$it")
         }
@@ -67,11 +66,23 @@ class DipoliaMapper {
             id = lampDbModel.lampId,
             ip = lampDbModel.lampIp,
             c = c,
-            selected = lampDbModel.selected,
-            connected = lampDbModel.connected
+            selected = lampDbModel.selected//,
+//            connected = lampDbModel.connected
         ).also {
 //            Log.d("mapLampDbModelToFiveLightsEntity", "$it")
         }
+    }
+
+    fun mapLampDtoToEntity(lampDto: LampDto): LampDomainEntity {
+        val lampDomainEntity = LampDomainEntity(
+            lampDto.id,
+            lampDto.ip.toString().substring(1),
+            selected = false,
+            lampType = lampDto.lampType,
+            c = ColorList(emptyList()),
+            lastConnection = System.currentTimeMillis() / 1000
+        )
+        return lampDomainEntity
     }
 
 }

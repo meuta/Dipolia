@@ -12,6 +12,7 @@ data class LampDomainEntity(
     var last_set_c: List<Double?>? = null,
 
     var selected: Boolean = false,
-    var connected: Boolean = false
+//    var connected: Boolean = false
+    var lastConnection: Long = 0
 
 )
