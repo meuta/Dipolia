@@ -10,6 +10,5 @@ data class FiveLightsDomainEntity (
     var last_set_c: List<Double?>? = null,
 
     var selected: Boolean = false,
-    var connected : Boolean = false
 
 )

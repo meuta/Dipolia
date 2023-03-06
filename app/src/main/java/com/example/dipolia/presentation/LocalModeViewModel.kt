@@ -35,7 +35,7 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
     val fiveLights = getFiveLightsUseCase()
     val selectedDipol = getSelectedDipolUseCase()
     val selectedConnectedLampType = getSelectedConnectedLampTypeUseCase()
-    val selectedLamp = getSelectedLampUseCase()
+//    val selectedLamp = getSelectedLampUseCase()
     val isBackGroundWork = getIsBroadcastUseCase()
     init {  //This code will be executes every time automatically with creating of this object
         scope.launch{
@@ -44,9 +44,9 @@ class LocalModeViewModel(application: Application): AndroidViewModel(application
         scope.launch{
             receiveLocalModeDataUseCase ()
         }
-        scope.launch{
-            dipolsConnectionMonitoringUseCase ()
-        }
+//        scope.launch{
+//            dipolsConnectionMonitoringUseCase ()
+//        }
     }
 
     fun testSendLocalModeData() {
