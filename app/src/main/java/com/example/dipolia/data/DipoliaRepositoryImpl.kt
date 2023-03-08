@@ -9,10 +9,7 @@ import androidx.work.WorkManager
 import com.example.dipolia.data.database.AppDatabase
 import com.example.dipolia.data.database.ColorList
 import com.example.dipolia.data.mapper.DipoliaMapper
-import com.example.dipolia.data.network.DipolDto
-import com.example.dipolia.data.network.LampDto
-import com.example.dipolia.data.network.UDPClient
-import com.example.dipolia.data.network.UDPServer
+import com.example.dipolia.data.network.*
 import com.example.dipolia.data.workers.RefreshSendUDPWorker
 import com.example.dipolia.domain.DipolDomainEntity
 import com.example.dipolia.domain.DipoliaRepository
@@ -32,6 +29,11 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
     private val receiver = UDPServer()
     private val sender = UDPClient()
 
+    private val lampEntityListNetworkResult = mutableListOf<LampDomainEntity>()
+
+
+
+
     override suspend fun sendFollowMe() {
         while (true) {
             sender.sendUDPSuspend("Follow me")
@@ -41,7 +43,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 
     override suspend fun receiveLocalModeData() {
 
-        val lampEntityListNetworkResult = mutableListOf<LampDomainEntity>()
+//        val lampEntityListNetworkResult = mutableListOf<LampDomainEntity>()
 
         while (true) {
 
@@ -56,48 +58,58 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 
                 if (lampTypeString == "dipol" || lampTypeString == "5lights") {
 
-                        Log.d("receiveLocalModeData", "inside if lampTypeString = $lampTypeString")
-                        val id = ar[1].substring(0, ar[1].length - 1)
-                        var already = 0
+                    Log.d("receiveLocalModeData", "inside if lampTypeString = $lampTypeString")
+                    val id = ar[1].substring(0, ar[1].length - 1)
+                    var already = 0
 
-
-                        for (lamp in lampEntityListNetworkResult) {
-                            if (lamp.id == id) {
+                    for (lamp in lampEntityListNetworkResult) {
+                        if (lamp.id == id) {
 // connected list control:
-                                lamp.lastConnection = System.currentTimeMillis() / 1000
-                                Log.d("TEST", "i.lastConnection = ${lamp. id} ${lamp.lastConnection} ${lamp.connected}")
-                                Log.d("TEST", "currentTime - 5 = ${System.currentTimeMillis()/1000 - 5}")
-                                already = 1
-                                break
-                            }
+                            lamp.lastConnection = System.currentTimeMillis() / 1000
+                            Log.d(
+                                "TEST",
+                                "i.lastConnection = ${lamp.id} ${lamp.lastConnection} ${lamp.connected}"
+                            )
+//                            Log.d(
+//                                "TEST",
+//                                "currentTime - 5 = ${System.currentTimeMillis() / 1000 - 5}"
+//                            )
+                            already = 1
+                            break
                         }
-                    Log.d("TEST", "List controlled = ${lampEntityListNetworkResult.map { item -> item.id to item.connected }}")
+                    }
+                    Log.d(
+                        "TEST",
+                        "List controlled = ${lampEntityListNetworkResult.map { item -> item.id to item.connected }}"
+                    )
 
-                        if (already == 0) {
-                            val lampType = when (lampTypeString) {
-                                "dipol" -> LampType.DIPOl
-                                "5lights" -> LampType.FIVE_LIGHTS
-                                else -> LampType.UNKNOWN_LAMP_TYPE
-                            }
-                            val lampDto = LampDto(id, it.second, lampType, it.first)
+                    if (already == 0) {
+                        val lampType = when (lampTypeString) {
+                            "dipol" -> LampType.DIPOl
+                            "5lights" -> LampType.FIVE_LIGHTS
+                            else -> LampType.UNKNOWN_LAMP_TYPE
+                        }
+                        val lampDto = LampDto(id, it.second, lampType, System.currentTimeMillis()/1000)
 //                        Log.d("UDP receiveLocalModeData", "dipol $lampDto added")
 //                        Log.d("UDP receiveLocalModeData", "dipolListDto $lampListDto")
 
-                            val itemToListEntity = mapper.mapLampDtoToEntity(lampDto)
-                            val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
+                        val itemToListEntity = mapper.mapLampDtoToEntity(lampDto)
+                        val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
 //                        Log.d("UDP receiveLocalModeData", "itemToAdd = $itemToAdd")
-                            val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
+                        val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
 //                        Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
-                            if (itemFromDb == null) {
-                                dipolsDao.addLampItem(itemToAdd)
-                            } else {
-                                itemToListEntity.c = itemFromDb.colorList
-                                Log.d("TEST", "itemToListEntity.c = ${itemToListEntity.c}")
-                            }
-                            lampEntityListNetworkResult.add(itemToListEntity)
-                            Log.d("TEST", "lampEntityListNetworkResult = ${lampEntityListNetworkResult.map { item -> item.id to item.connected }}")
+                        if (itemFromDb == null) {
+                            dipolsDao.addLampItem(itemToAdd)
+                        } else {
+                            itemToListEntity.c = itemFromDb.colorList
+                            Log.d("TEST", "itemToListEntity.c = ${itemToListEntity.c}")
                         }
-
+                        lampEntityListNetworkResult.add(itemToListEntity)
+                        Log.d(
+                            "TEST",
+                            "lampEntityListNetworkResult = ${lampEntityListNetworkResult.map { item -> item.id to item.connected }}"
+                        )
+                    }
                 }
             }
         }
@@ -139,7 +151,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
             it?.let {
                 if (it.isNotEmpty()) {
                     mapper.mapLampDbModelToFiveLightsEntity(it[0])
-                } else{
+                } else {
                     null
                 }
             }
@@ -153,16 +165,18 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
     }
 
     override fun unselectLamp() {
-            val selectedLamp = dipolsDao.getLampSelectedItem(true)
-            selectedLamp?.let { dipolsDao.updateLampItem(it.copy(selected = false)) }
+        val selectedLamp = dipolsDao.getLampSelectedItem(true)
+        selectedLamp?.let { dipolsDao.updateLampItem(it.copy(selected = false)) }
 
     }
 
     override fun getSelectedConnectedLampType(): LiveData<LampType?> {
-        return Transformations.map(dipolsDao.getLampSelectedConnectedItemLD(
-            selected = true
-        )){
-           it?.lampType
+        return Transformations.map(
+            dipolsDao.getLampSelectedConnectedItemLD(
+                selected = true
+            )
+        ) {
+            it?.lampType
         }
     }
 
@@ -204,11 +218,11 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 
     override fun getSelectedLamp(): LiveData<LampDomainEntity?> {
 
-            return Transformations.map(dipolsDao.getLampSelectedItemLD(true)) { it ->
-                it?.let {
-                    mapper.mapLampDbModelToEntity(it)
-                }
+        return Transformations.map(dipolsDao.getLampSelectedItemLD(true)) { it ->
+            it?.let {
+                mapper.mapLampDbModelToEntity(it)
             }
+        }
     }
 
 
@@ -243,26 +257,46 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
         Log.d("onClickListener", " SelectedItem: $lampId")
 
         var oldSelectedItem = dipolsDao.getLampSelectedItem(true)
-        Log.d("onItemClickListener", " oldSelectedItem: ${oldSelectedItem?.lampId} ${oldSelectedItem?.selected}")
+        Log.d(
+            "onItemClickListener",
+            " oldSelectedItem: ${oldSelectedItem?.lampId} ${oldSelectedItem?.selected}"
+        )
 
         var newSelectedItem = dipolsDao.getLampItemById(lampId)
-        Log.d("onItemClickListener", " newSelectedItem: ${newSelectedItem?.lampId} ${newSelectedItem?.selected}")
+        Log.d(
+            "onItemClickListener",
+            " newSelectedItem: ${newSelectedItem?.lampId} ${newSelectedItem?.selected}"
+        )
 
         newSelectedItem?.let {
             if (oldSelectedItem?.lampId != it.lampIp) {
                 val oldSelectedItemToUpdate = oldSelectedItem?.copy(selected = false)
-                Log.d("onItemClickListener", " oldSelectedItemToUpdate: ${oldSelectedItemToUpdate?.lampId} ${oldSelectedItemToUpdate?.selected}")
+                Log.d(
+                    "onItemClickListener",
+                    " oldSelectedItemToUpdate: ${oldSelectedItemToUpdate?.lampId} ${oldSelectedItemToUpdate?.selected}"
+                )
 
-                oldSelectedItemToUpdate?.let {item ->
-                    while (dipolsDao.getLampItemById(item.lampId)?.selected == true){
+                oldSelectedItemToUpdate?.let { item ->
+                    while (dipolsDao.getLampItemById(item.lampId)?.selected == true) {
                         val rowsOldsUpdated = dipolsDao.updateLampItem(item)
-                        Log.d("onItemClickListener", "SelectedItem:  rowsOldsUpdated  $rowsOldsUpdated")
-                        Log.d("onItemClickListener", "SelectedItem:  dipolsDao.getLampItemById  ${dipolsDao.getLampItemById(item.lampId)?.selected}")
+                        Log.d(
+                            "onItemClickListener",
+                            "SelectedItem:  rowsOldsUpdated  $rowsOldsUpdated"
+                        )
+                        Log.d(
+                            "onItemClickListener",
+                            "SelectedItem:  dipolsDao.getLampItemById  ${
+                                dipolsDao.getLampItemById(item.lampId)?.selected
+                            }"
+                        )
                     }
                 }
                 val newSelectedItemToUpdate = it.copy(selected = true)
-                Log.d("onItemClickListener", " newSelectedItemToUpdate: ${newSelectedItemToUpdate.lampId} ${newSelectedItemToUpdate.selected}")
-                while (dipolsDao.getLampItemById(newSelectedItem.lampId)?.selected == false){
+                Log.d(
+                    "onItemClickListener",
+                    " newSelectedItemToUpdate: ${newSelectedItemToUpdate.lampId} ${newSelectedItemToUpdate.selected}"
+                )
+                while (dipolsDao.getLampItemById(newSelectedItem.lampId)?.selected == false) {
                     val rowsNewsUpdated = dipolsDao.updateLampItem(newSelectedItemToUpdate)
                     Log.d("onItemClickListener", "SelectedItem: rowsNewsUpdated  $rowsNewsUpdated")
                 }
@@ -283,7 +317,8 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
                         colorList = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
                     }
 //                Log.d("changeLocalState", "colorList $colorList")
-                    colorList[index] = value                    // here was crush before crutch. IndexOutOfBoundsException: Index: 5, Size: 5
+                    colorList[index] =
+                        value                    // here was crush before crutch. IndexOutOfBoundsException: Index: 5, Size: 5
                     val newDipolItem = dipolItem.copy(colorList = ColorList(colorList))
 
                     dipolsDao.updateLampItem(newDipolItem)
@@ -297,14 +332,14 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
             fiveLightsItem?.let {
                 if (it.lampType == LampType.FIVE_LIGHTS) {            // second crutch
                     var colorList = fiveLightsItem.colorList.colors.toMutableList()
-                if (colorList.isEmpty()) {
-                    colorList = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0)
-                }
+                    if (colorList.isEmpty()) {
+                        colorList = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0)
+                    }
 //                Log.d("changeLocalState", "colorList $colorList")
-                colorList[index] = value
-                val newFiveLightsItem = fiveLightsItem.copy(colorList = ColorList(colorList))
+                    colorList[index] = value
+                    val newFiveLightsItem = fiveLightsItem.copy(colorList = ColorList(colorList))
 
-                dipolsDao.updateLampItem(newFiveLightsItem)
+                    dipolsDao.updateLampItem(newFiveLightsItem)
 //                Log.d("DipoliaRepositoryImpl", "changeLocalState newFiveLightsItem $newFiveLightsItem")
                 }
             }

@@ -77,7 +77,7 @@ class DipoliaMapper {
             selected = false,
             lampType = lampDto.lampType,
             c = ColorList(emptyList()),
-            lastConnection = System.currentTimeMillis() / 1000
+            lastConnection = lampDto.lastConnection
         )
         return lampDomainEntity
 

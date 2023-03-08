@@ -8,5 +8,8 @@ data class LampDto (
     val id: String,
     val ip: InetAddress,
     val lampType: LampType,
-    var s1: String
-)
+    var lastConnection: Long
+){
+    val connected: Boolean
+        get() = lastConnection > System.currentTimeMillis()/1000 - 15
+}
