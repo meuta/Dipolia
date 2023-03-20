@@ -390,8 +390,7 @@
                 android:paddingVertical="10dp"
                 android:text="@string/refresh_list_btn"
                 android:textColor="@color/colorHighlighted"
-                android:textSize="10sp"
-                app:selectedButtonRemoveVisibility="@{viewModel.dipolList}" />
+                android:textSize="10sp"/>
 
             <TextView
                 android:id="@+id/btn_unselect"

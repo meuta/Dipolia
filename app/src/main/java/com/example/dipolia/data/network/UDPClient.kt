@@ -75,7 +75,7 @@ class UDPClient {
 //        Log.d("UDPClient", "DatagramPacket $outgoingPacket ")
 
         try {
-//            Log.d("UDPClient", "try ")
+            Log.d("UDPClient", "try ")
             sendPacket(socket, outgoingPacket)
         } catch (e: IOException) {
             //            Log.e(FragmentActivity.TAG, "IOException: " + e.message)

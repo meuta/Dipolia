@@ -29,6 +29,7 @@ class LampsApiImpl: LampsApi {
                     "5lights" -> LampType.FIVE_LIGHTS
                     else -> LampType.UNKNOWN_LAMP_TYPE
                 }
+//                val ip = it.second.toString().substring(1)
                 lampDto = LampDto(id, it.second, lampType, System.currentTimeMillis()/1000)
             }
         }

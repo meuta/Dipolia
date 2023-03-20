@@ -50,27 +50,35 @@ interface DipolsDao {
     @Query("SELECT * FROM dipols WHERE selected=:selected LIMIT 1")
     fun getSelectedDipolItem(selected: Boolean): DipolDbModel?
 
-    @Query("SELECT * FROM lamps WHERE selected=:selected LIMIT 1")
-    fun getLampSelectedItem(selected: Boolean): LampDbModel?
+//    @Query("SELECT * FROM lamps WHERE selected=:selected LIMIT 1")
+//    fun getLampSelectedItem(selected: Boolean): LampDbModel?
+    @Query("SELECT * FROM lamps LIMIT 1")
+    fun getLampSelectedItem(): LampDbModel?
 
 //    @Query("SELECT * FROM lamps WHERE selected=:selected and connected=:connected LIMIT 1")
 //    fun getLampSelectedConnectedItem(selected: Boolean, connected: Boolean): LampDbModel?
-    @Query("SELECT * FROM lamps WHERE selected=:selected LIMIT 1")
-    fun getLampSelectedConnectedItem(selected: Boolean): LampDbModel?
+//    @Query("SELECT * FROM lamps WHERE selected=:selected LIMIT 1")
+//    fun getLampSelectedConnectedItem(selected: Boolean): LampDbModel?
+    @Query("SELECT * FROM lamps LIMIT 1")
+    fun getLampSelectedConnectedItem(): LampDbModel?
 
 //    @Query("SELECT * FROM lamps WHERE selected=:selected and connected=:connected LIMIT 1")
 //    fun getLampSelectedConnectedItemLD(selected: Boolean, connected: Boolean): LiveData<LampDbModel?>
-    @Query("SELECT * FROM lamps WHERE selected=:selected LIMIT 1")
-    fun getLampSelectedConnectedItemLD(selected: Boolean): LiveData<LampDbModel?>
+    @Query("SELECT * FROM lamps LIMIT 1")
+    fun getLampSelectedConnectedItemLD(): LiveData<LampDbModel?>
 
-    @Query("SELECT * FROM lamps WHERE lampType=:lampType AND selected=:selected LIMIT 1")
-    fun getSelectedDipolItemLD(selected: Boolean, lampType: LampType): LiveData<LampDbModel?>
+//    @Query("SELECT * FROM lamps WHERE lampType=:lampType AND selected=:selected LIMIT 1")
+//    fun getSelectedDipolItemLD(selected: Boolean, lampType: LampType): LiveData<LampDbModel?>
+    @Query("SELECT * FROM lamps WHERE lampType=:lampType LIMIT 1")
+    fun getSelectedDipolItemLD(lampType: LampType): LiveData<LampDbModel?>
 
     @Query("SELECT * FROM fiveLights LIMIT 1")
     fun getFiveLightsItemLD(): LiveData<FiveLightsDbModel?>
 
-    @Query("SELECT * FROM lamps WHERE selected=:selected LIMIT 1")
-    fun getLampSelectedItemLD(selected: Boolean): LiveData<LampDbModel?>
+//    @Query("SELECT * FROM lamps WHERE selected=:selected LIMIT 1")
+//    fun getLampSelectedItemLD(selected: Boolean): LiveData<LampDbModel?>
+    @Query("SELECT * FROM lamps LIMIT 1")
+    fun getLampSelectedItemLD(): LiveData<LampDbModel?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)        //If we add an item with existed ID, it will be replace, so we can use it also in the edit case
     fun addDipolItem(dipolItemBbModel: DipolDbModel)

@@ -1,9 +1,11 @@
 package com.example.dipolia.data.network
 
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 class LampsRemoteDataSource {
 
@@ -38,5 +40,5 @@ class LampsRemoteDataSource {
             emit(lampDtoList) // Emits the result of the request to the flow
             delay(10) // Suspends the coroutine for some time
         }
-    }
+    }.flowOn(Dispatchers.IO)
 }

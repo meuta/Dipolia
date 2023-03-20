@@ -2,18 +2,24 @@ package com.example.dipolia.presentation
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import com.example.dipolia.data.DipoliaRepositoryImpl
 import com.example.dipolia.data.LampsRepositoryImpl
+import com.example.dipolia.data.mapper.DipoliaMapper
+import com.example.dipolia.domain.DipolDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.useCases.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class LocalModeViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val mapper = DipoliaMapper()
 
     private val repository = DipoliaRepositoryImpl(application)
     private val lampsRepository = LampsRepositoryImpl(application)
@@ -38,14 +44,21 @@ class LocalModeViewModel(application: Application) : AndroidViewModel(applicatio
     private val scope = CoroutineScope(Dispatchers.IO)
 
 
-    var dipolList = getDipolListUseCase()
+//    var dipolList = getDipolListUseCase()
+
+
     val allLampsList = getAllLampsTableUseCase()
+
     val fiveLights = getFiveLightsUseCase()
     val selectedDipol = getSelectedDipolUseCase()
     val selectedConnectedLampType = getSelectedConnectedLampTypeUseCase()
 
     //    val selectedLamp = getSelectedLampUseCase()
     val isBackGroundWork = getIsBroadcastUseCase()
+
+    val myDipolsList: LiveData<List<DipolDomainEntity>> = lampsRepository
+        .latestDipolLampDomainEntityList()
+        .asLiveData()
 
     init {  //This code will be executes every time automatically with creating of this object
         scope.launch {
@@ -54,14 +67,6 @@ class LocalModeViewModel(application: Application) : AndroidViewModel(applicatio
 //        scope.launch{
 //            receiveLocalModeDataUseCase ()
 //        }
-        scope.launch {
-            // Trigger the flow and consume its elements using collect
-            lampsRepository.latestDipolLampDomainEntityList.collect { dipols ->
-//            lampsRepository.latestDipolLampDtoList.collect { dipols ->
-                // Update View
-                Log.d("TEST_", "DipolLampDomainEntityList = ${dipols.map { it.id to it.lastConnection}}")
-            }
-        }
 
 //        scope.launch{
 //            dipolsConnectionMonitoringUseCase ()

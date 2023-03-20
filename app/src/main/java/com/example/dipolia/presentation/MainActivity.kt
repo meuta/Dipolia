@@ -12,10 +12,13 @@ import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.presentation.adaptes.DipolListAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 
-class MainActivity : AppCompatActivity() {
+class MainActivity() : AppCompatActivity() {
 
     private lateinit var localModeViewModel: LocalModeViewModel
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     private lateinit var binding: ActivityLocalModeBinding
 
@@ -44,6 +47,16 @@ class MainActivity : AppCompatActivity() {
             Log.d("TEST_OF_SUBSCRIBE", "allLampsListSelectedItem: ${list.map { "${it.id}, ${it.selected}"}}")
         }
 
+//        localModeViewModel.dipolList.observe(this) {
+////            Log.d("TEST_OF_SUBSCRIBE", "dipolList: $it")
+//            dipolListAdapter.submitList(it)      // Created new thread
+//        }
+        localModeViewModel.myDipolsList.observe(this) {
+            Log.d("TEST_OF_SUBSCRIBE", "dipolList: $it")
+            dipolListAdapter.submitList(it)      // Created new thread
+        }
+
+
 
 //        localModeViewModel.selectedDipol.observe(this) {
 //            selectedDipol = it
@@ -70,10 +83,6 @@ class MainActivity : AppCompatActivity() {
 ////            Log.d("init", "fromMain: $it")
 //        }
 
-//        localModeViewModel.dipolList.observe(this) {
-////            Log.d("TEST_OF_SUBSCRIBE", "dipolList: $it")
-//            dipolListAdapter.submitList(it)      // Created new thread
-//        }
 
 
 

@@ -54,8 +54,8 @@ class RefreshSendUDPWorker(
                         stringToSend = "r=$r;g=$g;b=$b;w=$w;u=$u;rcs=$rcs"
                     }
 
-                    val address = sender.getInetAddressByName(lamp.lampIp)
-                    sender.sendUDPSuspend(stringToSend, address)
+//                    val address = sender.getInetAddressByName(lamp.lampIp)
+//                    sender.sendUDPSuspend(stringToSend, address)
                 }
 //            }
 
