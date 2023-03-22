@@ -11,7 +11,7 @@ import com.example.dipolia.data.database.ColorList
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.network.*
 import com.example.dipolia.data.workers.RefreshSendUDPWorker
-import com.example.dipolia.domain.DipolDomainEntity
+import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.DipoliaRepository
 import com.example.dipolia.domain.Horn
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
@@ -37,7 +37,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
     override suspend fun sendFollowMe() {
         while (true) {
             sender.sendUDPSuspend("Follow me")
-            delay(1000)
+            delay(100)
         }
     }
 

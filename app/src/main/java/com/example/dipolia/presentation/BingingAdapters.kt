@@ -1,14 +1,13 @@
 package com.example.dipolia.presentation
 
 import android.graphics.Color
-import android.util.Log
 import android.view.View
 import android.view.View.*
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.example.dipolia.R
-import com.example.dipolia.domain.DipolDomainEntity
+import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.entities.LampType
 
 

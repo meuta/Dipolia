@@ -1,10 +1,9 @@
 package com.example.dipolia.data.mapper
 
-import android.util.Log
 import com.example.dipolia.data.database.ColorList
 import com.example.dipolia.data.database.LampDbModel
 import com.example.dipolia.data.network.LampDto
-import com.example.dipolia.domain.DipolDomainEntity
+import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
 
@@ -49,8 +48,28 @@ class DipoliaMapper {
             ip = lampDomainEntity.ip,
             c1 = c1,
             c2 = c2,
+            selected = false,
+            lastConnection = lampDomainEntity.lastConnection
+        ).also {
+//            Log.d("mapLampDbModelToDipolEntity", "$it")
+        }
+    }
+
+    fun mapLampEntityToFiveLightsEntity(lampDomainEntity: LampDomainEntity) : FiveLightsDomainEntity {
+        val c: List<Double>
+        c = if (lampDomainEntity.c.colors.isEmpty()){
+            listOf(0.0, 0.0, 0.0, 0.0, 0.0)
+        } else{
+            lampDomainEntity.c.colors.subList(0, 5)
+        }
+
+        return FiveLightsDomainEntity(
+            id = lampDomainEntity.id,
+            ip = lampDomainEntity.ip,
+            c = c,
 //            selected = lampDbModel.selected
-            selected = false
+            selected = false,
+            lastConnection = lampDomainEntity.lastConnection
         ).also {
 //            Log.d("mapLampDbModelToDipolEntity", "$it")
         }

@@ -15,6 +15,6 @@ data class LampDomainEntity(
     var lastConnection: Long = 0
 ){
     val connected: Boolean
-        get() = lastConnection > System.currentTimeMillis()/1000 - 15
+        get() = lastConnection > System.currentTimeMillis()/1000 - 30
 
 }

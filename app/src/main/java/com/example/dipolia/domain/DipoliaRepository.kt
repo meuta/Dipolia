@@ -1,6 +1,7 @@
 package com.example.dipolia.domain
 
 import androidx.lifecycle.LiveData
+import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType

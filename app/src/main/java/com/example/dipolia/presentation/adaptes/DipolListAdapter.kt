@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.example.dipolia.databinding.ItemDipolSelectedBinding
-import com.example.dipolia.domain.DipolDomainEntity
+import com.example.dipolia.domain.entities.DipolDomainEntity
 
 
 class DipolListAdapter : ListAdapter<DipolDomainEntity, DipolItemViewHolder>(DipolItemDiffCallback()) {

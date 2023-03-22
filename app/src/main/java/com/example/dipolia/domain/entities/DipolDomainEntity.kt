@@ -1,4 +1,4 @@
-package com.example.dipolia.domain
+package com.example.dipolia.domain.entities
 
 
 data class DipolDomainEntity(
@@ -14,6 +14,9 @@ data class DipolDomainEntity(
     var last_set_c2: List<Double?>? = null,
 
     var selected: Boolean = false,
-    var connected : Boolean = false
+    var lastConnection: Long = 0
+){
 
-)
+    val connected: Boolean
+        get() = lastConnection > System.currentTimeMillis()/1000 - 30
+}

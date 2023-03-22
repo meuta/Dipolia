@@ -10,5 +10,9 @@ data class FiveLightsDomainEntity (
     var last_set_c: List<Double?>? = null,
 
     var selected: Boolean = false,
+    var lastConnection: Long = 0
 
-)
+) {
+    val connected: Boolean
+        get() = lastConnection > System.currentTimeMillis() / 1000 - 30
+}

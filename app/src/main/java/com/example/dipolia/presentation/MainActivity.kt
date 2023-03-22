@@ -3,11 +3,10 @@ package com.example.dipolia.presentation
 import android.os.Bundle
 import android.util.Log
 import android.widget.SeekBar
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.dipolia.databinding.ActivityLocalModeBinding
-import com.example.dipolia.domain.DipolDomainEntity
+import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
@@ -56,18 +55,21 @@ class MainActivity() : AppCompatActivity() {
             dipolListAdapter.submitList(it)      // Created new thread
         }
 
-
+//        localModeViewModel.fiveLights.observe(this) {
+////            Log.d("TEST_OF_SUBSCRIBE", "fiveLights: $it")
+//            selectedFiveLights = it
+//            setFiveLightsSeekbars(it)
+//        }
+//        localModeViewModel.myFiveLight.observe(this) {
+//            Log.d("TEST_OF_SUBSCRIBE", "fiveLights: $it")
+////            selectedFiveLights = it
+////            setFiveLightsSeekbars(it)
+//        }
 
 //        localModeViewModel.selectedDipol.observe(this) {
 //            selectedDipol = it
 ////            Log.d("TEST_OF_SUBSCRIBE", "selectedDipol: $it")
 //            setSeekbarsForSelectedDipol(it)
-//        }
-
-//        localModeViewModel.fiveLights.observe(this) {
-////            Log.d("TEST_OF_SUBSCRIBE", "fiveLights: $it")
-//            selectedFiveLights = it
-//            setFiveLightsSeekbars(it)
 //        }
 
 //        localModeViewModel.selectedLamp.observe(this) {

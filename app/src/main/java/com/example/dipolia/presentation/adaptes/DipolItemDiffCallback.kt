@@ -1,7 +1,7 @@
 package com.example.dipolia.presentation.adaptes
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.dipolia.domain.DipolDomainEntity
+import com.example.dipolia.domain.entities.DipolDomainEntity
 
 class DipolItemDiffCallback: DiffUtil.ItemCallback<DipolDomainEntity>() {
     override fun areItemsTheSame(oldItem: DipolDomainEntity, newItem: DipolDomainEntity): Boolean {
@@ -12,6 +12,6 @@ class DipolItemDiffCallback: DiffUtil.ItemCallback<DipolDomainEntity>() {
         oldItem: DipolDomainEntity,
         newItem: DipolDomainEntity
     ): Boolean {
-        return oldItem == newItem
+        return oldItem.id == newItem.id
     }
 }
