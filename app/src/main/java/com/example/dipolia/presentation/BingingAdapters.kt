@@ -69,7 +69,7 @@ fun setFiveLightsItemVisibility(view: View, isConnected: Boolean){
 
 @BindingAdapter("selectedBackground")
 fun setSelectedBackground(textView: TextView, isSelected: Boolean){
-    Log.d("setSelectedBackground", "$isSelected")
+//    Log.d("setSelectedBackground", "$isSelected")
     if (isSelected) {
         textView.setBackgroundColor(ContextCompat.getColor(textView.context, R.color.colorAccent))
     } else {

@@ -48,17 +48,17 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
         while (true) {
 
             val receivedDipolData = receiver.receiveStringAndIPFromUDP()
-            Log.d("receiveLocalModeData", "Pair received: $receivedDipolData")
+//            Log.d("receiveLocalModeData", "Pair received: $receivedDipolData")
 
             receivedDipolData?.let {
 
                 val ar = it.first.split(" ")
                 val lampTypeString = ar[0]
-                Log.d("receiveLocalModeData", "lampTypeString = $lampTypeString")
+//                Log.d("receiveLocalModeData", "lampTypeString = $lampTypeString")
 
                 if (lampTypeString == "dipol" || lampTypeString == "5lights") {
 
-                    Log.d("receiveLocalModeData", "inside if lampTypeString = $lampTypeString")
+//                    Log.d("receiveLocalModeData", "inside if lampTypeString = $lampTypeString")
                     val id = ar[1].substring(0, ar[1].length - 1)
                     var already = 0
 
@@ -66,13 +66,9 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
                         if (lamp.id == id) {
 // connected list control:
                             lamp.lastConnection = System.currentTimeMillis() / 1000
-                            Log.d(
-                                "TEST",
-                                "i.lastConnection = ${lamp.id} ${lamp.lastConnection} ${lamp.connected}"
-                            )
 //                            Log.d(
 //                                "TEST",
-//                                "currentTime - 5 = ${System.currentTimeMillis() / 1000 - 5}"
+//                                "i.lastConnection = ${lamp.id} ${lamp.lastConnection} ${lamp.connected}"
 //                            )
                             already = 1
                             break

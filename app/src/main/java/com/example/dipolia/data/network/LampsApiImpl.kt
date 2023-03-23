@@ -11,17 +11,17 @@ class LampsApiImpl: LampsApi {
     override suspend fun fetchLampDto(): LampDto? {
         var lampDto : LampDto? = null
         val receivedData = receiver.receiveStringAndIPFromUDP()
-        Log.d("receiveLocalModeData", "Pair received: $receivedData")
+//        Log.d("receiveLocalModeData", "Pair received: $receivedData")
 
         receivedData?.let {
 
             val ar = it.first.split(" ")
             val lampTypeString = ar[0]
-            Log.d("receiveLocalModeData", "lampTypeString = $lampTypeString")
+//            Log.d("receiveLocalModeData", "lampTypeString = $lampTypeString")
 
             if (lampTypeString == "dipol" || lampTypeString == "5lights") {
 
-                Log.d("receiveLocalModeData", "inside if lampTypeString = $lampTypeString")
+//                Log.d("receiveLocalModeData", "inside if lampTypeString = $lampTypeString")
                 val id = ar[1].substring(0, ar[1].length - 1)
 
                 val lampType = when (lampTypeString) {
@@ -29,7 +29,6 @@ class LampsApiImpl: LampsApi {
                     "5lights" -> LampType.FIVE_LIGHTS
                     else -> LampType.UNKNOWN_LAMP_TYPE
                 }
-//                val ip = it.second.toString().substring(1)
                 lampDto = LampDto(id, it.second, lampType, System.currentTimeMillis()/1000)
             }
         }
