@@ -1,8 +1,8 @@
 package com.example.dipolia.domain.useCases
 
-import com.example.dipolia.domain.DipoliaRepository
+import com.example.dipolia.domain.LampsRepository
 
-class SelectItemUseCase(private val repository: DipoliaRepository) {
+class SelectLampUseCase(private val repository: LampsRepository) {
 
     operator fun invoke(dipolId: String) = repository.selectLamp(dipolId)
 }

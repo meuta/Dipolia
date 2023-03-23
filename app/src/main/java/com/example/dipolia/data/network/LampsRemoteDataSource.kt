@@ -1,17 +1,15 @@
 package com.example.dipolia.data.network
 
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 
 class LampsRemoteDataSource {
 
     private val lampsApi = LampsApiImpl()
 
-    private val lampDtoList = mutableListOf<LampDto>()
+//    private val lampDtoList = mutableListOf<LampDto>()
 
     val myLampDto: Flow<LampDto> = flow {
         while (true) {

@@ -4,14 +4,10 @@ import android.app.Application
 import android.util.Log
 import com.example.dipolia.data.database.AppDatabase
 import com.example.dipolia.data.mapper.DipoliaMapper
-import com.example.dipolia.data.network.LampDto
 import com.example.dipolia.data.network.LampsRemoteDataSource
 import com.example.dipolia.data.network.UDPClient
-import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.LampsRepository
-import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
-import com.example.dipolia.domain.entities.LampType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -26,12 +22,90 @@ class LampsRepositoryImpl(private val application: Application) : LampsRepositor
     private val sender = UDPClient()
 
     private val lampEntityList = mutableListOf<LampDomainEntity>()
+    private var selectedLamp: LampDomainEntity? = null
 
 
     override suspend fun sendFollowMe() {
         while (true) {
             sender.sendUDPSuspend("Follow me")
             delay(100)
+        }
+    }
+
+    override fun getLatestLampList(): Flow<List<LampDomainEntity>> = lampsRemoteDataSource.myLampDto
+        .map { lampDto ->
+            var already = 0
+
+            if (lampDto.id in lampEntityList.map { it.id }){
+                val lampFromList = lampEntityList.find { lamp -> lamp.id == lampDto.id }
+                val lampFromListIndex = lampEntityList.indexOf(lampFromList)
+                lampFromList?.let {
+                    it.lastConnection = lampDto.lastConnection
+                    it.selected = (selectedLamp?.id == it.id)
+                    lampEntityList[lampFromListIndex] = it
+                    Log.d("getLatestLampList", "${lampEntityList[lampFromListIndex].id} ${lampEntityList[lampFromListIndex].selected}")
+                }
+                already = 1
+            }
+
+            if (already == 0) {
+                val lampDomainEntity = mapper.mapLampDtoToEntity(lampDto)
+
+                val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
+//                        Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
+                if (itemFromDb == null) {
+                    val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
+                    dipolsDao.addLampItem(itemToAdd)
+                } else {
+                        lampDomainEntity.c = itemFromDb.colorList
+//                        Log.d("TEST", "exist")
+                }
+
+                lampEntityList.add(lampDomainEntity)
+//                Log.d(
+//                    "TEST",
+//                    "lampEntityList = ${lampEntityList.map { item -> item.id to item.lastConnection }}"
+//                )
+            }
+
+            lampEntityList
+        }.flowOn(Dispatchers.IO)
+
+
+
+    override fun selectLamp(lampId: String) {
+        val oldSelectedItem = lampEntityList.find { lamp -> lamp.selected }
+        val oldSelectedItemIndex = lampEntityList.indexOf(oldSelectedItem)
+//        Log.d("onItemClickListener", " oldSelectedItem: ${oldSelectedItem?.id}, ${oldSelectedItem?.selected}")
+
+        val newSelectedItem = lampEntityList.find { lamp -> lamp.id == lampId }
+        val newSelectedItemIndex = lampEntityList.indexOf(newSelectedItem)
+//        Log.d("onItemClickListener", " newSelectedItem: ${newSelectedItem?.id}, ${newSelectedItem?.selected}")
+
+        newSelectedItem?.let {
+            if (oldSelectedItem?.id != it.id) {
+                val oldSelectedItemToUpdate = oldSelectedItem?.copy(selected = false)
+
+                oldSelectedItemToUpdate?.let { item ->
+                    lampEntityList[oldSelectedItemIndex] = item
+                }
+                val newSelectedItemToUpdate = it.copy(selected = true)
+                lampEntityList[newSelectedItemIndex] = newSelectedItemToUpdate
+                selectedLamp = newSelectedItemToUpdate
+//                Log.d(
+//                    "onItemClickListener",
+//                    " selectedLamp: ${selectedLamp?.id} ${selectedLamp?.selected}"
+//                )
+            }
+        }
+    }
+
+    override fun unselectLamp() {
+        val selectedItem = lampEntityList.find { lamp -> lamp.selected }
+        selectedItem?.let {
+            val selectedItemIndex = lampEntityList.indexOf(it)
+            selectedLamp = null
+            lampEntityList[selectedItemIndex].selected = false
         }
     }
 
@@ -63,49 +137,6 @@ class LampsRepositoryImpl(private val application: Application) : LampsRepositor
 //                        mapper.mapLampDtoToEntity(lampDto)
 //                    }
 //            }.flowOn(Dispatchers.IO)
-
-
-
-    override fun getLatestLampList(): Flow<List<LampDomainEntity>> = lampsRemoteDataSource.myLampDto
-        .map { lampDto ->
-            var already = 0
-//            for (lamp in lampEntityList) {
-//                if (lamp.id == lampDto.id) {
-//                    lamp.lastConnection = lampDto.lastConnection
-//                    already = 1
-//                    break
-//                }
-//            }
-
-            if (lampDto.id in lampEntityList.map { it.id }){
-                val lampFromList = lampEntityList.find { lamp -> lamp.id == lampDto.id }
-                lampFromList?.lastConnection = lampDto.lastConnection
-                already = 1
-            }
-
-            if (already == 0) {
-                val lampDomainEntity = mapper.mapLampDtoToEntity(lampDto)
-
-                val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
-//                        Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
-                if (itemFromDb == null) {
-                    val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
-                    dipolsDao.addLampItem(itemToAdd)
-                } else {
-                        lampDomainEntity.c = itemFromDb.colorList
-//                        lampDomainEntity.c.colors = listOf(0.0, 0.2, 0.4, 0.0, 0.3, 0.0)
-                        Log.d("TEST", "exist")
-                }
-
-                lampEntityList.add(lampDomainEntity)
-                Log.d(
-                    "TEST",
-                    "lampEntityList = ${lampEntityList.map { item -> item.id to item.lastConnection }}"
-                )
-            }
-
-            lampEntityList
-        }.flowOn(Dispatchers.IO)
 
 
 //    override fun latestDipolLampDomainEntityList(): Flow<List<DipolDomainEntity>> =

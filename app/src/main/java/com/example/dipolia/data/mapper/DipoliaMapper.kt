@@ -48,7 +48,7 @@ class DipoliaMapper {
             ip = lampDomainEntity.ip,
             c1 = c1,
             c2 = c2,
-            selected = false,
+            selected = lampDomainEntity.selected,
             lastConnection = lampDomainEntity.lastConnection
         ).also {
 //            Log.d("mapLampDbModelToDipolEntity", "$it")
@@ -68,7 +68,7 @@ class DipoliaMapper {
             ip = lampDomainEntity.ip,
             c = c,
 //            selected = lampDbModel.selected
-            selected = false,
+            selected = lampDomainEntity.selected,
             lastConnection = lampDomainEntity.lastConnection
         ).also {
 //            Log.d("mapLampDbModelToDipolEntity", "$it")

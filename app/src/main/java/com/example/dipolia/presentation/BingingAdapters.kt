@@ -1,6 +1,7 @@
 package com.example.dipolia.presentation
 
 import android.graphics.Color
+import android.util.Log
 import android.view.View
 import android.view.View.*
 import android.widget.TextView
@@ -8,6 +9,8 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.example.dipolia.R
 import com.example.dipolia.domain.entities.DipolDomainEntity
+import com.example.dipolia.domain.entities.FiveLightsDomainEntity
+import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
 
 
@@ -66,6 +69,7 @@ fun setFiveLightsItemVisibility(view: View, isConnected: Boolean){
 
 @BindingAdapter("selectedBackground")
 fun setSelectedBackground(textView: TextView, isSelected: Boolean){
+    Log.d("setSelectedBackground", "$isSelected")
     if (isSelected) {
         textView.setBackgroundColor(ContextCompat.getColor(textView.context, R.color.colorAccent))
     } else {
@@ -82,10 +86,11 @@ fun setSelectedVisibility(view: View, isSelected: Boolean){
     }
 }
 
+
 @BindingAdapter("lampControlLayoutVisibility")
-fun setLampControlLayoutVisibility(view: View, isConnected: Boolean){
+fun setLampControlLayoutVisibility(view: View, notEmpty: Boolean){
 //    Log.d("setSelectedDipolLayoutVisibility", "$isConnected")
-    if (isConnected) {
+    if (notEmpty) {
         view.visibility = VISIBLE
     } else {
         view.visibility = INVISIBLE
@@ -97,9 +102,9 @@ fun setLampControlLayoutVisibility(view: View, isConnected: Boolean){
 fun setPleaseSelectTextViewVisibility(view: View, lampType: LampType?){
 //    Log.d("setSelectedPleaseSelectTextViewVisibility", "$lampType")
     if (lampType == LampType.DIPOl || lampType == LampType.FIVE_LIGHTS) {
-        view.visibility = VISIBLE
-    } else {
         view.visibility = INVISIBLE
+    } else {
+        view.visibility = VISIBLE
     }
 }
 

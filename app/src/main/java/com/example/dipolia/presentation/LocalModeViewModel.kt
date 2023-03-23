@@ -12,9 +12,6 @@ import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.domain.useCases.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class LocalModeViewModel(application: Application) : AndroidViewModel(application) {
@@ -28,10 +25,11 @@ class LocalModeViewModel(application: Application) : AndroidViewModel(applicatio
     private val getLampsUseCase = GetConnectedLampsUseCase(lampsRepository)
     private val getDipolListUseCase = GetDipolListUseCase(lampsRepository)
     private val getFiveLightsUseCase = GetConnectedFiveLightsUseCase(lampsRepository)
+    private val selectItemUseCase = SelectLampUseCase(lampsRepository)
+    private val unselectLampUseCase = UnselectLampUseCase(lampsRepository)
 
     private val receiveLocalModeDataUseCase = ReceiveLocalModeDataUseCase(repository)
     private val testSendLocalModeDataUseCase = TestSendLocalModeDataUseCase(repository)
-    private val selectItemUseCase = SelectItemUseCase(repository)
     private val refreshConnectedListUseCase = RefreshConnectedListUseCase(repository)
     private val changeLocalStateUseCase = ChangeLocalStateUseCase(repository)
     private val getSelectedDipolUseCase = GetSelectedDipolUseCase(repository)
@@ -40,27 +38,20 @@ class LocalModeViewModel(application: Application) : AndroidViewModel(applicatio
     private val workerStartStopUseCase = WorkerStartStopUseCase(repository)
     private val getIsBroadcastUseCase = GetIsBroadcastUseCase(repository)
     private val getAllLampsTableUseCase = GetAllLampsTableUseCase(repository)
-    private val unselectLampUseCase = UnselectLampUseCase(repository)
     private val getSelectedConnectedLampTypeUseCase =
         GetSelectedConnectedLampTypeUseCase(repository)
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
 
-//    var dipolList = getDipolListUseCase()
-
 
     val allLampsList = getAllLampsTableUseCase()
 
-//    val fiveLights = getFiveLightsUseCase()
     val selectedDipol = getSelectedDipolUseCase()
     val selectedConnectedLampType = getSelectedConnectedLampTypeUseCase()
 
-    //    val selectedLamp = getSelectedLampUseCase()
     val isBackGroundWork = getIsBroadcastUseCase()
 
-//    val myDipolsList: LiveData<List<DipolDomainEntity>> = getDipolListUseCase().asLiveData()
-//    val myFiveLight: LiveData<FiveLightsDomainEntity?> = getFiveLightsUseCase().asLiveData()
     val myLamps: LiveData<List<LampDomainEntity>> = getLampsUseCase().asLiveData()
     val myDipolsList: LiveData<List<DipolDomainEntity>> = Transformations.map(myLamps) {list ->
         list
@@ -72,14 +63,10 @@ class LocalModeViewModel(application: Application) : AndroidViewModel(applicatio
             .filter { it.lampType == LampType.FIVE_LIGHTS && it.connected }
             .map { lamp -> mapper.mapLampEntityToFiveLightsEntity(lamp) }
     }
+    val selectedLamp: LiveData<LampDomainEntity> = Transformations.map(myLamps) {list ->
+        list.find { it.selected }
+    }
 
-//    val myFiveLight: LiveData<FiveLightsDomainEntity?> = getLampsUseCase()
-//        .map { list ->
-//            list
-//                .filter { it.lampType == LampType.DIPOl && it.connected }
-//                .map { lamp -> mapper.mapLampEntityToFiveLightsEntity(lamp) }[0]
-//        }
-//        .asLiveData()
 
     init {  //This code will be executes every time automatically with creating of this object
         scope.launch {
@@ -99,12 +86,17 @@ class LocalModeViewModel(application: Application) : AndroidViewModel(applicatio
         testSendLocalModeDataUseCase()
     }
 
-    fun selectItem(itemId: String) {
+    fun selectLamp(itemId: String) {
         scope.launch {
             selectItemUseCase(itemId)
         }
     }
 
+    fun unselectLamp() {
+        scope.launch {
+            unselectLampUseCase()
+        }
+    }
 
     fun refreshConnectedList() {
         scope.launch {
@@ -118,11 +110,6 @@ class LocalModeViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun unselectLamp() {
-        scope.launch {
-            unselectLampUseCase()
-        }
-    }
 
     fun workerStartStop() {
         workerStartStopUseCase()

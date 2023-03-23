@@ -4,11 +4,9 @@ import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.LampsRepository
 import kotlinx.coroutines.flow.Flow
 
-//class GetDipolListUseCase(private val repository: DipoliaRepository) {
 class GetDipolListUseCase(private val repository: LampsRepository) {
 
-//    operator fun invoke(): LiveData<List<DipolDomainEntity>> {
-//        return repository.getConnectedDipolList()
+
 //    operator fun invoke(): Flow<List<DipolDomainEntity>> {
 //        return repository.latestDipolLampDomainEntityList()
 //    }

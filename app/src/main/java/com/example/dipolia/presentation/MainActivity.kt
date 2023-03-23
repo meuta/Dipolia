@@ -42,16 +42,21 @@ class MainActivity() : AppCompatActivity() {
         binding.viewModel = localModeViewModel
         binding.lifecycleOwner = this
 
-        localModeViewModel.allLampsList.observe(this) { list ->
-            Log.d("TEST_OF_SUBSCRIBE", "allLampsListSelectedItem: ${list.map { "${it.id}, ${it.selected}"}}")
-        }
+//        localModeViewModel.allLampsList.observe(this) { list ->
+//            Log.d("TEST_OF_SUBSCRIBE", "allLampsListSelectedItem: ${list.map { "${it.id}, ${it.selected}"}}")
+//        }
 
 //        localModeViewModel.dipolList.observe(this) {
 ////            Log.d("TEST_OF_SUBSCRIBE", "dipolList: $it")
 //            dipolListAdapter.submitList(it)      // Created new thread
 //        }
+
+        localModeViewModel.myLamps.observe(this) {
+            Log.d("TEST_OF_SUBSCRIBE", "myLamps: ${it.map { item -> "${item.id}, ${item.selected}, ${item.lastConnection}"} }")
+        }
+
         localModeViewModel.myDipolsList.observe(this) {
-            Log.d("TEST_OF_SUBSCRIBE", "dipolList: $it")
+            Log.d("TEST_OF_SUBSCRIBE", "dipolList: ${it.map { item -> "${item.id}, ${item.selected}, ${item.lastConnection}"} }")
             dipolListAdapter.submitList(it)      // Created new thread
         }
 
@@ -189,7 +194,7 @@ class MainActivity() : AppCompatActivity() {
 
     private fun setupClickListener() {
         dipolListAdapter.onDipolItemClickListener = {
-            localModeViewModel.selectItem(it.id)
+            localModeViewModel.selectLamp(it.id)
             Log.d("onDipolItemClickListener", "$it")
         }
     }

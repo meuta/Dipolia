@@ -12,6 +12,9 @@ class DipolItemDiffCallback: DiffUtil.ItemCallback<DipolDomainEntity>() {
         oldItem: DipolDomainEntity,
         newItem: DipolDomainEntity
     ): Boolean {
-        return oldItem.id == newItem.id
+
+        val oldItemCopy = oldItem.copy(lastConnection = newItem.lastConnection)
+        return oldItemCopy == newItem
     }
+
 }

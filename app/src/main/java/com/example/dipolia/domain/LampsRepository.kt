@@ -16,4 +16,8 @@ interface LampsRepository {
 //    fun latestFiveLightsLampDomainEntityList(): Flow<List<FiveLightsDomainEntity>>
 //    fun latestFiveLightsLampDomainEntityList(): Flow<FiveLightsDomainEntity>
 
+    fun selectLamp(lampId: String)
+
+    fun unselectLamp()
+
 }
