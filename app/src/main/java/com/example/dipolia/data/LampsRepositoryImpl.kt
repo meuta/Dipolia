@@ -3,11 +3,13 @@ package com.example.dipolia.data
 import android.app.Application
 import android.util.Log
 import com.example.dipolia.data.database.AppDatabase
+import com.example.dipolia.data.database.ColorList
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.network.LampsRemoteDataSource
 import com.example.dipolia.data.network.UDPClient
 import com.example.dipolia.domain.LampsRepository
 import com.example.dipolia.domain.entities.LampDomainEntity
+import com.example.dipolia.domain.entities.LampType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -36,14 +38,18 @@ class LampsRepositoryImpl(private val application: Application) : LampsRepositor
         .map { lampDto ->
             var already = 0
 
-            if (lampDto.id in lampEntityList.map { it.id }){
+            if (lampDto.id in lampEntityList.map { it.id }) {
                 val lampFromList = lampEntityList.find { lamp -> lamp.id == lampDto.id }
                 val lampFromListIndex = lampEntityList.indexOf(lampFromList)
                 lampFromList?.let {
                     it.lastConnection = lampDto.lastConnection
                     it.selected = (selectedLamp?.id == it.id)
+
                     lampEntityList[lampFromListIndex] = it
-                    Log.d("getLatestLampList", "${lampEntityList[lampFromListIndex].id} ${lampEntityList[lampFromListIndex].selected}")
+                    Log.d(
+                        "getLatestLampList",
+                        "${lampEntityList[lampFromListIndex].id} ${lampEntityList[lampFromListIndex].selected}"
+                    )
                 }
                 already = 1
             }
@@ -57,7 +63,7 @@ class LampsRepositoryImpl(private val application: Application) : LampsRepositor
                     val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
                     dipolsDao.addLampItem(itemToAdd)
                 } else {
-                        lampDomainEntity.c = itemFromDb.colorList
+                    lampDomainEntity.c = itemFromDb.colorList
 //                        Log.d("TEST", "exist")
                 }
 
@@ -70,7 +76,6 @@ class LampsRepositoryImpl(private val application: Application) : LampsRepositor
 
             lampEntityList
         }.flowOn(Dispatchers.IO)
-
 
 
     override fun selectLamp(lampId: String) {
@@ -106,6 +111,39 @@ class LampsRepositoryImpl(private val application: Application) : LampsRepositor
             val selectedItemIndex = lampEntityList.indexOf(it)
             selectedLamp = null
             lampEntityList[selectedItemIndex].selected = false
+        }
+    }
+
+    override fun changeLocalState(set: String, index: Int, value: Double) {
+        Log.d("LampsRepositoryImpl", "changeLocalState $set $index $value")
+        selectedLamp?.let { lamp ->
+            Log.d("LampsRepositoryImpl", "changeLocalState ${lamp.id}")
+
+            var colorList = lamp.c.colors.toMutableList()
+            Log.d("changeLocalState", "colorList $colorList")
+
+            if (colorList.isEmpty()) {
+                colorList = when (set) {
+                    "dipol" -> mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+                    "fiveLights" -> mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0)
+                    else -> mutableListOf()
+                }
+            }
+            colorList[index] = value
+            val newLampItem = lamp.copy(c = ColorList(colorList))
+            Log.d("changeLocalState", "newLampItem $newLampItem")
+
+            selectedLamp = newLampItem
+            Log.d("changeLocalState", "selectedLamp $selectedLamp")
+
+            selectedLamp?.let {
+                val item = lampEntityList.find { lamp -> lamp.id == it.id }
+                val itemIndex = lampEntityList.indexOf(item)
+                val changedItem = item?.copy(c = ColorList(colorList))
+                changedItem?.let { cItem ->
+                    lampEntityList[itemIndex] = cItem
+                }
+            }
         }
     }
 

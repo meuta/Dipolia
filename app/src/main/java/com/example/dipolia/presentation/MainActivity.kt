@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.databinding.ActivityLocalModeBinding
 import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
@@ -17,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 class MainActivity() : AppCompatActivity() {
 
     private lateinit var localModeViewModel: LocalModeViewModel
+    private var mapper = DipoliaMapper()
     private val scope = CoroutineScope(Dispatchers.IO)
 
     private lateinit var binding: ActivityLocalModeBinding
@@ -25,8 +27,9 @@ class MainActivity() : AppCompatActivity() {
 
     private lateinit var seekBarList: List<SeekBar>
     private lateinit var seekBarFiveLightsList: List<SeekBar>
-    private var selectedDipol: DipolDomainEntity? = null
     private var selectedLamp: LampDomainEntity? = null
+
+    private var selectedDipol: DipolDomainEntity? = null
     private var selectedConnectedLampType: LampType? = null
     private var selectedFiveLights: FiveLightsDomainEntity? = null
 
@@ -60,16 +63,33 @@ class MainActivity() : AppCompatActivity() {
             dipolListAdapter.submitList(it)      // Created new thread
         }
 
+        localModeViewModel.myFiveLightList.observe(this) {list ->
+            if (list.isNotEmpty()){
+                Log.d("TEST_OF_SUBSCRIBE", "fiveLights: ${list[0]}")
+            }
+//            selectedFiveLights = it
+//            setFiveLightsSeekbars(it)
+        }
+
+        localModeViewModel.selectedLamp.observe(this) { lamp ->
+//            selectedLamp = it
+            lamp?.let {
+                Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: ${lamp.id}, ${lamp.c} ")
+                if (it.lampType == LampType.DIPOl){
+                    setDipolSeekbars(mapper.mapLampEntityToDipolEntity(it))
+                } else if (it.lampType == LampType.FIVE_LIGHTS){
+                    setFiveLightsSeekbars(mapper.mapLampEntityToFiveLightsEntity(it))
+                }
+                selectedLamp = it
+            }
+        }
+
 //        localModeViewModel.fiveLights.observe(this) {
 ////            Log.d("TEST_OF_SUBSCRIBE", "fiveLights: $it")
 //            selectedFiveLights = it
 //            setFiveLightsSeekbars(it)
 //        }
-//        localModeViewModel.myFiveLight.observe(this) {
-//            Log.d("TEST_OF_SUBSCRIBE", "fiveLights: $it")
-////            selectedFiveLights = it
-////            setFiveLightsSeekbars(it)
-//        }
+
 
 //        localModeViewModel.selectedDipol.observe(this) {
 //            selectedDipol = it
@@ -77,14 +97,6 @@ class MainActivity() : AppCompatActivity() {
 //            setSeekbarsForSelectedDipol(it)
 //        }
 
-//        localModeViewModel.selectedLamp.observe(this) {
-//            selectedLamp = it
-////            Log.d("TEST_OF_SUBSCRIBE", "selectedDipol: $it")
-//        }
-
-//        localModeViewModel.selectedConnectedLampType.observe(this) {
-//            selectedConnectedLampType = it
-//        }
 
 //        localModeViewModel.isBackGroundWork.observe(this) {
 ////            Log.d("init", "fromMain: $it")
@@ -163,24 +175,21 @@ class MainActivity() : AppCompatActivity() {
 
         val valuePerCent = value / 100.0
 
+        var set = "unknown seekbarSet"
+        var seekBarIndex = -1
         if (seekBar in seekBarList){
-            val seekBarIndex = seekBarList.indexOf(seekBar)
+            seekBarIndex = seekBarList.indexOf(seekBar)
             Log.d("onUpdateSeekBar", "seekBarIndex = $seekBarIndex")
-
-            selectedDipol?.let {
-                Log.d("onUpdateSeekBar", "selectedDipol = $it")
-
-                localModeViewModel.changeLocalState("dipol", seekBarIndex, valuePerCent )
-            }
+            set = "dipol"
         } else if (seekBar in seekBarFiveLightsList){
-            val seekBarIndex = seekBarFiveLightsList.indexOf(seekBar)
+            seekBarIndex = seekBarFiveLightsList.indexOf(seekBar)
             Log.d("onUpdateSeekBar", "seekBarFiveLightsIndex = $seekBarIndex")
+            set = "fiveLights"
 
-            selectedFiveLights?.let {
-                Log.d("onUpdateSeekBar", "selectedDipol = $it")
-
-                localModeViewModel.changeLocalState("fiveLights", seekBarIndex, valuePerCent )
-            }
+        }
+        selectedLamp?.let {
+            Log.d("onUpdateSeekBar", "selectedLamp = ${it.id}, set = $set, valuePerCent = $valuePerCent")
+            localModeViewModel.changeLocalState(set, seekBarIndex, valuePerCent )
         }
     }
 
@@ -199,8 +208,8 @@ class MainActivity() : AppCompatActivity() {
         }
     }
 
-    private fun setSeekbarsForSelectedDipol(dipolDomainEntity: DipolDomainEntity?){
-//        Log.d("onDipolItemClickListener", "Seekbars:$dipolDomainEntity")
+    private fun setDipolSeekbars(dipolDomainEntity: DipolDomainEntity?){
+        Log.d("setDipolSeekbars", "Seekbars:$dipolDomainEntity")
         val dipol = dipolDomainEntity ?: DipolDomainEntity("","", listOf(0.0, 0.0, 0.0), listOf(0.0, 0.0, 0.0) )
         dipol.let {
             val progress1 = (it.c1[0]*100).toInt()
@@ -218,7 +227,6 @@ class MainActivity() : AppCompatActivity() {
                 localSeekBar6.progress = progress6
             }
         }
-
     }
 
     private fun setFiveLightsSeekbars(fiveLightsDomainEntity: FiveLightsDomainEntity?){
@@ -238,7 +246,6 @@ class MainActivity() : AppCompatActivity() {
                 localSeekBarFiveLights5.progress = progress5
             }
         }
-
     }
 
     private fun refreshConnectedList() {

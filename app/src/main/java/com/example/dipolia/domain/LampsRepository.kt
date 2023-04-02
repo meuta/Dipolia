@@ -20,4 +20,6 @@ interface LampsRepository {
 
     fun unselectLamp()
 
+    fun changeLocalState(set: String, index: Int, value: Double)
+
 }

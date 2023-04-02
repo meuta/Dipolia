@@ -28,10 +28,11 @@ class LocalModeViewModel(application: Application) : AndroidViewModel(applicatio
     private val selectItemUseCase = SelectLampUseCase(lampsRepository)
     private val unselectLampUseCase = UnselectLampUseCase(lampsRepository)
 
+    private val changeLocalStateUseCase = ChangeLocalStateUseCase(lampsRepository)
+
     private val receiveLocalModeDataUseCase = ReceiveLocalModeDataUseCase(repository)
     private val testSendLocalModeDataUseCase = TestSendLocalModeDataUseCase(repository)
     private val refreshConnectedListUseCase = RefreshConnectedListUseCase(repository)
-    private val changeLocalStateUseCase = ChangeLocalStateUseCase(repository)
     private val getSelectedDipolUseCase = GetSelectedDipolUseCase(repository)
     private val getSelectedLampUseCase = GetSelectedLampUseCase(repository)
     private val dipolsConnectionMonitoringUseCase = DipolsConnectionMonitoringUseCase(repository)
@@ -44,29 +45,34 @@ class LocalModeViewModel(application: Application) : AndroidViewModel(applicatio
     private val scope = CoroutineScope(Dispatchers.IO)
 
 
-
     val allLampsList = getAllLampsTableUseCase()
-
-    val selectedDipol = getSelectedDipolUseCase()
-    val selectedConnectedLampType = getSelectedConnectedLampTypeUseCase()
 
     val isBackGroundWork = getIsBroadcastUseCase()
 
     val myLamps: LiveData<List<LampDomainEntity>> = getLampsUseCase().asLiveData()
-    val myDipolsList: LiveData<List<DipolDomainEntity>> = Transformations.map(myLamps) {list ->
+    val myDipolsList: LiveData<List<DipolDomainEntity>> = Transformations.map(myLamps) { list ->
         list
             .filter { it.lampType == LampType.DIPOl && it.connected }
             .map { lamp -> mapper.mapLampEntityToDipolEntity(lamp) }
     }
-    val myFiveLightList: LiveData<List<FiveLightsDomainEntity>> = Transformations.map(myLamps) {list ->
-        list
-            .filter { it.lampType == LampType.FIVE_LIGHTS && it.connected }
-            .map { lamp -> mapper.mapLampEntityToFiveLightsEntity(lamp) }
-    }
-    val selectedLamp: LiveData<LampDomainEntity> = Transformations.map(myLamps) {list ->
+    val myFiveLightList: LiveData<List<FiveLightsDomainEntity>> =
+        Transformations.map(myLamps) { list ->
+            list
+                .filter { it.lampType == LampType.FIVE_LIGHTS && it.connected }
+                .map { lamp -> mapper.mapLampEntityToFiveLightsEntity(lamp) }
+        }
+    val selectedLamp: LiveData<LampDomainEntity> = Transformations.map(myLamps) { list ->
         list.find { it.selected }
     }
-
+    val selectedDipol: LiveData<DipolDomainEntity?> = Transformations.map(selectedLamp) { lamp ->
+        lamp?.let {
+            if (lamp.lampType == LampType.DIPOl) {
+                mapper.mapLampEntityToDipolEntity(lamp)
+            } else {
+                null
+            }
+        }
+    }
 
     init {  //This code will be executes every time automatically with creating of this object
         scope.launch {
