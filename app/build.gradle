@@ -57,14 +57,13 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.1"
 
-//    implementation "io.ktor:ktor-network:2.2.3"
-//    implementation "io.ktor:ktor-network-jvm:2.2.3"
-
     implementation("androidx.work:work-runtime-ktx:2.7.1")
     implementation 'com.android.support:multidex:1.0.3'
 
-//    kapt "com.android.databinding:compiler:$android_plugin_version"
     implementation 'com.google.code.gson:gson:2.9.0'
+
+    implementation 'com.google.dagger:dagger:2.35.1'
+    kapt 'com.google.dagger:dagger-compiler:2.35.1'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
