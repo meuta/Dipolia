@@ -15,11 +15,10 @@ import com.example.dipolia.presentation.adaptes.DipolListAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-class MainActivity() : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var localModeViewModel: LocalModeViewModel
     private var mapper = DipoliaMapper()
-    private val scope = CoroutineScope(Dispatchers.IO)
 
     private lateinit var binding: ActivityLocalModeBinding
 
@@ -28,10 +27,6 @@ class MainActivity() : AppCompatActivity() {
     private lateinit var seekBarList: List<SeekBar>
     private lateinit var seekBarFiveLightsList: List<SeekBar>
     private var selectedLamp: LampDomainEntity? = null
-
-    private var selectedDipol: DipolDomainEntity? = null
-    private var selectedConnectedLampType: LampType? = null
-    private var selectedFiveLights: FiveLightsDomainEntity? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +44,6 @@ class MainActivity() : AppCompatActivity() {
 //            Log.d("TEST_OF_SUBSCRIBE", "allLampsListSelectedItem: ${list.map { "${it.id}, ${it.selected}"}}")
 //        }
 
-//        localModeViewModel.dipolList.observe(this) {
-////            Log.d("TEST_OF_SUBSCRIBE", "dipolList: $it")
-//            dipolListAdapter.submitList(it)      // Created new thread
-//        }
 
         localModeViewModel.myLamps.observe(this) {
             Log.d("TEST_OF_SUBSCRIBE", "myLamps: ${it.map { item -> "${item.id}, ${item.selected}, ${item.lastConnection}"} }")
@@ -67,12 +58,9 @@ class MainActivity() : AppCompatActivity() {
             if (list.isNotEmpty()){
                 Log.d("TEST_OF_SUBSCRIBE", "fiveLights: ${list[0]}")
             }
-//            selectedFiveLights = it
-//            setFiveLightsSeekbars(it)
         }
 
         localModeViewModel.selectedLamp.observe(this) { lamp ->
-//            selectedLamp = it
             lamp?.let {
                 Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: ${lamp.id}, ${lamp.c} ")
                 if (it.lampType == LampType.DIPOl){
@@ -84,26 +72,9 @@ class MainActivity() : AppCompatActivity() {
             }
         }
 
-//        localModeViewModel.fiveLights.observe(this) {
-////            Log.d("TEST_OF_SUBSCRIBE", "fiveLights: $it")
-//            selectedFiveLights = it
-//            setFiveLightsSeekbars(it)
-//        }
-
-
-//        localModeViewModel.selectedDipol.observe(this) {
-//            selectedDipol = it
-////            Log.d("TEST_OF_SUBSCRIBE", "selectedDipol: $it")
-//            setSeekbarsForSelectedDipol(it)
-//        }
-
-
-//        localModeViewModel.isBackGroundWork.observe(this) {
-////            Log.d("init", "fromMain: $it")
-//        }
-
-
-
+        localModeViewModel.isBackGroundWork.observe(this) {
+            Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
+        }
 
         binding.btnRefreshList.setOnClickListener {
             refreshConnectedList()
@@ -119,7 +90,7 @@ class MainActivity() : AppCompatActivity() {
         }
 
         setupSeekbars()
-        localModeViewModel.testSendLocalModeData()
+//        localModeViewModel.testSendLocalModeData()
 
     }
 

@@ -45,70 +45,70 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 
 //        val lampEntityListNetworkResult = mutableListOf<LampDomainEntity>()
 
-        while (true) {
-
-            val receivedDipolData = receiver.receiveStringAndIPFromUDP()
-//            Log.d("receiveLocalModeData", "Pair received: $receivedDipolData")
-
-            receivedDipolData?.let {
-
-                val ar = it.first.split(" ")
-                val lampTypeString = ar[0]
-//                Log.d("receiveLocalModeData", "lampTypeString = $lampTypeString")
-
-                if (lampTypeString == "dipol" || lampTypeString == "5lights") {
-
-//                    Log.d("receiveLocalModeData", "inside if lampTypeString = $lampTypeString")
-                    val id = ar[1].substring(0, ar[1].length - 1)
-                    var already = 0
-
-                    for (lamp in lampEntityListNetworkResult) {
-                        if (lamp.id == id) {
-// connected list control:
-                            lamp.lastConnection = System.currentTimeMillis() / 1000
-//                            Log.d(
-//                                "TEST",
-//                                "i.lastConnection = ${lamp.id} ${lamp.lastConnection} ${lamp.connected}"
-//                            )
-                            already = 1
-                            break
-                        }
-                    }
-                    Log.d(
-                        "TEST",
-                        "List controlled = ${lampEntityListNetworkResult.map { item -> item.id to item.connected }}"
-                    )
-
-                    if (already == 0) {
-                        val lampType = when (lampTypeString) {
-                            "dipol" -> LampType.DIPOl
-                            "5lights" -> LampType.FIVE_LIGHTS
-                            else -> LampType.UNKNOWN_LAMP_TYPE
-                        }
-                        val lampDto = LampDto(id, it.second, lampType, System.currentTimeMillis()/1000)
-//                        Log.d("UDP receiveLocalModeData", "dipol $lampDto added")
-//                        Log.d("UDP receiveLocalModeData", "dipolListDto $lampListDto")
-
-                        val itemToListEntity = mapper.mapLampDtoToEntity(lampDto)
-                        val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
-//                        Log.d("UDP receiveLocalModeData", "itemToAdd = $itemToAdd")
-                        val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
-//                        Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
-                        if (itemFromDb == null) {
-                            dipolsDao.addLampItem(itemToAdd)
-                        } else {
-                            itemToListEntity.c = itemFromDb.colorList
-                            Log.d("TEST", "itemToListEntity.c = ${itemToListEntity.c}")
-                        }
-                        lampEntityListNetworkResult.add(itemToListEntity)
-                        Log.d(
-                            "TEST",
-                            "lampEntityListNetworkResult = ${lampEntityListNetworkResult.map { item -> item.id to item.connected }}"
-                        )
-                    }
-                }
-            }
-        }
+//        while (true) {
+//
+//            val receivedDipolData = receiver.receiveStringAndIPFromUDP()
+////            Log.d("receiveLocalModeData", "Pair received: $receivedDipolData")
+//
+//            receivedDipolData?.let {
+//
+//                val ar = it.first.split(" ")
+//                val lampTypeString = ar[0]
+////                Log.d("receiveLocalModeData", "lampTypeString = $lampTypeString")
+//
+//                if (lampTypeString == "dipol" || lampTypeString == "5lights") {
+//
+////                    Log.d("receiveLocalModeData", "inside if lampTypeString = $lampTypeString")
+//                    val id = ar[1].substring(0, ar[1].length - 1)
+//                    var already = 0
+//
+//                    for (lamp in lampEntityListNetworkResult) {
+//                        if (lamp.id == id) {
+//// connected list control:
+//                            lamp.lastConnection = System.currentTimeMillis() / 1000
+////                            Log.d(
+////                                "TEST",
+////                                "i.lastConnection = ${lamp.id} ${lamp.lastConnection} ${lamp.connected}"
+////                            )
+//                            already = 1
+//                            break
+//                        }
+//                    }
+//                    Log.d(
+//                        "TEST",
+//                        "List controlled = ${lampEntityListNetworkResult.map { item -> item.id to item.connected }}"
+//                    )
+//
+//                    if (already == 0) {
+//                        val lampType = when (lampTypeString) {
+//                            "dipol" -> LampType.DIPOl
+//                            "5lights" -> LampType.FIVE_LIGHTS
+//                            else -> LampType.UNKNOWN_LAMP_TYPE
+//                        }
+//                        val lampDto = LampDto(id, it.second, lampType, System.currentTimeMillis()/1000)
+////                        Log.d("UDP receiveLocalModeData", "dipol $lampDto added")
+////                        Log.d("UDP receiveLocalModeData", "dipolListDto $lampListDto")
+//
+//                        val itemToListEntity = mapper.mapLampDtoToEntity(lampDto)
+//                        val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
+////                        Log.d("UDP receiveLocalModeData", "itemToAdd = $itemToAdd")
+//                        val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
+////                        Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
+//                        if (itemFromDb == null) {
+//                            dipolsDao.addLampItem(itemToAdd)
+//                        } else {
+//                            itemToListEntity.c = itemFromDb.colorList
+//                            Log.d("TEST", "itemToListEntity.c = ${itemToListEntity.c}")
+//                        }
+//                        lampEntityListNetworkResult.add(itemToListEntity)
+//                        Log.d(
+//                            "TEST",
+//                            "lampEntityListNetworkResult = ${lampEntityListNetworkResult.map { item -> item.id to item.connected }}"
+//                        )
+//                    }
+//                }
+//            }
+//        }
     }
 
 

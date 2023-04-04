@@ -2,8 +2,7 @@ package com.example.dipolia.data.network
 
 import android.util.Log
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 
 class LampsRemoteDataSource {
 
@@ -21,6 +20,30 @@ class LampsRemoteDataSource {
             }
         }
     }
+//    private val _myLampDto = MutableSharedFlow<LampDto>() // 1
+//
+//    val myLampDto: SharedFlow<LampDto> = _myLampDto//.asSharedFlow() // 2
+//
+//    suspend fun emitFlow(){
+//        while (true) {
+//            val latestLamp = lampsApi.fetchLampDto()
+//            Log.d("TEST", "latestLamp = ${latestLamp?.id}")
+//            latestLamp?.let {
+//                _myLampDto.emit(it) // Emits the result of the request to the flow
+//                delay(100) // Suspends the coroutine for some time
+//            }
+//        }
+//    }
+//    val myLampDto: SharedFlow<LampDto> = flow {
+//        while (true) {
+//            val latestLamp = lampsApi.fetchLampDto()
+//            Log.d("TEST", "latestLamp = ${latestLamp?.id}")
+//            latestLamp?.let {
+//                emit(it) // Emits the result of the request to the flow
+//                delay(100) // Suspends the coroutine for some time
+//            }
+//        }
+//    } as SharedFlow<LampDto>
 
 
 //    val myLamps: Flow<List<LampDto>> = flow {

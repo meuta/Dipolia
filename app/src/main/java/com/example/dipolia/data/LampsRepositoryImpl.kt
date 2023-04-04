@@ -2,11 +2,16 @@ package com.example.dipolia.data
 
 import android.app.Application
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations
+import androidx.work.ExistingWorkPolicy
+import androidx.work.WorkManager
 import com.example.dipolia.data.database.AppDatabase
 import com.example.dipolia.data.database.ColorList
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.network.LampsRemoteDataSource
 import com.example.dipolia.data.network.UDPClient
+import com.example.dipolia.data.workers.SendColorListWorker
 import com.example.dipolia.domain.LampsRepository
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
@@ -15,6 +20,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import java.math.BigDecimal
+import java.math.RoundingMode
 
 class LampsRepositoryImpl(private val application: Application) : LampsRepository {
 
@@ -25,7 +32,6 @@ class LampsRepositoryImpl(private val application: Application) : LampsRepositor
 
     private val lampEntityList = mutableListOf<LampDomainEntity>()
     private var selectedLamp: LampDomainEntity? = null
-
 
     override suspend fun sendFollowMe() {
         while (true) {
@@ -114,7 +120,7 @@ class LampsRepositoryImpl(private val application: Application) : LampsRepositor
         }
     }
 
-    override fun changeLocalState(set: String, index: Int, value: Double) {
+    override suspend fun changeLocalState(set: String, index: Int, value: Double) {
         Log.d("LampsRepositoryImpl", "changeLocalState $set $index $value")
         selectedLamp?.let { lamp ->
             Log.d("LampsRepositoryImpl", "changeLocalState ${lamp.id}")
@@ -136,6 +142,8 @@ class LampsRepositoryImpl(private val application: Application) : LampsRepositor
             selectedLamp = newLampItem
             Log.d("changeLocalState", "selectedLamp $selectedLamp")
 
+//            selectedLamp?.let { testSendColorsLamp(it) }
+
             selectedLamp?.let {
                 val item = lampEntityList.find { lamp -> lamp.id == it.id }
                 val itemIndex = lampEntityList.indexOf(item)
@@ -145,6 +153,28 @@ class LampsRepositoryImpl(private val application: Application) : LampsRepositor
                 }
             }
         }
+    }
+
+    private suspend fun testSendColorsLamp(lamp: LampDomainEntity){
+        var rabbitColorSpeed = 0.5
+        val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
+
+        if (lamp.lampType == LampType.DIPOl) {
+
+            val r1 = (BigDecimal(lamp.c.colors[0]).setScale(3, RoundingMode.HALF_DOWN))
+            val g1 = (BigDecimal(lamp.c.colors[1]).setScale(3, RoundingMode.HALF_DOWN))
+            val b1 = (BigDecimal(lamp.c.colors[2]).setScale(3, RoundingMode.HALF_DOWN))
+            val r2 = (BigDecimal(lamp.c.colors[3]).setScale(3, RoundingMode.HALF_DOWN))
+            val g2 = (BigDecimal(lamp.c.colors[4]).setScale(3, RoundingMode.HALF_DOWN))
+            val b2 = (BigDecimal(lamp.c.colors[5]).setScale(3, RoundingMode.HALF_DOWN))
+
+            val stringToSend = "r1=$r1;g1=$g1;b1=$b1;r2=$r2;g2=$g2;b2=$b2;rcs=$rcs"
+
+            val address = sender.getInetAddressByName(lamp.ip)
+//            val address = InetAddress.getByName(lamp.ip)
+            sender.sendUDPSuspend(stringToSend, address)
+        }
+
     }
 
     /**

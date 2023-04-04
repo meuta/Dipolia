@@ -1,10 +1,14 @@
 package com.example.dipolia.presentation
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
+import androidx.work.ExistingWorkPolicy
+import androidx.work.WorkManager
 import com.example.dipolia.data.DipoliaRepositoryImpl
 import com.example.dipolia.data.LampsRepositoryImpl
 import com.example.dipolia.data.mapper.DipoliaMapper
+import com.example.dipolia.data.workers.SendColorListWorker
 import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
@@ -21,35 +25,41 @@ class LocalModeViewModel(application: Application) : AndroidViewModel(applicatio
     private val repository = DipoliaRepositoryImpl(application)
     private val lampsRepository = LampsRepositoryImpl(application)
 
+    private val workManager = WorkManager.getInstance(application)
+
     private val sendFollowMeUseCase = SendFollowMeUseCase(lampsRepository)
     private val getLampsUseCase = GetConnectedLampsUseCase(lampsRepository)
-    private val getDipolListUseCase = GetDipolListUseCase(lampsRepository)
-    private val getFiveLightsUseCase = GetConnectedFiveLightsUseCase(lampsRepository)
     private val selectItemUseCase = SelectLampUseCase(lampsRepository)
     private val unselectLampUseCase = UnselectLampUseCase(lampsRepository)
-
     private val changeLocalStateUseCase = ChangeLocalStateUseCase(lampsRepository)
 
-    private val receiveLocalModeDataUseCase = ReceiveLocalModeDataUseCase(repository)
+
+
     private val testSendLocalModeDataUseCase = TestSendLocalModeDataUseCase(repository)
     private val refreshConnectedListUseCase = RefreshConnectedListUseCase(repository)
-    private val getSelectedDipolUseCase = GetSelectedDipolUseCase(repository)
     private val getSelectedLampUseCase = GetSelectedLampUseCase(repository)
-    private val dipolsConnectionMonitoringUseCase = DipolsConnectionMonitoringUseCase(repository)
-    private val workerStartStopUseCase = WorkerStartStopUseCase(repository)
-    private val getIsBroadcastUseCase = GetIsBroadcastUseCase(repository)
+
     private val getAllLampsTableUseCase = GetAllLampsTableUseCase(repository)
-    private val getSelectedConnectedLampTypeUseCase =
-        GetSelectedConnectedLampTypeUseCase(repository)
+
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
 
     val allLampsList = getAllLampsTableUseCase()
 
-    val isBackGroundWork = getIsBroadcastUseCase()
+    val isBackGroundWork = getIsBroadcast()
+    private fun getIsBroadcast(): LiveData<Boolean?> {
+
+        val infoLD = workManager.getWorkInfosForUniqueWorkLiveData(SendColorListWorker.WORK_NAME)
+        Log.d("getIsBroadcast", "infoLD = $infoLD")
+        return Transformations.map(infoLD) {
+            Log.d("getIsBroadcast", "$it")
+            it.isNotEmpty() && it[0].state.toString() == "RUNNING"
+        }
+    }
 
     val myLamps: LiveData<List<LampDomainEntity>> = getLampsUseCase().asLiveData()
+
     val myDipolsList: LiveData<List<DipolDomainEntity>> = Transformations.map(myLamps) { list ->
         list
             .filter { it.lampType == LampType.DIPOl && it.connected }
@@ -78,18 +88,12 @@ class LocalModeViewModel(application: Application) : AndroidViewModel(applicatio
         scope.launch {
             sendFollowMeUseCase()
         }
-//        scope.launch{
-//            receiveLocalModeDataUseCase ()
-//        }
 
-//        scope.launch{
-//            dipolsConnectionMonitoringUseCase ()
-//        }
     }
 
 
     fun testSendLocalModeData() {
-        testSendLocalModeDataUseCase()
+//        testSendLocalModeDataUseCase()
     }
 
     fun selectLamp(itemId: String) {
@@ -118,7 +122,26 @@ class LocalModeViewModel(application: Application) : AndroidViewModel(applicatio
 
 
     fun workerStartStop() {
-        workerStartStopUseCase()
+
+        val workInfoLF = workManager.getWorkInfosForUniqueWork(SendColorListWorker.WORK_NAME)
+        val workInfo = workInfoLF.get()
+        if (workInfo.isNotEmpty()) {
+            val workState = workInfo[0].state.toString()
+            Log.d("onClick workerStartStop", "workerState = $workState")
+        }
+
+        if (workInfo.isNotEmpty() && workInfo[0].state.toString() == "RUNNING") {
+            Log.d("onClick workerStartStop", "workerState == \"RUNNING\"")
+            workManager.cancelAllWork()
+        } else {
+            Log.d("onClick workerStartStop", "workerState == \"CANCELED\"")
+            workManager.enqueueUniqueWork(
+                SendColorListWorker.WORK_NAME,
+                ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
+                SendColorListWorker.makeRequest(myLamps)
+            )
+        }
     }
+
 
 }
