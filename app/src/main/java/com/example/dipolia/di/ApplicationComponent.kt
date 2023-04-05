@@ -1,6 +1,7 @@
 package com.example.dipolia.di
 
 import android.app.Application
+import com.example.dipolia.DipoliaApplication
 import com.example.dipolia.presentation.MainActivity
 import dagger.BindsInstance
 import dagger.Component
@@ -10,6 +11,8 @@ import dagger.Component
 interface ApplicationComponent {
 
     fun inject(activity: MainActivity)
+
+    fun inject(application: DipoliaApplication)
 
     @Component.Factory
     interface Factory {

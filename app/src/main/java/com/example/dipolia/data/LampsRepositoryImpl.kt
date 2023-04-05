@@ -2,11 +2,8 @@ package com.example.dipolia.data
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
-import com.example.dipolia.data.database.AppDatabase
 import com.example.dipolia.data.database.ColorList
 import com.example.dipolia.data.database.DipolsDao
 import com.example.dipolia.data.mapper.DipoliaMapper

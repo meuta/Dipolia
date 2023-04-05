@@ -5,8 +5,9 @@ import androidx.work.ListenableWorker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import com.example.dipolia.data.network.UDPClient
+import javax.inject.Inject
 
-class SendColorListWorkerFactory(
+class SendColorListWorkerFactory @Inject constructor(
     private val sender: UDPClient
 ) : WorkerFactory() {
 
