@@ -1,12 +1,10 @@
 package com.example.dipolia.presentation
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
-import com.example.dipolia.data.DipoliaRepositoryImpl
-import com.example.dipolia.data.LampsRepositoryImpl
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.workers.SendColorListWorker
 import com.example.dipolia.domain.entities.DipolDomainEntity
@@ -55,6 +53,9 @@ class LocalModeViewModel @Inject constructor(
 
     val myLamps: LiveData<List<LampDomainEntity>> = getLampsUseCase().asLiveData()
 
+    var mySelLamp: LampDomainEntity? = null
+
+
     val myDipolsList: LiveData<List<DipolDomainEntity>> = Transformations.map(myLamps) { list ->
         list
             .filter { it.lampType == LampType.DIPOl && it.connected }
@@ -67,7 +68,9 @@ class LocalModeViewModel @Inject constructor(
                 .map { lamp -> mapper.mapLampEntityToFiveLightsEntity(lamp) }
         }
     val selectedLamp: LiveData<LampDomainEntity> = Transformations.map(myLamps) { list ->
-        list.find { it.selected }
+        mySelLamp = list.find { it.selected }
+//        list.find { it.selected }
+        mySelLamp
     }
     val selectedDipol: LiveData<DipolDomainEntity?> = Transformations.map(selectedLamp) { lamp ->
         lamp?.let {
@@ -132,12 +135,25 @@ class LocalModeViewModel @Inject constructor(
             workManager.cancelAllWork()
         } else {
             Log.d("onClick workerStartStop", "workerState == \"CANCELED\"")
-            workManager.enqueueUniqueWork(
+//            val data = Data.Builder()
+//                .putString(SendColorListWorker.IP, "")
+//                .putDoubleArray(SendColorListWorker.LIST, doubleArrayOf(0.0))
+//                .build()
+            mySelLamp?.let {
+                val lampType = when(it.lampType){
+                    LampType.DIPOl -> "dipol"
+                    LampType.FIVE_LIGHTS -> "fiveLights"
+                    else -> "unknown"
+                }
+                workManager.enqueueUniqueWork(
                 SendColorListWorker.WORK_NAME,
                 ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
 //                SendColorListWorker.makeRequest(myLamps)
-                SendColorListWorker.makeRequest()
-            )
+                SendColorListWorker.makeRequest(it.ip, lampType, it.c.colors)
+//                SendColorListWorker.makeRequest()
+                )
+            }
+
         }
     }
 
