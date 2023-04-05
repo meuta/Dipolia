@@ -423,7 +423,7 @@
                 android:text="@string/background_work_start"
                 android:textColor="@color/colorHighlighted"
                 android:textSize="10sp"
-
+                app:workerButtonText="@{viewModel.isBackGroundWork()}"
                 />
 
         </LinearLayout>

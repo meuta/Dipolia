@@ -48,7 +48,6 @@ class MainActivity : AppCompatActivity() {
 
         setupRecyclerView()
 
-//        localModeViewModel = ViewModelProvider(this)[LocalModeViewModel::class.java]
         localModeViewModel = ViewModelProvider(this, viewModelFactory)[LocalModeViewModel::class.java]
 
         binding.viewModel = localModeViewModel
@@ -86,9 +85,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-//        localModeViewModel.isBackGroundWork.observe(this) {
-//            Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
-//        }
+        localModeViewModel.isBackGroundWork.observe(this) {
+            Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
+        }
 
         binding.btnRefreshList.setOnClickListener {
             refreshConnectedList()
@@ -234,7 +233,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun refreshConnectedList() {
-        localModeViewModel.refreshConnectedList()
+//        localModeViewModel.refreshConnectedList()
     }
 
 }
