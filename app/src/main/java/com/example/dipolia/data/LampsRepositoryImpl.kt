@@ -89,6 +89,8 @@ class LampsRepositoryImpl @Inject constructor(
 
 
     override fun selectLamp(lampId: String) {
+//        Log.d("onItemClickListener", " lampId: $lampId")
+//        Log.d("onItemClickListener", "${lampEntityList.map { it.id }}")
         val oldSelectedItem = lampEntityList.find { lamp -> lamp.selected }
         val oldSelectedItemIndex = lampEntityList.indexOf(oldSelectedItem)
 //        Log.d("onItemClickListener", " oldSelectedItem: ${oldSelectedItem?.id}, ${oldSelectedItem?.selected}")

@@ -3,7 +3,6 @@ package com.example.dipolia
 import android.app.Application
 import androidx.work.Configuration
 import com.example.dipolia.data.network.UDPClient
-import com.example.dipolia.data.workers.SendColorListWorker
 import com.example.dipolia.data.workers.SendColorListWorkerFactory
 import com.example.dipolia.di.DaggerApplicationComponent
 

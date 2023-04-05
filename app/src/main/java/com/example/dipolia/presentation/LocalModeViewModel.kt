@@ -25,12 +25,11 @@ class LocalModeViewModel @Inject constructor(
     private val selectItemUseCase: SelectLampUseCase,
     private val unselectLampUseCase: UnselectLampUseCase,
     private val changeLocalStateUseCase: ChangeLocalStateUseCase,
-    private val workManager: WorkManager
+    private val workManager: WorkManager,
+    private val mapper: DipoliaMapper
 ) : ViewModel() {
 
-    private val mapper = DipoliaMapper()
 
-//    private val workManager = WorkManager.getInstance(application)
 
 //    private val testSendLocalModeDataUseCase = TestSendLocalModeDataUseCase(repository)
 //    private val refreshConnectedListUseCase = RefreshConnectedListUseCase(repository)
