@@ -20,17 +20,19 @@ import java.util.concurrent.TimeUnit
 
 class SendColorListWorker(
     context: Context,
-    workerParameters: WorkerParameters
+    workerParameters: WorkerParameters,
+    private val sender: UDPClient
 ) : CoroutineWorker(context, workerParameters) {
 
 //    private val dipolsDao = AppDatabase.getInstance(context).dipolsDao()
-    private val sender = UDPClient()
-    private val application = context as Application
+
+
+//    private val application = context as Application
 //    private val repository = LampsRepositoryImpl(application)
-    private val myData = workerParameters.inputData
+//    private val myData = workerParameters.inputData
     override suspend fun doWork(): Result {
-        Log.d("SendColorListWorker", "application = $application")
-        Log.d("workerParameters", "data $myData")
+//        Log.d("SendColorListWorker", "application = $application")
+//        Log.d("workerParameters", "data $myData")
 
         var rabbitColorSpeed = 0.5
 

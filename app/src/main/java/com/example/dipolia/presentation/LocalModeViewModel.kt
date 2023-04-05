@@ -32,7 +32,6 @@ class LocalModeViewModel @Inject constructor(
 
 //    private val workManager = WorkManager.getInstance(application)
 
-
 //    private val testSendLocalModeDataUseCase = TestSendLocalModeDataUseCase(repository)
 //    private val refreshConnectedListUseCase = RefreshConnectedListUseCase(repository)
 //    private val getSelectedLampUseCase = GetSelectedLampUseCase(repository)
