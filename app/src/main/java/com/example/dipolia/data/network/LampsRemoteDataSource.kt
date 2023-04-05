@@ -5,10 +5,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
-class LampsRemoteDataSource @Inject constructor() {
 
-//    private val lampsApi = LampsApiImpl(UDPServer())            //is it normal?
-    private val lampsApi = LampsApiImpl()
+class LampsRemoteDataSource @Inject constructor(private val lampsApi: LampsApi) {
+
 
 //    private val lampDtoList = mutableListOf<LampDto>()
 

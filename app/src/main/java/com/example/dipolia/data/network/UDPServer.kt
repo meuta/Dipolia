@@ -7,11 +7,12 @@ import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 import java.net.SocketTimeoutException
+import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 
-class UDPServer {
+class UDPServer @Inject constructor() {
 
     private val buffer = ByteArray(2048)
     private val port = 8002

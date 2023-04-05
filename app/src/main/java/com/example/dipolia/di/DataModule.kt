@@ -4,6 +4,8 @@ import android.app.Application
 import com.example.dipolia.data.LampsRepositoryImpl
 import com.example.dipolia.data.database.AppDatabase
 import com.example.dipolia.data.database.DipolsDao
+import com.example.dipolia.data.network.LampsApi
+import com.example.dipolia.data.network.LampsApiImpl
 import com.example.dipolia.domain.LampsRepository
 import dagger.Binds
 import dagger.Module
@@ -15,6 +17,10 @@ interface DataModule {
     @ApplicationScope
     @Binds
     fun bindRepository(impl: LampsRepositoryImpl): LampsRepository
+
+    @ApplicationScope
+    @Binds
+    fun bindLampsApi(impl: LampsApiImpl): LampsApi
 
     companion object{
 
