@@ -13,6 +13,6 @@ interface LampsRepository {
 
     fun unselectLamp()
 
-    suspend fun changeLocalState(set: String, index: Int, value: Double)
+    fun changeLocalState(set: String, index: Int, value: Double)
 
 }

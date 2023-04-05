@@ -1,8 +1,9 @@
 package com.example.dipolia.domain.useCases
 
 import com.example.dipolia.domain.LampsRepository
+import javax.inject.Inject
 
-class UnselectLampUseCase(private val repository: LampsRepository) {
+class UnselectLampUseCase @Inject constructor(private val repository: LampsRepository) {
 
     operator fun invoke(){
         repository.unselectLamp()

@@ -7,10 +7,11 @@ import java.io.IOException
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
+import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class UDPClient {
+class UDPClient @Inject constructor() {
 
     private val port = 8002
 

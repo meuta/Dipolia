@@ -8,6 +8,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.example.dipolia.data.database.AppDatabase
 import com.example.dipolia.data.database.ColorList
+import com.example.dipolia.data.database.DipolsDao
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.network.LampsRemoteDataSource
 import com.example.dipolia.data.network.UDPClient
@@ -22,13 +23,16 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import java.math.BigDecimal
 import java.math.RoundingMode
+import javax.inject.Inject
 
-class LampsRepositoryImpl(private val application: Application) : LampsRepository {
+class LampsRepositoryImpl @Inject constructor(
+    private val dipolsDao : DipolsDao,
+    private val mapper: DipoliaMapper,
+    private val lampsRemoteDataSource: LampsRemoteDataSource,
+    private val sender: UDPClient//,
+//    private val application: Application
+) : LampsRepository {
 
-    private val dipolsDao = AppDatabase.getInstance(application).dipolsDao()
-    private val mapper = DipoliaMapper()
-    private val lampsRemoteDataSource = LampsRemoteDataSource()
-    private val sender = UDPClient()
 
     private val lampEntityList = mutableListOf<LampDomainEntity>()
     private var selectedLamp: LampDomainEntity? = null
@@ -120,7 +124,7 @@ class LampsRepositoryImpl(private val application: Application) : LampsRepositor
         }
     }
 
-    override suspend fun changeLocalState(set: String, index: Int, value: Double) {
+    override fun changeLocalState(set: String, index: Int, value: Double) {
         Log.d("LampsRepositoryImpl", "changeLocalState $set $index $value")
         selectedLamp?.let { lamp ->
             Log.d("LampsRepositoryImpl", "changeLocalState ${lamp.id}")

@@ -1,11 +1,11 @@
 package com.example.dipolia.domain.useCases
 
-import com.example.dipolia.domain.DipoliaRepository
 import com.example.dipolia.domain.LampsRepository
+import javax.inject.Inject
 
-class ChangeLocalStateUseCase(private val repository: LampsRepository) {
+class ChangeLocalStateUseCase @Inject constructor(private val repository: LampsRepository) {
 
-    suspend operator fun invoke(set: String, index: Int, componentValue: Double){
+    operator fun invoke(set: String, index: Int, componentValue: Double){
         repository.changeLocalState(set, index, componentValue)
     }
 

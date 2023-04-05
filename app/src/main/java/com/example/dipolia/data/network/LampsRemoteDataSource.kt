@@ -3,9 +3,11 @@ package com.example.dipolia.data.network
 import android.util.Log
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import javax.inject.Inject
 
-class LampsRemoteDataSource {
+class LampsRemoteDataSource @Inject constructor() {
 
+//    private val lampsApi = LampsApiImpl(UDPServer())            //is it normal?
     private val lampsApi = LampsApiImpl()
 
 //    private val lampDtoList = mutableListOf<LampDto>()

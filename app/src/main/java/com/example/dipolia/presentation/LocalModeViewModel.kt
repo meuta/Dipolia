@@ -17,46 +17,54 @@ import com.example.dipolia.domain.useCases.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LocalModeViewModel(application: Application) : AndroidViewModel(application) {
+//class LocalModeViewModel(application: Application) : AndroidViewModel(application) {
+class LocalModeViewModel @Inject constructor(
+    private val sendFollowMeUseCase: SendFollowMeUseCase,
+    private val getLampsUseCase: GetConnectedLampsUseCase,
+    private val selectItemUseCase: SelectLampUseCase,
+    private val unselectLampUseCase: UnselectLampUseCase,
+    private val changeLocalStateUseCase: ChangeLocalStateUseCase//,
+//    private val workManager: WorkManager
+) : ViewModel() {
 
     private val mapper = DipoliaMapper()
 
-    private val repository = DipoliaRepositoryImpl(application)
-    private val lampsRepository = LampsRepositoryImpl(application)
+//    private val repository = DipoliaRepositoryImpl(application)
+//    private val lampsRepository = LampsRepositoryImpl(application)
 
-    private val workManager = WorkManager.getInstance(application)
+//    private val workManager = WorkManager.getInstance(application)
 
-    private val sendFollowMeUseCase = SendFollowMeUseCase(lampsRepository)
-    private val getLampsUseCase = GetConnectedLampsUseCase(lampsRepository)
-    private val selectItemUseCase = SelectLampUseCase(lampsRepository)
-    private val unselectLampUseCase = UnselectLampUseCase(lampsRepository)
-    private val changeLocalStateUseCase = ChangeLocalStateUseCase(lampsRepository)
+//    private val sendFollowMeUseCase = SendFollowMeUseCase(lampsRepository)
+//    private val getLampsUseCase = GetConnectedLampsUseCase(lampsRepository)
+//    private val selectItemUseCase = SelectLampUseCase(lampsRepository)
+//    private val unselectLampUseCase = UnselectLampUseCase(lampsRepository)
+//    private val changeLocalStateUseCase = ChangeLocalStateUseCase(lampsRepository)
 
 
-
-    private val testSendLocalModeDataUseCase = TestSendLocalModeDataUseCase(repository)
-    private val refreshConnectedListUseCase = RefreshConnectedListUseCase(repository)
-    private val getSelectedLampUseCase = GetSelectedLampUseCase(repository)
-
-    private val getAllLampsTableUseCase = GetAllLampsTableUseCase(repository)
+//    private val testSendLocalModeDataUseCase = TestSendLocalModeDataUseCase(repository)
+//    private val refreshConnectedListUseCase = RefreshConnectedListUseCase(repository)
+//    private val getSelectedLampUseCase = GetSelectedLampUseCase(repository)
+//
+//    private val getAllLampsTableUseCase = GetAllLampsTableUseCase(repository)
 
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
 
-    val allLampsList = getAllLampsTableUseCase()
+//    val allLampsList = getAllLampsTableUseCase()
 
-    val isBackGroundWork = getIsBroadcast()
-    private fun getIsBroadcast(): LiveData<Boolean?> {
-
-        val infoLD = workManager.getWorkInfosForUniqueWorkLiveData(SendColorListWorker.WORK_NAME)
-        Log.d("getIsBroadcast", "infoLD = $infoLD")
-        return Transformations.map(infoLD) {
-            Log.d("getIsBroadcast", "$it")
-            it.isNotEmpty() && it[0].state.toString() == "RUNNING"
-        }
-    }
+//    val isBackGroundWork = getIsBroadcast()
+//    private fun getIsBroadcast(): LiveData<Boolean?> {
+//
+//        val infoLD = workManager.getWorkInfosForUniqueWorkLiveData(SendColorListWorker.WORK_NAME)
+//        Log.d("getIsBroadcast", "infoLD = $infoLD")
+//        return Transformations.map(infoLD) {
+//            Log.d("getIsBroadcast", "$it")
+//            it.isNotEmpty() && it[0].state.toString() == "RUNNING"
+//        }
+//    }
 
     val myLamps: LiveData<List<LampDomainEntity>> = getLampsUseCase().asLiveData()
 
@@ -110,7 +118,7 @@ class LocalModeViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun refreshConnectedList() {
         scope.launch {
-            refreshConnectedListUseCase()
+//            refreshConnectedListUseCase()
         }
     }
 
@@ -123,24 +131,25 @@ class LocalModeViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun workerStartStop() {
 
-        val workInfoLF = workManager.getWorkInfosForUniqueWork(SendColorListWorker.WORK_NAME)
-        val workInfo = workInfoLF.get()
-        if (workInfo.isNotEmpty()) {
-            val workState = workInfo[0].state.toString()
-            Log.d("onClick workerStartStop", "workerState = $workState")
-        }
-
-        if (workInfo.isNotEmpty() && workInfo[0].state.toString() == "RUNNING") {
-            Log.d("onClick workerStartStop", "workerState == \"RUNNING\"")
-            workManager.cancelAllWork()
-        } else {
-            Log.d("onClick workerStartStop", "workerState == \"CANCELED\"")
-            workManager.enqueueUniqueWork(
-                SendColorListWorker.WORK_NAME,
-                ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
-                SendColorListWorker.makeRequest(myLamps)
-            )
-        }
+//        val workInfoLF = workManager.getWorkInfosForUniqueWork(SendColorListWorker.WORK_NAME)
+//        val workInfo = workInfoLF.get()
+//        if (workInfo.isNotEmpty()) {
+//            val workState = workInfo[0].state.toString()
+//            Log.d("onClick workerStartStop", "workerState = $workState")
+//        }
+//
+//        if (workInfo.isNotEmpty() && workInfo[0].state.toString() == "RUNNING") {
+//            Log.d("onClick workerStartStop", "workerState == \"RUNNING\"")
+//            workManager.cancelAllWork()
+//        } else {
+//            Log.d("onClick workerStartStop", "workerState == \"CANCELED\"")
+//            workManager.enqueueUniqueWork(
+//                SendColorListWorker.WORK_NAME,
+//                ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
+////                SendColorListWorker.makeRequest(myLamps)
+//                SendColorListWorker.makeRequest()
+//            )
+//        }
     }
 
 

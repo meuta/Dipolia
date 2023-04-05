@@ -114,7 +114,8 @@ class SendColorListWorker(
 
         const val WORK_NAME = "SendColorListWorker"
 
-        fun makeRequest(myLamps: LiveData<List<LampDomainEntity>>): OneTimeWorkRequest {
+//        fun makeRequest(myLamps: LiveData<List<LampDomainEntity>>): OneTimeWorkRequest {
+        fun makeRequest(): OneTimeWorkRequest {
 //            Log.d("SendColorListWorker", "makeOneTimeRequest")
             return OneTimeWorkRequestBuilder<SendColorListWorker>().build()
         }

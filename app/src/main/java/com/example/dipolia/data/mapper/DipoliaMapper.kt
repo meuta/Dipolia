@@ -6,8 +6,9 @@ import com.example.dipolia.data.network.LampDto
 import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
+import javax.inject.Inject
 
-class DipoliaMapper {
+class DipoliaMapper @Inject constructor() {
 
     fun mapLampDtoToEntity(lampDto: LampDto): LampDomainEntity {
         val lampDomainEntity = LampDomainEntity(

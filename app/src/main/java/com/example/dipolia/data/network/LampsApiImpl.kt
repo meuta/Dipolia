@@ -2,13 +2,19 @@ package com.example.dipolia.data.network
 
 import android.util.Log
 import com.example.dipolia.domain.entities.LampType
+import javax.inject.Inject
 
-class LampsApiImpl: LampsApi {
+//class LampsApiImpl @Inject constructor(private val receiver: UDPServer): LampsApi {
+class LampsApiImpl : LampsApi {
 
     private val receiver = UDPServer()
 
+//    @Inject
+//    lateinit var receiver: UDPServer
+
 
     override suspend fun fetchLampDto(): LampDto? {
+//        receiver = UDPServer()
         var lampDto : LampDto? = null
         val receivedData = receiver.receiveStringAndIPFromUDP()
 //        Log.d("receiveLocalModeData", "Pair received: $receivedData")

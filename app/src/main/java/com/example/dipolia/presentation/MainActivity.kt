@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.example.dipolia.DipoliaApplication
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.databinding.ActivityLocalModeBinding
 import com.example.dipolia.domain.entities.DipolDomainEntity
@@ -14,10 +15,19 @@ import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.presentation.adaptes.DipolListAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var localModeViewModel: LocalModeViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (application as DipoliaApplication).component
+    }
+
     private var mapper = DipoliaMapper()
 
     private lateinit var binding: ActivityLocalModeBinding
@@ -29,13 +39,17 @@ class MainActivity : AppCompatActivity() {
     private var selectedLamp: LampDomainEntity? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        component.inject(this)
+
         super.onCreate(savedInstanceState)
         binding = ActivityLocalModeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setupRecyclerView()
 
-        localModeViewModel = ViewModelProvider(this)[LocalModeViewModel::class.java]
+//        localModeViewModel = ViewModelProvider(this)[LocalModeViewModel::class.java]
+        localModeViewModel = ViewModelProvider(this, viewModelFactory)[LocalModeViewModel::class.java]
 
         binding.viewModel = localModeViewModel
         binding.lifecycleOwner = this
@@ -72,9 +86,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        localModeViewModel.isBackGroundWork.observe(this) {
-            Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
-        }
+//        localModeViewModel.isBackGroundWork.observe(this) {
+//            Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
+//        }
 
         binding.btnRefreshList.setOnClickListener {
             refreshConnectedList()
