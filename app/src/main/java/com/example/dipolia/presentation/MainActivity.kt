@@ -129,14 +129,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-    Log.d("onPause", "here")
+    Log.d("onStop", "here")
         if (currentLamps.isNotEmpty()) {
             localModeViewModel.saveLampList(currentLamps)
 //                    Toast.makeText(this@MainActivity, "@${it.lampType} colorSet have been saved", Toast.LENGTH_SHORT).show()
             Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
         }
         super.onStop()
+    }
 
+    override fun onDestroy() {
+        Log.d("onDestroy", "here")
+        super.onDestroy()
     }
 
     private fun setupSeekbars() {

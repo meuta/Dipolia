@@ -1,23 +1,18 @@
 package com.example.dipolia.data
 
-import android.app.Application
 import android.util.Log
-import androidx.work.ExistingWorkPolicy
-import androidx.work.WorkManager
 import com.example.dipolia.data.database.ColorList
 import com.example.dipolia.data.database.DipolsDao
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.network.LampsRemoteDataSource
 import com.example.dipolia.data.network.UDPClient
-import com.example.dipolia.data.workers.SendColorListWorker
 import com.example.dipolia.domain.LampsRepository
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import java.math.BigDecimal
 import java.math.RoundingMode
 import javax.inject.Inject
@@ -41,7 +36,9 @@ class LampsRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getLatestLampList(): Flow<List<LampDomainEntity>> = lampsRemoteDataSource.myLampDto
+//    override fun getLatestLampList(): Flow<List<LampDomainEntity>> = lampsRemoteDataSource.myLampDto
+//    override suspend fun getLatestLampList(): StateFlow<List<LampDomainEntity>> = lampsRemoteDataSource.myLampDto
+    override fun getLatestLampList(): SharedFlow<List<LampDomainEntity>> = lampsRemoteDataSource.myLampDto
         .map { lampDto ->
             var already = 0
 
@@ -55,7 +52,7 @@ class LampsRepositoryImpl @Inject constructor(
                     lampEntityList[lampFromListIndex] = it
                     Log.d(
                         "getLatestLampList",
-                        "${lampEntityList[lampFromListIndex].id} ${lampEntityList[lampFromListIndex].selected}"
+                        "${lampEntityList.map { lamp -> lamp.id to lamp.connected }}"
                     )
                 }
                 already = 1
@@ -82,7 +79,9 @@ class LampsRepositoryImpl @Inject constructor(
             }
 
             lampEntityList
-        }.flowOn(Dispatchers.IO)
+//        }.flowOn(Dispatchers.IO)
+//        }.stateIn(CoroutineScope(Dispatchers.IO))
+        }.shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly)
 
 
     override fun selectLamp(lampId: String) {

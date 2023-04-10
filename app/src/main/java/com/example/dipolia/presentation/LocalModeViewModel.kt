@@ -14,6 +14,7 @@ import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.domain.useCases.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,7 +54,13 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-    val myLamps: LiveData<List<LampDomainEntity>> = getLampsUseCase().asLiveData()
+//    fun getLamps() {
+//        scope.launch {
+//            getLampsUseCase()
+//        }
+//    }
+    var myLamps = getLampsUseCase().asLiveData()
+
 
     var mySelLamp: LampDomainEntity? = null
 
@@ -88,7 +95,18 @@ class LocalModeViewModel @Inject constructor(
         scope.launch {
             sendFollowMeUseCase()
         }
-
+//        scope.launch {
+//            myLamps = getLampsUseCase().asLiveData()
+//        }
+//        scope.launch {
+//            // Trigger the flow and consume its elements using collect
+////            val case = getLampsUseCase()
+//            getLampsUseCase().collect { lamps ->
+////            lampsRepository.latestDipolLampDtoList.collect { dipols ->
+//                // Update View
+//                Log.d("TEST_", "LampDomainEntityList = ${lamps.map { it.id to it.lastConnection}}")
+//            }
+//        }
     }
 
 
