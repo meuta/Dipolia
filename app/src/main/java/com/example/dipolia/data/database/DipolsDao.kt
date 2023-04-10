@@ -36,7 +36,7 @@ interface DipolsDao {
     fun getDipolList(): List<DipolDbModel>
 
     @Query("SELECT * FROM lamps")
-    fun getLampsList(): List<LampDbModel>
+    fun getLampList(): List<LampDbModel>
 
     @Query("SELECT * FROM dipols WHERE dipolId=:dipolItemId LIMIT 1")
     fun getDipolItemById(dipolItemId: String): DipolDbModel?

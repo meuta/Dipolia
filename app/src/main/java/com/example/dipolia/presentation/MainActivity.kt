@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var seekBarList: List<SeekBar>
     private lateinit var seekBarFiveLightsList: List<SeekBar>
     private var selectedLamp: LampDomainEntity? = null
+    private var currentLamps: List<LampDomainEntity> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -61,6 +62,9 @@ class MainActivity : AppCompatActivity() {
 
         localModeViewModel.myLamps.observe(this) {
             Log.d("TEST_OF_SUBSCRIBE", "myLamps: ${it.map { item -> "${item.id}, ${item.selected}, ${item.lastConnection}"} }")
+            if (it.isNotEmpty()){
+                currentLamps = it
+            }
         }
 
         localModeViewModel.myDipolsList.observe(this) {
@@ -105,14 +109,17 @@ class MainActivity : AppCompatActivity() {
 //            Toast.makeText(this, "This button doesn't work now..", Toast.LENGTH_SHORT).show()
             }
 
-            btnSaveLamp.setOnClickListener {
-                selectedLamp?.let {
-                    localModeViewModel.saveLamp(it)
-                    Toast.makeText(this@MainActivity, "@${it.lampType} colorSet have been saved", Toast.LENGTH_SHORT).show()
+            btnSaveLampList.setOnClickListener {
+//                selectedLamp?.let {
+//                    localModeViewModel.saveLamp(it)
+//                    Toast.makeText(this@MainActivity, "@${it.lampType} colorSet have been saved", Toast.LENGTH_SHORT).show()
+//                }
+                if (currentLamps.isNotEmpty()) {
+                    localModeViewModel.saveLampList(currentLamps)
+//                    Toast.makeText(this@MainActivity, "@${it.lampType} colorSet have been saved", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
                 }
-
             }
-
         }
 
         setupSeekbars()

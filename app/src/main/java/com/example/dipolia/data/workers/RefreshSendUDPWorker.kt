@@ -25,7 +25,7 @@ class RefreshSendUDPWorker(
 
         while (true) {
 
-            val lampList = dipolsDao.getLampsList()
+            val lampList = dipolsDao.getLampList()
             for (lamp in lampList) {
 //                if (lamp.connected) {
 //                    Log.d("worker", "IP = ${lamp.lampId}")

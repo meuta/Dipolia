@@ -39,7 +39,7 @@ class LocalModeViewModel @Inject constructor(
     private val scope = CoroutineScope(Dispatchers.IO)
 
 
-//    val allLampsList = getAllLampsTableUseCase()
+//    val allLampList = getAllLampsTableUseCase()
 
     val isBackGroundWork = getIsBroadcast()
     private fun getIsBroadcast(): LiveData<Boolean?> {
@@ -157,9 +157,14 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-    fun saveLamp(lampDomainEntity: LampDomainEntity){
+//    fun saveLamp(lampDomainEntity: LampDomainEntity){
+//        scope.launch {
+//            saveLampUseCase(lampDomainEntity)
+//        }
+//    }
+    fun saveLampList(list: List<LampDomainEntity>){
         scope.launch {
-            saveLampUseCase(lampDomainEntity)
+            saveLampUseCase(list)
         }
     }
 

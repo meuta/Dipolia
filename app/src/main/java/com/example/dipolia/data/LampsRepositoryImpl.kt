@@ -23,7 +23,7 @@ import java.math.RoundingMode
 import javax.inject.Inject
 
 class LampsRepositoryImpl @Inject constructor(
-    private val dipolsDao : DipolsDao,
+    private val dipolsDao: DipolsDao,
     private val mapper: DipoliaMapper,
     private val lampsRemoteDataSource: LampsRemoteDataSource,
     private val sender: UDPClient//,
@@ -65,7 +65,7 @@ class LampsRepositoryImpl @Inject constructor(
                 val lampDomainEntity = mapper.mapLampDtoToEntity(lampDto)
 
                 val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
-                        Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
+                Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
                 if (itemFromDb == null) {
                     val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
                     dipolsDao.addLampItem(itemToAdd)
@@ -83,7 +83,6 @@ class LampsRepositoryImpl @Inject constructor(
 
             lampEntityList
         }.flowOn(Dispatchers.IO)
-
 
 
     override fun selectLamp(lampId: String) {
@@ -159,7 +158,7 @@ class LampsRepositoryImpl @Inject constructor(
         }
     }
 
-    private suspend fun testSendColorsLamp(lamp: LampDomainEntity){
+    private suspend fun testSendColorsLamp(lamp: LampDomainEntity) {
         var rabbitColorSpeed = 0.5
         val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
 
@@ -181,11 +180,17 @@ class LampsRepositoryImpl @Inject constructor(
     }
 
 
-    override fun saveLampToDb(lampDomainEntity: LampDomainEntity) {
-        val lampToDb = mapper.mapLampEntityToDbModel(lampDomainEntity)
-        dipolsDao.updateLampItem(lampToDb)
+    //    override fun saveLampToDb(lampDomainEntity: LampDomainEntity) {
+//        val lampToDb = mapper.mapLampEntityToDbModel(lampDomainEntity)
+//        dipolsDao.updateLampItem(lampToDb)
+//    }
+    override fun saveLampToDb(list: List<LampDomainEntity>) {
+//        val lampToDb = mapper.mapLampEntityToDbModel(lampDomainEntity)
+        val listToDb = list.map { mapper.mapLampEntityToDbModel(it) }
+        for (lampToDb in listToDb) {
+            dipolsDao.updateLampItem(lampToDb)
+        }
     }
-
 
 
     /**

@@ -427,7 +427,7 @@
                 />
 
             <TextView
-                android:id="@+id/btn_save_lamp"
+                android:id="@+id/btn_save_lamp_list"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="5dp"
@@ -436,7 +436,7 @@
                 android:gravity="center"
                 android:paddingHorizontal="5dp"
                 android:paddingVertical="10dp"
-                android:text="@string/save_lamp"
+                android:text="@string/save_lamp_list"
                 android:textColor="@color/colorHighlighted"
                 android:textSize="10sp"
                 />
