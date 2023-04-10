@@ -109,24 +109,35 @@ class MainActivity : AppCompatActivity() {
 //            Toast.makeText(this, "This button doesn't work now..", Toast.LENGTH_SHORT).show()
             }
 
-            btnSaveLampList.setOnClickListener {
+//            btnSaveLamp.setOnClickListener {
 //                selectedLamp?.let {
 //                    localModeViewModel.saveLamp(it)
 //                    Toast.makeText(this@MainActivity, "@${it.lampType} colorSet have been saved", Toast.LENGTH_SHORT).show()
 //                }
-                if (currentLamps.isNotEmpty()) {
-                    localModeViewModel.saveLampList(currentLamps)
-//                    Toast.makeText(this@MainActivity, "@${it.lampType} colorSet have been saved", Toast.LENGTH_SHORT).show()
-                    Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
-                }
-            }
+//            }
+//
+//            btnSaveLampList.setOnClickListener {
+//                if (currentLamps.isNotEmpty()) {
+//                    localModeViewModel.saveLampList(currentLamps)
+//                    Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
+//                }
+//            }
         }
 
         setupSeekbars()
 //        localModeViewModel.testSendLocalModeData()
-
     }
 
+    override fun onStop() {
+    Log.d("onPause", "here")
+        if (currentLamps.isNotEmpty()) {
+            localModeViewModel.saveLampList(currentLamps)
+//                    Toast.makeText(this@MainActivity, "@${it.lampType} colorSet have been saved", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
+        }
+        super.onStop()
+
+    }
 
     private fun setupSeekbars() {
         val seekAdapter = object :

@@ -180,12 +180,12 @@ class LampsRepositoryImpl @Inject constructor(
     }
 
 
-    //    override fun saveLampToDb(lampDomainEntity: LampDomainEntity) {
-//        val lampToDb = mapper.mapLampEntityToDbModel(lampDomainEntity)
-//        dipolsDao.updateLampItem(lampToDb)
-//    }
-    override fun saveLampToDb(list: List<LampDomainEntity>) {
-//        val lampToDb = mapper.mapLampEntityToDbModel(lampDomainEntity)
+    override fun saveLampToDb(lampDomainEntity: LampDomainEntity) {
+        val lampToDb = mapper.mapLampEntityToDbModel(lampDomainEntity)
+        dipolsDao.updateLampItem(lampToDb)
+    }
+
+    override fun saveLampListToDb(list: List<LampDomainEntity>) {
         val listToDb = list.map { mapper.mapLampEntityToDbModel(it) }
         for (lampToDb in listToDb) {
             dipolsDao.updateLampItem(lampToDb)

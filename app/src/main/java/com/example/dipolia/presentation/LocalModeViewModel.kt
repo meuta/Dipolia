@@ -24,6 +24,7 @@ class LocalModeViewModel @Inject constructor(
     private val unselectLampUseCase: UnselectLampUseCase,
     private val changeLocalStateUseCase: ChangeLocalStateUseCase,
     private val saveLampUseCase: SaveLampUseCase,
+    private val saveLampListUseCase: SaveLampListUseCase,
     private val workManager: WorkManager,
     private val mapper: DipoliaMapper
 ) : ViewModel() {
@@ -157,14 +158,15 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-//    fun saveLamp(lampDomainEntity: LampDomainEntity){
-//        scope.launch {
-//            saveLampUseCase(lampDomainEntity)
-//        }
-//    }
+    fun saveLamp(lampDomainEntity: LampDomainEntity){
+        scope.launch {
+            saveLampUseCase(lampDomainEntity)
+        }
+    }
+
     fun saveLampList(list: List<LampDomainEntity>){
         scope.launch {
-            saveLampUseCase(list)
+            saveLampListUseCase(list)
         }
     }
 
