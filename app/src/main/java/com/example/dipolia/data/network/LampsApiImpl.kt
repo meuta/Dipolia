@@ -24,7 +24,7 @@ class LampsApiImpl @Inject constructor(private val receiver: UDPServer): LampsAp
                 val id = ar[1].substring(0, ar[1].length - 1)
 
                 val lampType = when (lampTypeString) {
-                    "dipol" -> LampType.DIPOl
+                    "dipol" -> LampType.DIPOL
                     "5lights" -> LampType.FIVE_LIGHTS
                     else -> LampType.UNKNOWN_LAMP_TYPE
                 }

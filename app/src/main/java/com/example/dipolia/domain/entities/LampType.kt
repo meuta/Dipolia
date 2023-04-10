@@ -5,5 +5,5 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 enum class LampType: Parcelable {
-    DIPOl, FIVE_LIGHTS, UNKNOWN_LAMP_TYPE
+    DIPOL, FIVE_LIGHTS, UNKNOWN_LAMP_TYPE
 }

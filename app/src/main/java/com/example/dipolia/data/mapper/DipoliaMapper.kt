@@ -128,4 +128,14 @@ class DipoliaMapper @Inject constructor() {
         }
     }
 
+    fun mapLampEntityToDbModel(lampDomainEntity: LampDomainEntity) : LampDbModel{
+        val lampDbModel = LampDbModel(
+            lampDomainEntity.id,
+            lampDomainEntity.lastConnection,
+            lampDomainEntity.lampType,
+            lampDomainEntity.c
+            )
+        return lampDbModel
+    }
+
 }

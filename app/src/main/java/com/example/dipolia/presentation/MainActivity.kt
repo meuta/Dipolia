@@ -3,6 +3,7 @@ package com.example.dipolia.presentation
 import android.os.Bundle
 import android.util.Log
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.dipolia.DipoliaApplication
@@ -76,7 +77,7 @@ class MainActivity : AppCompatActivity() {
         localModeViewModel.selectedLamp.observe(this) { lamp ->
             lamp?.let {
                 Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: ${lamp.id}, ${lamp.c} ")
-                if (it.lampType == LampType.DIPOl){
+                if (it.lampType == LampType.DIPOL){
                     setDipolSeekbars(mapper.mapLampEntityToDipolEntity(it))
                 } else if (it.lampType == LampType.FIVE_LIGHTS){
                     setFiveLightsSeekbars(mapper.mapLampEntityToFiveLightsEntity(it))
@@ -89,17 +90,29 @@ class MainActivity : AppCompatActivity() {
             Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
         }
 
-        binding.btnRefreshList.setOnClickListener {
-            refreshConnectedList()
-        }
 
-        binding.btnUnselect.setOnClickListener {
-            localModeViewModel.unselectLamp()
-        }
+        with(binding){
+            btnRefreshList.setOnClickListener {
+                refreshConnectedList()
+            }
 
-        binding.btnBackgroundWork.setOnClickListener {
-            localModeViewModel.workerStartStop()
+            btnUnselect.setOnClickListener {
+                localModeViewModel.unselectLamp()
+            }
+
+            btnBackgroundWork.setOnClickListener {
+                localModeViewModel.workerStartStop()
 //            Toast.makeText(this, "This button doesn't work now..", Toast.LENGTH_SHORT).show()
+            }
+
+            btnSaveLamp.setOnClickListener {
+                selectedLamp?.let {
+                    localModeViewModel.saveLamp(it)
+                    Toast.makeText(this@MainActivity, "@${it.lampType} colorSet have been saved", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+
         }
 
         setupSeekbars()

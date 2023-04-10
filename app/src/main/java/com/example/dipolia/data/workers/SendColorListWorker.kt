@@ -53,7 +53,7 @@ class SendColorListWorker(
 //                    Log.d("worker", "IP = ${lamp.ip}")
             val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
             var stringToSend = ""
-//                    if (lamp.lampType == LampType.DIPOl) {
+//                    if (lamp.lampType == LampType.DIPOL) {
                     if (lampType == "dipol") {
             val r1 = (BigDecimal(array[0]).setScale(3, RoundingMode.HALF_DOWN))
             val g1 = (BigDecimal(array[1]).setScale(3, RoundingMode.HALF_DOWN))
@@ -89,7 +89,7 @@ class SendColorListWorker(
 //                    Log.d("worker", "IP = ${lamp.ip}")
 //                    val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
 //                    var stringToSend = ""
-//                    if (lamp.lampType == LampType.DIPOl) {
+//                    if (lamp.lampType == LampType.DIPOL) {
 //                        val r1 = (BigDecimal(lamp.c.colors[0]).setScale(3, RoundingMode.HALF_DOWN))
 //                        val g1 = (BigDecimal(lamp.c.colors[1]).setScale(3, RoundingMode.HALF_DOWN))
 //                        val b1 = (BigDecimal(lamp.c.colors[2]).setScale(3, RoundingMode.HALF_DOWN))

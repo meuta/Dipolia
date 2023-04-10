@@ -23,6 +23,7 @@ class LocalModeViewModel @Inject constructor(
     private val selectItemUseCase: SelectLampUseCase,
     private val unselectLampUseCase: UnselectLampUseCase,
     private val changeLocalStateUseCase: ChangeLocalStateUseCase,
+    private val saveLampUseCase: SaveLampUseCase,
     private val workManager: WorkManager,
     private val mapper: DipoliaMapper
 ) : ViewModel() {
@@ -58,7 +59,7 @@ class LocalModeViewModel @Inject constructor(
 
     val myDipolsList: LiveData<List<DipolDomainEntity>> = Transformations.map(myLamps) { list ->
         list
-            .filter { it.lampType == LampType.DIPOl && it.connected }
+            .filter { it.lampType == LampType.DIPOL && it.connected }
             .map { lamp -> mapper.mapLampEntityToDipolEntity(lamp) }
     }
     val myFiveLightList: LiveData<List<FiveLightsDomainEntity>> =
@@ -74,7 +75,7 @@ class LocalModeViewModel @Inject constructor(
     }
     val selectedDipol: LiveData<DipolDomainEntity?> = Transformations.map(selectedLamp) { lamp ->
         lamp?.let {
-            if (lamp.lampType == LampType.DIPOl) {
+            if (lamp.lampType == LampType.DIPOL) {
                 mapper.mapLampEntityToDipolEntity(lamp)
             } else {
                 null
@@ -141,7 +142,7 @@ class LocalModeViewModel @Inject constructor(
 //                .build()
             mySelLamp?.let {
                 val lampType = when(it.lampType){
-                    LampType.DIPOl -> "dipol"
+                    LampType.DIPOL -> "dipol"
                     LampType.FIVE_LIGHTS -> "fiveLights"
                     else -> "unknown"
                 }
@@ -153,7 +154,12 @@ class LocalModeViewModel @Inject constructor(
 //                SendColorListWorker.makeRequest()
                 )
             }
+        }
+    }
 
+    fun saveLamp(lampDomainEntity: LampDomainEntity){
+        scope.launch {
+            saveLampUseCase(lampDomainEntity)
         }
     }
 

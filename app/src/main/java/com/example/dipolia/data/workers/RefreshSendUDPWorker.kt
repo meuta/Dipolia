@@ -34,7 +34,7 @@ class RefreshSendUDPWorker(
                         RoundingMode.HALF_DOWN
                     ))
                     var stringToSend = ""
-                    if (lamp.lampType == LampType.DIPOl) {
+                    if (lamp.lampType == LampType.DIPOL) {
                         val r1 = (BigDecimal(lamp.colorList.colors[0]).setScale(3, RoundingMode.HALF_DOWN))
                         val g1 = (BigDecimal(lamp.colorList.colors[1]).setScale(3, RoundingMode.HALF_DOWN))
                         val b1 = (BigDecimal(lamp.colorList.colors[2]).setScale(3, RoundingMode.HALF_DOWN))

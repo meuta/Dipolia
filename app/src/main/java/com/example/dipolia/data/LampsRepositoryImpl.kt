@@ -65,7 +65,7 @@ class LampsRepositoryImpl @Inject constructor(
                 val lampDomainEntity = mapper.mapLampDtoToEntity(lampDto)
 
                 val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
-//                        Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
+                        Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
                 if (itemFromDb == null) {
                     val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
                     dipolsDao.addLampItem(itemToAdd)
@@ -83,6 +83,7 @@ class LampsRepositoryImpl @Inject constructor(
 
             lampEntityList
         }.flowOn(Dispatchers.IO)
+
 
 
     override fun selectLamp(lampId: String) {
@@ -162,7 +163,7 @@ class LampsRepositoryImpl @Inject constructor(
         var rabbitColorSpeed = 0.5
         val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
 
-        if (lamp.lampType == LampType.DIPOl) {
+        if (lamp.lampType == LampType.DIPOL) {
 
             val r1 = (BigDecimal(lamp.c.colors[0]).setScale(3, RoundingMode.HALF_DOWN))
             val g1 = (BigDecimal(lamp.c.colors[1]).setScale(3, RoundingMode.HALF_DOWN))
@@ -177,8 +178,15 @@ class LampsRepositoryImpl @Inject constructor(
 //            val address = InetAddress.getByName(lamp.ip)
             sender.sendUDPSuspend(stringToSend, address)
         }
-
     }
+
+
+    override fun saveLampToDb(lampDomainEntity: LampDomainEntity) {
+        val lampToDb = mapper.mapLampEntityToDbModel(lampDomainEntity)
+        dipolsDao.updateLampItem(lampToDb)
+    }
+
+
 
     /**
      * Returns the latest list applying transformations on the flow.
@@ -230,7 +238,7 @@ class LampsRepositoryImpl @Inject constructor(
 //                        }
 //                    }
 //                    .map { lampDto -> mapper.mapLampDtoToEntity(lampDto) }
-//                    .filter { it.lampType == LampType.DIPOl && it.connected }
+//                    .filter { it.lampType == LampType.DIPOL && it.connected }
 //                    .map { mapper.mapLampEntityToDipolEntity(it) }
 //            }.flowOn(Dispatchers.IO)
 

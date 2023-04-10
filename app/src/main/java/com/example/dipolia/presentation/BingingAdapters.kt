@@ -101,7 +101,7 @@ fun setLampControlLayoutVisibility(view: View, notEmpty: Boolean){
 @BindingAdapter("pleaseSelectTextViewVisibility")
 fun setPleaseSelectTextViewVisibility(view: View, lampType: LampType?){
 //    Log.d("setSelectedPleaseSelectTextViewVisibility", "$lampType")
-    if (lampType == LampType.DIPOl || lampType == LampType.FIVE_LIGHTS) {
+    if (lampType == LampType.DIPOL || lampType == LampType.FIVE_LIGHTS) {
         view.visibility = INVISIBLE
     } else {
         view.visibility = VISIBLE
@@ -111,7 +111,7 @@ fun setPleaseSelectTextViewVisibility(view: View, lampType: LampType?){
 @BindingAdapter("dipolControlLayoutVisibility")
 fun setDipolControlLayoutVisibility(view: View, lampType: LampType?){
 //    Log.d("setDipolControlLayoutVisibility", "$lampType")
-    if (lampType == LampType.DIPOl) {
+    if (lampType == LampType.DIPOL) {
         view.visibility = VISIBLE
     } else {
         view.visibility = INVISIBLE

@@ -81,7 +81,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 //
 //                    if (already == 0) {
 //                        val lampType = when (lampTypeString) {
-//                            "dipol" -> LampType.DIPOl
+//                            "dipol" -> LampType.DIPOL
 //                            "5lights" -> LampType.FIVE_LIGHTS
 //                            else -> LampType.UNKNOWN_LAMP_TYPE
 //                        }
@@ -134,7 +134,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 
 
     override fun getSelectedDipol(): LiveData<DipolDomainEntity?> {
-        return Transformations.map(dipolsDao.getSelectedDipolItemLD(LampType.DIPOl)) { it ->
+        return Transformations.map(dipolsDao.getSelectedDipolItemLD(LampType.DIPOL)) { it ->
             it?.let {
                 mapper.mapLampDbModelToDipolEntity(it)
             }
@@ -244,7 +244,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
 
 
     override fun getConnectedDipolList(): LiveData<List<DipolDomainEntity>> {
-        return Transformations.map(dipolsDao.getConnectedLampsListByTypeLD(LampType.DIPOl)) { it ->
+        return Transformations.map(dipolsDao.getConnectedLampsListByTypeLD(LampType.DIPOL)) { it ->
 //            Log.d("getDipolList", "$it")
             it.map {
                 mapper.mapLampDbModelToDipolEntity(it)
@@ -314,7 +314,7 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
             Log.d("DipoliaRepositoryImpl", "changeLocalState $dipolItem")
 
             dipolItem?.let {
-                if (it.lampType == LampType.DIPOl) {            // some crutch
+                if (it.lampType == LampType.DIPOL) {            // some crutch
                     var colorList = dipolItem.colorList.colors.toMutableList()
                     if (colorList.isEmpty()) {
                         colorList = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
