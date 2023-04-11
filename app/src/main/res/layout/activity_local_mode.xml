@@ -57,7 +57,7 @@
             android:layout_margin="10dp"
             android:background="@color/gray"
             android:elevation="@dimen/item_card_cv_elevation"
-            app:fiveLightsItemVisibility="@{viewModel.myFiveLightList[0].connected}"
+            app:fiveLightsItemVisibility="@{viewModel.myFiveLightListLD[0].connected}"
             app:layout_constraintBottom_toTopOf="@id/view_buttons_divider"
             app:layout_constraintEnd_toEndOf="@+id/rv_dipol_item_list"
             app:layout_constraintStart_toStartOf="parent"
@@ -89,11 +89,11 @@
                         android:layout_height="100dp"
                         android:gravity="center"
                         android:padding="10dp"
-                        android:text="@{viewModel.myFiveLightList[0].id}"
+                        android:text="@{viewModel.myFiveLightListLD[0].id}"
                         android:textColor="@color/colorHighlighted"
                         android:textSize="16sp"
                         app:onFiveLightsClickListener="@{(string) -> viewModel.selectLamp(string)}"
-                        app:selectedBackground="@{viewModel.myFiveLightList[0].selected}"
+                        app:selectedBackground="@{viewModel.myFiveLightListLD[0].selected}"
                         tools:text="Item" />
 
 
@@ -105,7 +105,7 @@
                         android:layout_margin="2dp"
                         android:background="@drawable/item_selected_background"
                         android:visibility="gone"
-                        app:selectedVisibility="@{viewModel.myFiveLightList[0].selected}"
+                        app:selectedVisibility="@{viewModel.myFiveLightListLD[0].selected}"
                         tools:visibility="visible" />
 
                 </FrameLayout>
@@ -116,7 +116,7 @@
                     android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:background="@color/gray"
-                    app:fiveLightsLableColor="@{viewModel.myFiveLightList[0].c}"
+                    app:fiveLightsLableColor="@{viewModel.myFiveLightListLD[0].c}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -131,7 +131,7 @@
             android:id="@+id/current_lamp_layout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:lampControlLayoutVisibility="@{!viewModel.myLamps.empty}"
+            app:lampControlLayoutVisibility="@{!viewModel.myLampsLD.empty}"
             app:layout_constraintBottom_toTopOf="@id/view_buttons_divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/rv_dipol_item_list"
@@ -144,14 +144,14 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="@string/please_select_the_lamp"
-                app:pleaseSelectTextViewVisibility="@{viewModel.selectedLamp.lampType}"
+                app:pleaseSelectTextViewVisibility="@{viewModel.selectedLampLD.lampType}"
                 tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/dipol_control_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:dipolControlLayoutVisibility="@{viewModel.selectedLamp.lampType}"
+                app:dipolControlLayoutVisibility="@{viewModel.selectedLampLD.lampType}"
                 tools:visibility="visible">
 
 
@@ -206,7 +206,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_margin="10dp"
-                    app:dipolLableColor="@{viewModel.selectedDipol.c1}"
+                    app:dipolLableColor="@{viewModel.selectedDipolLD.c1}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/ll_local_seekbars_left"
                     app:layout_constraintStart_toStartOf="@+id/ll_local_seekbars_left"
@@ -263,7 +263,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_margin="10dp"
-                    app:dipolLableColor="@{viewModel.selectedDipol.c2}"
+                    app:dipolLableColor="@{viewModel.selectedDipolLD.c2}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/ll_local_seekbars_right"
                     app:layout_constraintStart_toStartOf="@+id/ll_local_seekbars_right"
@@ -276,7 +276,7 @@
                 android:id="@+id/five_lights_control_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:fiveLightsControlLayoutVisibility="@{viewModel.selectedLamp.lampType}"
+                app:fiveLightsControlLayoutVisibility="@{viewModel.selectedLampLD.lampType}"
                 tools:visibility="visible">
 
                 <LinearLayout
@@ -347,7 +347,7 @@
                     android:layout_width="150dp"
                     android:layout_height="100dp"
                     android:layout_margin="10dp"
-                    app:fiveLightsLableColor="@{viewModel.myFiveLightList[0].c}"
+                    app:fiveLightsLableColor="@{viewModel.myFiveLightListLD[0].c}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -440,4 +440,3 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
-

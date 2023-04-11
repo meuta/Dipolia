@@ -6,6 +6,7 @@ import javax.inject.Inject
 
 class LampsApiImpl @Inject constructor(private val receiver: UDPServer): LampsApi {
 
+    private var fiveLightsCounter = 0
 
     override suspend fun fetchLampDto(): LampDto? {
         var lampDto : LampDto? = null
@@ -19,16 +20,23 @@ class LampsApiImpl @Inject constructor(private val receiver: UDPServer): LampsAp
 //            Log.d("receiveLocalModeData", "lampTypeString = $lampTypeString")
 
             if (lampTypeString == "dipol" || lampTypeString == "5lights") {
+                if (lampTypeString == "5lights") {
+                    fiveLightsCounter++
+                    fiveLightsCounter %= 4
 
-//                Log.d("receiveLocalModeData", "inside if lampTypeString = $lampTypeString")
-                val id = ar[1].substring(0, ar[1].length - 1)
-
-                val lampType = when (lampTypeString) {
-                    "dipol" -> LampType.DIPOL
-                    "5lights" -> LampType.FIVE_LIGHTS
-                    else -> LampType.UNKNOWN_LAMP_TYPE
+                    Log.d("receiveLocalModeData", "fiveLightsCounter = $fiveLightsCounter")
                 }
-                lampDto = LampDto(id, it.second, lampType, System.currentTimeMillis()/1000)
+                if (lampTypeString == "dipol" || fiveLightsCounter !in 0..2) {
+                    Log.d("receiveLocalModeData", "inside if lampTypeString = $lampTypeString")
+                    val id = ar[1].substring(0, ar[1].length - 1)
+
+                    val lampType = when (lampTypeString) {
+                        "dipol" -> LampType.DIPOL
+                        "5lights" -> LampType.FIVE_LIGHTS
+                        else -> LampType.UNKNOWN_LAMP_TYPE
+                    }
+                    lampDto = LampDto(id, it.second, lampType, System.currentTimeMillis() / 1000)
+                }
             }
         }
         return lampDto

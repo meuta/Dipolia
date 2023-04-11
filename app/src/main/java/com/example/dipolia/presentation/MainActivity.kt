@@ -14,8 +14,6 @@ import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.presentation.adaptes.DipolListAdapter
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -55,30 +53,29 @@ class MainActivity : AppCompatActivity() {
         binding.viewModel = localModeViewModel
         binding.lifecycleOwner = this
 
-//        localModeViewModel.allLampsList.observe(this) { list ->
-//            Log.d("TEST_OF_SUBSCRIBE", "allLampsListSelectedItem: ${list.map { "${it.id}, ${it.selected}"}}")
-//        }
 
 
-        localModeViewModel.myLamps.observe(this) {
-            Log.d("TEST_OF_SUBSCRIBE", "myLamps: ${it.map { item -> "${item.id}, ${item.selected}, ${item.lastConnection}"} }")
+        localModeViewModel.myLampsLD.observe(this) {
             if (it.isNotEmpty()){
+                Log.d("TEST_OF_SUBSCRIBE", "myLamps: ${it.map { item -> "${item.id}, ${item.selected}, ${item.lastConnection}"} }")
+//                Log.d("TEST_OF_SUBSCRIBE", "myLamps: $it")
                 currentLamps = it
             }
         }
 
-        localModeViewModel.myDipolsList.observe(this) {
+        localModeViewModel.myDipolsListLD.observe(this) {
             Log.d("TEST_OF_SUBSCRIBE", "dipolList: ${it.map { item -> "${item.id}, ${item.selected}, ${item.lastConnection}"} }")
+//            Log.d("TEST_OF_SUBSCRIBE", "dipolList: $it")
             dipolListAdapter.submitList(it)      // Created new thread
         }
 
-        localModeViewModel.myFiveLightList.observe(this) {list ->
+        localModeViewModel.myFiveLightListLD.observe(this) { list ->
             if (list.isNotEmpty()){
                 Log.d("TEST_OF_SUBSCRIBE", "fiveLights: ${list[0]}")
             }
         }
 
-        localModeViewModel.selectedLamp.observe(this) { lamp ->
+        localModeViewModel.selectedLampLD.observe(this) { lamp ->
             lamp?.let {
                 Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: ${lamp.id}, ${lamp.c} ")
                 if (it.lampType == LampType.DIPOL){

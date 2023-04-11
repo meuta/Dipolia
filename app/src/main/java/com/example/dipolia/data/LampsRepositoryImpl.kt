@@ -9,7 +9,6 @@ import com.example.dipolia.data.network.UDPClient
 import com.example.dipolia.domain.LampsRepository
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -36,9 +35,7 @@ class LampsRepositoryImpl @Inject constructor(
         }
     }
 
-//    override fun getLatestLampList(): Flow<List<LampDomainEntity>> = lampsRemoteDataSource.myLampDto
-//    override suspend fun getLatestLampList(): StateFlow<List<LampDomainEntity>> = lampsRemoteDataSource.myLampDto
-    override fun getLatestLampList(): SharedFlow<List<LampDomainEntity>> = lampsRemoteDataSource.myLampDto
+    override fun getLatestLampList(): Flow<List<LampDomainEntity>> = lampsRemoteDataSource.myLampDto
         .map { lampDto ->
             var already = 0
 
@@ -68,10 +65,9 @@ class LampsRepositoryImpl @Inject constructor(
                     dipolsDao.addLampItem(itemToAdd)
                 } else {
                     lampDomainEntity.c = itemFromDb.colorList
-//                        Log.d("TEST", "exist")
+//                        Log.d("TEST", "exists")
                 }
-
-                lampEntityList.add(lampDomainEntity)
+                    lampEntityList.add(lampDomainEntity)
 //                Log.d(
 //                    "TEST",
 //                    "lampEntityList = ${lampEntityList.map { item -> item.id to item.lastConnection }}"
@@ -79,9 +75,8 @@ class LampsRepositoryImpl @Inject constructor(
             }
 
             lampEntityList
-//        }.flowOn(Dispatchers.IO)
-//        }.stateIn(CoroutineScope(Dispatchers.IO))
-        }.shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly)
+        }.flowOn(Dispatchers.IO)
+
 
 
     override fun selectLamp(lampId: String) {
@@ -190,85 +185,5 @@ class LampsRepositoryImpl @Inject constructor(
             dipolsDao.updateLampItem(lampToDb)
         }
     }
-
-
-    /**
-     * Returns the latest list applying transformations on the flow.
-     * These operations are lazy and don't trigger the flow. They just transform
-     * the current value emitted by the flow at that point in time.
-     */
-//    override fun latestLampDomainEntityList(): Flow<List<LampDomainEntity>> =
-//        lampsRemoteDataSource.myLamps
-//            // Intermediate operation to filter the list of lamps
-//            .map { lampDtoList ->
-//                lampDtoList
-//                    // Adding a new lamp to db
-//                    .onEach { lampDto ->
-////                        Log.d("UDP receiveLocalModeData", "itemToAdd = $itemToAdd")
-//                        val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
-////                        Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
-//                        if (itemFromDb == null) {
-//                            val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
-//                            dipolsDao.addLampItem(itemToAdd)
-//                        } else {
-////                        itemToListEntity.c = itemFromDb.colorList
-//                            Log.d("TEST", "exist")
-//                        }
-//                    }
-//                    .map { lampDto ->
-//                        Log.d("lampDtoList.map", "mapper.mapLampDtoToEntity(lampDto)")
-//                        mapper.mapLampDtoToEntity(lampDto)
-//                    }
-//            }.flowOn(Dispatchers.IO)
-
-
-//    override fun latestDipolLampDomainEntityList(): Flow<List<DipolDomainEntity>> =
-//        lampsRemoteDataSource.myLamps
-////    val latestDipolLampDomainEntityList: Flow<List<DipolDomainEntity>> = lampsRemoteDataSource.myLamps
-//            // Intermediate operation to filter the list of dipols
-//            .map { lampDtoList ->
-//                lampDtoList
-//                    // Adding a new lamp to db
-//                    .onEach { lampDto ->
-////                        Log.d("UDP receiveLocalModeData", "itemToAdd = $itemToAdd")
-//                        val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
-////                        Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
-//                        if (itemFromDb == null) {
-//                            val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
-//                            dipolsDao.addLampItem(itemToAdd)
-//                        } else {
-////                        itemToListEntity.c = itemFromDb.colorList
-////                        Log.d("TEST", "exist")
-//                        }
-//                    }
-//                    .map { lampDto -> mapper.mapLampDtoToEntity(lampDto) }
-//                    .filter { it.lampType == LampType.DIPOL && it.connected }
-//                    .map { mapper.mapLampEntityToDipolEntity(it) }
-//            }.flowOn(Dispatchers.IO)
-
-
-//    override fun latestFiveLightsLampDomainEntityList(): Flow<FiveLightsDomainEntity> =
-//        lampsRemoteDataSource.myLamps
-//            // Intermediate operation to filter the list of dipols
-//            .map { lampDtoList ->
-//                lampDtoList
-//                    // Adding a new lamp to db
-//                    .onEach { lampDto ->
-////                        Log.d("UDP receiveLocalModeData", "itemToAdd = $itemToAdd")
-//                        val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
-////                        Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
-//                        if (itemFromDb == null) {
-//                            val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
-//                            dipolsDao.addLampItem(itemToAdd)
-//                        } else {
-////                        itemToListEntity.c = itemFromDb.colorList
-////                        Log.d("TEST", "exist")
-//                        }
-//                    }
-//                    .map { lampDto -> mapper.mapLampDtoToEntity(lampDto) }
-//                    .filter { it.lampType == LampType.FIVE_LIGHTS && it.connected }
-//                    .map { mapper.mapLampEntityToFiveLightsEntity(it) }[0]
-//            }.flowOn(Dispatchers.IO)
-
 
 }

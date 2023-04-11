@@ -2,7 +2,6 @@ package com.example.dipolia.presentation
 
 import android.util.Log
 import androidx.lifecycle.*
-import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.example.dipolia.data.mapper.DipoliaMapper
@@ -14,7 +13,7 @@ import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.domain.useCases.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,17 +30,8 @@ class LocalModeViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-
-//    private val testSendLocalModeDataUseCase = TestSendLocalModeDataUseCase(repository)
-//    private val refreshConnectedListUseCase = RefreshConnectedListUseCase(repository)
-//    private val getSelectedLampUseCase = GetSelectedLampUseCase(repository)
-//    private val getAllLampsTableUseCase = GetAllLampsTableUseCase(repository)
-
-
     private val scope = CoroutineScope(Dispatchers.IO)
 
-
-//    val allLampList = getAllLampsTableUseCase()
 
     val isBackGroundWork = getIsBroadcast()
     private fun getIsBroadcast(): LiveData<Boolean?> {
@@ -54,34 +44,25 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-//    fun getLamps() {
-//        scope.launch {
-//            getLampsUseCase()
-//        }
-//    }
-    var myLamps = getLampsUseCase().asLiveData()
 
+    var myLampsSharedFlow: SharedFlow<List<LampDomainEntity>> = getLampsUseCase().shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily)
+    var myLampsLD: LiveData<List<LampDomainEntity>> = myLampsSharedFlow.asLiveData()
 
-    var mySelLamp: LampDomainEntity? = null
-
-
-    val myDipolsList: LiveData<List<DipolDomainEntity>> = Transformations.map(myLamps) { list ->
+    val myDipolsListLD: LiveData<List<DipolDomainEntity>> = Transformations.map(myLampsLD) { list ->
         list
             .filter { it.lampType == LampType.DIPOL && it.connected }
             .map { lamp -> mapper.mapLampEntityToDipolEntity(lamp) }
     }
-    val myFiveLightList: LiveData<List<FiveLightsDomainEntity>> =
-        Transformations.map(myLamps) { list ->
+    val myFiveLightListLD: LiveData<List<FiveLightsDomainEntity>> =
+        Transformations.map(myLampsLD) { list ->
             list
                 .filter { it.lampType == LampType.FIVE_LIGHTS && it.connected }
                 .map { lamp -> mapper.mapLampEntityToFiveLightsEntity(lamp) }
         }
-    val selectedLamp: LiveData<LampDomainEntity> = Transformations.map(myLamps) { list ->
-        mySelLamp = list.find { it.selected }
-//        list.find { it.selected }
-        mySelLamp
+    val selectedLampLD: LiveData<LampDomainEntity> = Transformations.map(myLampsLD) { list ->
+        list.find { it.selected }
     }
-    val selectedDipol: LiveData<DipolDomainEntity?> = Transformations.map(selectedLamp) { lamp ->
+    val selectedDipolLD: LiveData<DipolDomainEntity?> = Transformations.map(selectedLampLD) { lamp ->
         lamp?.let {
             if (lamp.lampType == LampType.DIPOL) {
                 mapper.mapLampEntityToDipolEntity(lamp)
@@ -95,24 +76,24 @@ class LocalModeViewModel @Inject constructor(
         scope.launch {
             sendFollowMeUseCase()
         }
-//        scope.launch {
-//            myLamps = getLampsUseCase().asLiveData()
-//        }
+
+
 //        scope.launch {
 //            // Trigger the flow and consume its elements using collect
-////            val case = getLampsUseCase()
-//            getLampsUseCase().collect { lamps ->
-////            lampsRepository.latestDipolLampDtoList.collect { dipols ->
+//            myLampsSharedFlow.collectLatest { lamps ->
 //                // Update View
 //                Log.d("TEST_", "LampDomainEntityList = ${lamps.map { it.id to it.lastConnection}}")
 //            }
 //        }
+//        scope.launch {
+//            myLampsSharedFlow.collectLatest { lamps ->
+//                Log.d("TEST_", "LampDomainEntityList1 = ${lamps.map { it.id to it.lastConnection}}")
+//            }
+//        }
+
     }
 
 
-    fun testSendLocalModeData() {
-//        testSendLocalModeDataUseCase()
-    }
 
     fun selectLamp(itemId: String) {
         scope.launch {
@@ -151,28 +132,37 @@ class LocalModeViewModel @Inject constructor(
         }
 //
         if (workInfo.isNotEmpty() && workInfo[0].state.toString() == "RUNNING") {
-            Log.d("onClick workerStartStop", "workerState == \"RUNNING\"")
+            Log.d("onClick workerStartStop", "RUNNING")
             workManager.cancelAllWork()
         } else {
-            Log.d("onClick workerStartStop", "workerState == \"CANCELED\"")
+            Log.d("onClick workerStartStop", "NOT RUNNING")
 //            val data = Data.Builder()
 //                .putString(SendColorListWorker.IP, "")
 //                .putDoubleArray(SendColorListWorker.LIST, doubleArrayOf(0.0))
 //                .build()
-            mySelLamp?.let {
-                val lampType = when(it.lampType){
-                    LampType.DIPOL -> "dipol"
-                    LampType.FIVE_LIGHTS -> "fiveLights"
-                    else -> "unknown"
-                }
-                workManager.enqueueUniqueWork(
-                SendColorListWorker.WORK_NAME,
-                ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
+            scope.launch {
+//                myLampsSharedFlow.collect { list ->
+                myLampsSharedFlow.collectLatest { list ->
+                    val mySel = list.find { it.selected }
+                    Log.d("onClick workerStartStop", "mySel = $mySel")
+
+                    mySel?.let {
+                        val lampType = when (it.lampType) {
+                            LampType.DIPOL -> "dipol"
+                            LampType.FIVE_LIGHTS -> "fiveLights"
+                            else -> "unknown"
+                        }
+                        workManager.enqueueUniqueWork(
+                            SendColorListWorker.WORK_NAME,
+                            ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
 //                SendColorListWorker.makeRequest(myLamps)
-                SendColorListWorker.makeRequest(it.ip, lampType, it.c.colors)
+                            SendColorListWorker.makeRequest(it.ip, lampType, it.c.colors)
 //                SendColorListWorker.makeRequest()
-                )
+                        )
+                    }
+                }
             }
+
         }
     }
 
