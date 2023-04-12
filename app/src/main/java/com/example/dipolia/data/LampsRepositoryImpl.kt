@@ -1,6 +1,8 @@
 package com.example.dipolia.data
 
+import android.app.Application
 import android.util.Log
+
 import com.example.dipolia.data.database.ColorList
 import com.example.dipolia.data.database.DipolsDao
 import com.example.dipolia.data.mapper.DipoliaMapper
@@ -25,8 +27,10 @@ class LampsRepositoryImpl @Inject constructor(
 ) : LampsRepository {
 
 
-    private val lampEntityList = mutableListOf<LampDomainEntity>()
-    private var selectedLamp: LampDomainEntity? = null
+    val lampEntityList = mutableListOf<LampDomainEntity>()
+    lateinit var lampEntityListSharedFlow: SharedFlow<List<LampDomainEntity>>
+    var selectedLamp: LampDomainEntity? = null
+//    var selectedLamp: LampDomainEntity? = LampDomainEntity("", "", LampType.UNKNOWN_LAMP_TYPE, ColorList(listOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)) )
 
     override suspend fun sendFollowMe() {
         while (true) {
@@ -67,7 +71,7 @@ class LampsRepositoryImpl @Inject constructor(
                     lampDomainEntity.c = itemFromDb.colorList
 //                        Log.d("TEST", "exists")
                 }
-                    lampEntityList.add(lampDomainEntity)
+                lampEntityList.add(lampDomainEntity)
 //                Log.d(
 //                    "TEST",
 //                    "lampEntityList = ${lampEntityList.map { item -> item.id to item.lastConnection }}"
@@ -76,7 +80,6 @@ class LampsRepositoryImpl @Inject constructor(
 
             lampEntityList
         }.flowOn(Dispatchers.IO)
-
 
 
     override fun selectLamp(lampId: String) {
@@ -139,8 +142,6 @@ class LampsRepositoryImpl @Inject constructor(
             selectedLamp = newLampItem
             Log.d("changeLocalState", "selectedLamp $selectedLamp")
 
-//            selectedLamp?.let { testSendColorsLamp(it) }
-
             selectedLamp?.let {
                 val item = lampEntityList.find { lamp -> lamp.id == it.id }
                 val itemIndex = lampEntityList.indexOf(item)
@@ -149,27 +150,6 @@ class LampsRepositoryImpl @Inject constructor(
                     lampEntityList[itemIndex] = cItem
                 }
             }
-        }
-    }
-
-    private suspend fun testSendColorsLamp(lamp: LampDomainEntity) {
-        var rabbitColorSpeed = 0.5
-        val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
-
-        if (lamp.lampType == LampType.DIPOL) {
-
-            val r1 = (BigDecimal(lamp.c.colors[0]).setScale(3, RoundingMode.HALF_DOWN))
-            val g1 = (BigDecimal(lamp.c.colors[1]).setScale(3, RoundingMode.HALF_DOWN))
-            val b1 = (BigDecimal(lamp.c.colors[2]).setScale(3, RoundingMode.HALF_DOWN))
-            val r2 = (BigDecimal(lamp.c.colors[3]).setScale(3, RoundingMode.HALF_DOWN))
-            val g2 = (BigDecimal(lamp.c.colors[4]).setScale(3, RoundingMode.HALF_DOWN))
-            val b2 = (BigDecimal(lamp.c.colors[5]).setScale(3, RoundingMode.HALF_DOWN))
-
-            val stringToSend = "r1=$r1;g1=$g1;b1=$b1;r2=$r2;g2=$g2;b2=$b2;rcs=$rcs"
-
-            val address = sender.getInetAddressByName(lamp.ip)
-//            val address = InetAddress.getByName(lamp.ip)
-            sender.sendUDPSuspend(stringToSend, address)
         }
     }
 
@@ -185,5 +165,42 @@ class LampsRepositoryImpl @Inject constructor(
             dipolsDao.updateLampItem(lampToDb)
         }
     }
+
+    override suspend fun sendColors() {
+        var rabbitColorSpeed = 0.5
+        while (true) {
+            for (lamp in lampEntityList) {
+                val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
+                var stringToSend = ""
+
+                if (lamp.lampType == LampType.DIPOL) {
+
+                    val r1 = (BigDecimal(lamp.c.colors[0]).setScale(3, RoundingMode.HALF_DOWN))
+                    val g1 = (BigDecimal(lamp.c.colors[1]).setScale(3, RoundingMode.HALF_DOWN))
+                    val b1 = (BigDecimal(lamp.c.colors[2]).setScale(3, RoundingMode.HALF_DOWN))
+                    val r2 = (BigDecimal(lamp.c.colors[3]).setScale(3, RoundingMode.HALF_DOWN))
+                    val g2 = (BigDecimal(lamp.c.colors[4]).setScale(3, RoundingMode.HALF_DOWN))
+                    val b2 = (BigDecimal(lamp.c.colors[5]).setScale(3, RoundingMode.HALF_DOWN))
+
+                    stringToSend = "r1=$r1;g1=$g1;b1=$b1;r2=$r2;g2=$g2;b2=$b2;rcs=$rcs"
+
+                } else if (lamp.lampType == LampType.FIVE_LIGHTS) {
+
+                    val r = (BigDecimal(lamp.c.colors[0]).setScale(3, RoundingMode.HALF_DOWN))
+                    val g = (BigDecimal(lamp.c.colors[1]).setScale(3, RoundingMode.HALF_DOWN))
+                    val b = (BigDecimal(lamp.c.colors[2]).setScale(3, RoundingMode.HALF_DOWN))
+                    val w = (BigDecimal(lamp.c.colors[3]).setScale(3, RoundingMode.HALF_DOWN))
+                    val u = (BigDecimal(lamp.c.colors[4]).setScale(3, RoundingMode.HALF_DOWN))
+
+                    stringToSend = "r=$r;g=$g;b=$b;w=$w;u=$u;rcs=$rcs"
+                }
+                val address = sender.getInetAddressByName(lamp.ip)
+                sender.sendUDPSuspend(stringToSend, address)
+            }
+            delay(100)
+        }
+    }
+
+
 
 }

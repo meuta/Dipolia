@@ -6,6 +6,7 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.workers.SendColorListWorker
+import com.example.dipolia.domain.LampsRepository
 import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
@@ -26,7 +27,8 @@ class LocalModeViewModel @Inject constructor(
     private val saveLampUseCase: SaveLampUseCase,
     private val saveLampListUseCase: SaveLampListUseCase,
     private val workManager: WorkManager,
-    private val mapper: DipoliaMapper
+    private val mapper: DipoliaMapper,
+    private val sendColorsUseCase: SendColorsUseCase
 ) : ViewModel() {
 
 
@@ -76,7 +78,9 @@ class LocalModeViewModel @Inject constructor(
         scope.launch {
             sendFollowMeUseCase()
         }
-
+        scope.launch {
+            sendColorsUseCase()
+        }
 
 //        scope.launch {
 //            // Trigger the flow and consume its elements using collect
@@ -114,9 +118,9 @@ class LocalModeViewModel @Inject constructor(
     }
 
     fun changeLocalState(set: String, index: Int, componentValue: Double) {
-        scope.launch {
+//        scope.launch {
             changeLocalStateUseCase(set, index, componentValue)
-        }
+//        }
     }
 
 
@@ -136,33 +140,15 @@ class LocalModeViewModel @Inject constructor(
             workManager.cancelAllWork()
         } else {
             Log.d("onClick workerStartStop", "NOT RUNNING")
-//            val data = Data.Builder()
-//                .putString(SendColorListWorker.IP, "")
-//                .putDoubleArray(SendColorListWorker.LIST, doubleArrayOf(0.0))
-//                .build()
+
             scope.launch {
-//                myLampsSharedFlow.collect { list ->
-                myLampsSharedFlow.collectLatest { list ->
-                    val mySel = list.find { it.selected }
-                    Log.d("onClick workerStartStop", "mySel = $mySel")
 
-                    mySel?.let {
-                        val lampType = when (it.lampType) {
-                            LampType.DIPOL -> "dipol"
-                            LampType.FIVE_LIGHTS -> "fiveLights"
-                            else -> "unknown"
-                        }
-                        workManager.enqueueUniqueWork(
-                            SendColorListWorker.WORK_NAME,
-                            ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
-//                SendColorListWorker.makeRequest(myLamps)
-                            SendColorListWorker.makeRequest(it.ip, lampType, it.c.colors)
-//                SendColorListWorker.makeRequest()
-                        )
-                    }
-                }
+//                workManager.enqueueUniqueWork(
+//                    SendColorListWorker.WORK_NAME,
+//                    ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
+//                    SendColorListWorker.makeRequest()
+//                )
             }
-
         }
     }
 

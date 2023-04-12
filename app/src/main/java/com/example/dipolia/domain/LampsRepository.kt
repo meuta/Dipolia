@@ -18,4 +18,5 @@ interface LampsRepository {
     fun saveLampToDb(lampDomainEntity: LampDomainEntity)
     fun saveLampListToDb(list: List<LampDomainEntity>)
 
+    suspend fun sendColors()
 }
