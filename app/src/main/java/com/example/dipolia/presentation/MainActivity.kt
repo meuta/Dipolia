@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var dipolListAdapter: DipolListAdapter
 
-    private lateinit var seekBarList: List<SeekBar>
+    private lateinit var seekBarDipolList: List<SeekBar>
     private lateinit var seekBarFiveLightsList: List<SeekBar>
     private var selectedLamp: LampDomainEntity? = null
     private var currentLamps: List<LampDomainEntity> = emptyList()
@@ -48,7 +48,8 @@ class MainActivity : AppCompatActivity() {
 
         setupRecyclerView()
 
-        localModeViewModel = ViewModelProvider(this, viewModelFactory)[LocalModeViewModel::class.java]
+        localModeViewModel =
+            ViewModelProvider(this, viewModelFactory)[LocalModeViewModel::class.java]
 
         binding.viewModel = localModeViewModel
         binding.lifecycleOwner = this
@@ -56,21 +57,25 @@ class MainActivity : AppCompatActivity() {
 
 
         localModeViewModel.myLampsLD.observe(this) {
-            if (it.isNotEmpty()){
-                Log.d("TEST_OF_SUBSCRIBE", "myLamps: ${it.map { item -> "${item.id}, ${item.selected}, ${item.lastConnection}"} }")
+            if (it.isNotEmpty()) {
+                Log.d(
+                    "TEST_OF_SUBSCRIBE",
+                    "myLamps: ${it.map { item -> "${item.id}, ${item.selected}, ${item.lastConnection}" }}")
 //                Log.d("TEST_OF_SUBSCRIBE", "myLamps: $it")
                 currentLamps = it
             }
         }
 
         localModeViewModel.myDipolsListLD.observe(this) {
-            Log.d("TEST_OF_SUBSCRIBE", "dipolList: ${it.map { item -> "${item.id}, ${item.selected}, ${item.lastConnection}"} }")
+            Log.d(
+                "TEST_OF_SUBSCRIBE",
+                "dipolList: ${it.map { item -> "${item.id}, ${item.selected}, ${item.lastConnection}" }}")
 //            Log.d("TEST_OF_SUBSCRIBE", "dipolList: $it")
             dipolListAdapter.submitList(it)      // Created new thread
         }
 
         localModeViewModel.myFiveLightListLD.observe(this) { list ->
-            if (list.isNotEmpty()){
+            if (list.isNotEmpty()) {
                 Log.d("TEST_OF_SUBSCRIBE", "fiveLights: ${list[0]}")
             }
         }
@@ -78,9 +83,9 @@ class MainActivity : AppCompatActivity() {
         localModeViewModel.selectedLampLD.observe(this) { lamp ->
             lamp?.let {
                 Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: ${lamp.id}, ${lamp.c} ")
-                if (it.lampType == LampType.DIPOL){
+                if (it.lampType == LampType.DIPOL) {
                     setDipolSeekbars(mapper.mapLampEntityToDipolEntity(it))
-                } else if (it.lampType == LampType.FIVE_LIGHTS){
+                } else if (it.lampType == LampType.FIVE_LIGHTS) {
                     setFiveLightsSeekbars(mapper.mapLampEntityToFiveLightsEntity(it))
                 }
                 selectedLamp = it
@@ -92,7 +97,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        with(binding){
+        with(binding) {
             btnRefreshList.setOnClickListener {
                 refreshConnectedList()
             }
@@ -126,18 +131,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-    Log.d("onStop", "here")
+        Log.d("onStop", "here")
         if (currentLamps.isNotEmpty()) {
             localModeViewModel.saveLampList(currentLamps)
-//                    Toast.makeText(this@MainActivity, "@${it.lampType} colorSet have been saved", Toast.LENGTH_SHORT).show()
             Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
         }
         super.onStop()
-    }
-
-    override fun onDestroy() {
-        Log.d("onDestroy", "here")
-        super.onDestroy()
     }
 
     private fun setupSeekbars() {
@@ -163,20 +162,33 @@ class MainActivity : AppCompatActivity() {
         }
 
         with(binding) {
-            localSeekBar1.setOnSeekBarChangeListener(seekAdapter)
-            localSeekBar2.setOnSeekBarChangeListener(seekAdapter)
-            localSeekBar3.setOnSeekBarChangeListener(seekAdapter)
-            localSeekBar4.setOnSeekBarChangeListener(seekAdapter)
-            localSeekBar5.setOnSeekBarChangeListener(seekAdapter)
-            localSeekBar6.setOnSeekBarChangeListener(seekAdapter)
-            seekBarList = listOf(localSeekBar1, localSeekBar2, localSeekBar3,localSeekBar4, localSeekBar5, localSeekBar6)
+            localSeekBarDipol1.setOnSeekBarChangeListener(seekAdapter)
+            localSeekBarDipol2.setOnSeekBarChangeListener(seekAdapter)
+            localSeekBarDipol3.setOnSeekBarChangeListener(seekAdapter)
+            localSeekBarDipol4.setOnSeekBarChangeListener(seekAdapter)
+            localSeekBarDipol5.setOnSeekBarChangeListener(seekAdapter)
+            localSeekBarDipol6.setOnSeekBarChangeListener(seekAdapter)
+            seekBarDipolList = listOf(
+                localSeekBarDipol1,
+                localSeekBarDipol2,
+                localSeekBarDipol3,
+                localSeekBarDipol4,
+                localSeekBarDipol5,
+                localSeekBarDipol6
+            )
 
             localSeekBarFiveLights1.setOnSeekBarChangeListener(seekAdapter)
             localSeekBarFiveLights2.setOnSeekBarChangeListener(seekAdapter)
             localSeekBarFiveLights3.setOnSeekBarChangeListener(seekAdapter)
             localSeekBarFiveLights4.setOnSeekBarChangeListener(seekAdapter)
             localSeekBarFiveLights5.setOnSeekBarChangeListener(seekAdapter)
-            seekBarFiveLightsList = listOf(localSeekBarFiveLights1, localSeekBarFiveLights2, localSeekBarFiveLights3,localSeekBarFiveLights4, localSeekBarFiveLights5)
+            seekBarFiveLightsList = listOf(
+                localSeekBarFiveLights1,
+                localSeekBarFiveLights2,
+                localSeekBarFiveLights3,
+                localSeekBarFiveLights4,
+                localSeekBarFiveLights5
+            )
 
         }
 //        Log.d("setupSeekbars", "seekBarList $seekBarList")
@@ -185,27 +197,26 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun onUpdateSeekBar(seekBar: SeekBar) {
-
-        val value: Int = seekBar.progress
-        Log.d("onUpdateSeekBar", "value = $value")
-
-        val valuePerCent = value / 100.0
-
-        var set = "unknown seekbarSet"
-        var seekBarIndex = -1
-        if (seekBar in seekBarList){
-            seekBarIndex = seekBarList.indexOf(seekBar)
-            Log.d("onUpdateSeekBar", "seekBarIndex = $seekBarIndex")
-            set = "dipol"
-        } else if (seekBar in seekBarFiveLightsList){
-            seekBarIndex = seekBarFiveLightsList.indexOf(seekBar)
-            Log.d("onUpdateSeekBar", "seekBarFiveLightsIndex = $seekBarIndex")
-            set = "fiveLights"
-
-        }
         selectedLamp?.let {
-            Log.d("onUpdateSeekBar", "selectedLamp = ${it.id}, set = $set, valuePerCent = $valuePerCent")
-            localModeViewModel.changeLocalState(set, seekBarIndex, valuePerCent )
+
+            val value: Int = seekBar.progress
+            Log.d("onUpdateSeekBar", "value = $value")
+
+            val valuePerCent = value / 100.0
+
+            var seekBarIndex = -1
+            if (seekBar in seekBarDipolList) {
+                seekBarIndex = seekBarDipolList.indexOf(seekBar)
+                Log.d("onUpdateSeekBar", "seekBarIndex = $seekBarIndex")
+            } else if (seekBar in seekBarFiveLightsList) {
+                seekBarIndex = seekBarFiveLightsList.indexOf(seekBar)
+                Log.d("onUpdateSeekBar", "seekBarFiveLightsIndex = $seekBarIndex")
+            }
+            Log.d(
+                "onUpdateSeekBar",
+                "selectedLamp = ${it.id}, lampType = ${it.lampType}, valuePerCent = $valuePerCent"
+            )
+            localModeViewModel.changeLocalState(it.id, seekBarIndex, valuePerCent)
         }
     }
 
@@ -224,36 +235,45 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setDipolSeekbars(dipolDomainEntity: DipolDomainEntity?){
+    private fun setDipolSeekbars(dipolDomainEntity: DipolDomainEntity?) {
         Log.d("setDipolSeekbars", "Seekbars:$dipolDomainEntity")
-        val dipol = dipolDomainEntity ?: DipolDomainEntity("","", listOf(0.0, 0.0, 0.0), listOf(0.0, 0.0, 0.0) )
+        val dipol = dipolDomainEntity ?: DipolDomainEntity(
+            "",
+            "",
+            listOf(0.0, 0.0, 0.0),
+            listOf(0.0, 0.0, 0.0)
+        )
         dipol.let {
-            val progress1 = (it.c1[0]*100).toInt()
-            val progress2 = (it.c1[1]*100).toInt()
-            val progress3 = (it.c1[2]*100).toInt()
-            val progress4 = (it.c2[0]*100).toInt()
-            val progress5 = (it.c2[1]*100).toInt()
-            val progress6 = (it.c2[2]*100).toInt()
+            val progress1 = (it.c1[0] * 100).toInt()
+            val progress2 = (it.c1[1] * 100).toInt()
+            val progress3 = (it.c1[2] * 100).toInt()
+            val progress4 = (it.c2[0] * 100).toInt()
+            val progress5 = (it.c2[1] * 100).toInt()
+            val progress6 = (it.c2[2] * 100).toInt()
             with(binding) {
-                localSeekBar1.progress = progress1
-                localSeekBar2.progress = progress2
-                localSeekBar3.progress = progress3
-                localSeekBar4.progress = progress4
-                localSeekBar5.progress = progress5
-                localSeekBar6.progress = progress6
+                localSeekBarDipol1.progress = progress1
+                localSeekBarDipol2.progress = progress2
+                localSeekBarDipol3.progress = progress3
+                localSeekBarDipol4.progress = progress4
+                localSeekBarDipol5.progress = progress5
+                localSeekBarDipol6.progress = progress6
             }
         }
     }
 
-    private fun setFiveLightsSeekbars(fiveLightsDomainEntity: FiveLightsDomainEntity?){
+    private fun setFiveLightsSeekbars(fiveLightsDomainEntity: FiveLightsDomainEntity?) {
 //        Log.d("onDipolItemClickListener", "setFiveLightsSeekbars")
-        val fiveLights = fiveLightsDomainEntity ?: FiveLightsDomainEntity("","", listOf(0.0, 0.0, 0.0, 0.0, 0.0) )
+        val fiveLights = fiveLightsDomainEntity ?: FiveLightsDomainEntity(
+            "",
+            "",
+            listOf(0.0, 0.0, 0.0, 0.0, 0.0)
+        )
         fiveLights.let {
-            val progress1 = (it.c[0]*100).toInt()
-            val progress2 = (it.c[1]*100).toInt()
-            val progress3 = (it.c[2]*100).toInt()
-            val progress4 = (it.c[3]*100).toInt()
-            val progress5 = (it.c[4]*100).toInt()
+            val progress1 = (it.c[0] * 100).toInt()
+            val progress2 = (it.c[1] * 100).toInt()
+            val progress3 = (it.c[2] * 100).toInt()
+            val progress4 = (it.c[3] * 100).toInt()
+            val progress5 = (it.c[4] * 100).toInt()
             with(binding) {
                 localSeekBarFiveLights1.progress = progress1
                 localSeekBarFiveLights2.progress = progress2

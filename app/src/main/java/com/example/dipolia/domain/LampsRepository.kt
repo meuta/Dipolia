@@ -13,7 +13,7 @@ interface LampsRepository {
 
     fun unselectLamp()
 
-    fun changeLocalState(set: String, index: Int, value: Double)
+    fun changeLocalState(id: String, index: Int, value: Double)
 
     fun saveLampToDb(lampDomainEntity: LampDomainEntity)
     fun saveLampListToDb(list: List<LampDomainEntity>)

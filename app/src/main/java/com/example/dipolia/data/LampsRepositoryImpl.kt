@@ -27,9 +27,9 @@ class LampsRepositoryImpl @Inject constructor(
 ) : LampsRepository {
 
 
-    val lampEntityList = mutableListOf<LampDomainEntity>()
+    private val lampEntityList = mutableListOf<LampDomainEntity>()
     lateinit var lampEntityListSharedFlow: SharedFlow<List<LampDomainEntity>>
-    var selectedLamp: LampDomainEntity? = null
+    private var selectedLamp: LampDomainEntity? = null
 //    var selectedLamp: LampDomainEntity? = LampDomainEntity("", "", LampType.UNKNOWN_LAMP_TYPE, ColorList(listOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)) )
 
     override suspend fun sendFollowMe() {
@@ -120,35 +120,25 @@ class LampsRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun changeLocalState(set: String, index: Int, value: Double) {
-        Log.d("LampsRepositoryImpl", "changeLocalState $set $index $value")
-        selectedLamp?.let { lamp ->
-            Log.d("LampsRepositoryImpl", "changeLocalState ${lamp.id}")
+    override fun changeLocalState(id: String, index: Int, value: Double) {
+        Log.d("LampsRepositoryImpl", "changeLocalState $id $index $value")
+        val currentLamp = lampEntityList.find { it.id == id }
+        currentLamp?.let { lamp ->
+            val itemIndex = lampEntityList.indexOf(lamp)
 
             var colorList = lamp.c.colors.toMutableList()
-            Log.d("changeLocalState", "colorList $colorList")
-
             if (colorList.isEmpty()) {
-                colorList = when (set) {
-                    "dipol" -> mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-                    "fiveLights" -> mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0)
+                colorList = when (lamp.lampType) {
+                    LampType.DIPOL -> mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+                    LampType.FIVE_LIGHTS -> mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0)
                     else -> mutableListOf()
                 }
             }
             colorList[index] = value
-            val newLampItem = lamp.copy(c = ColorList(colorList))
-            Log.d("changeLocalState", "newLampItem $newLampItem")
-
-            selectedLamp = newLampItem
-            Log.d("changeLocalState", "selectedLamp $selectedLamp")
-
-            selectedLamp?.let {
-                val item = lampEntityList.find { lamp -> lamp.id == it.id }
-                val itemIndex = lampEntityList.indexOf(item)
-                val changedItem = item?.copy(c = ColorList(colorList))
-                changedItem?.let { cItem ->
-                    lampEntityList[itemIndex] = cItem
-                }
+            val changedLamp = lamp.copy(c = ColorList(colorList))
+            lampEntityList[itemIndex] = changedLamp
+            if (selectedLamp?.id == changedLamp.id){
+                selectedLamp = changedLamp
             }
         }
     }
@@ -200,7 +190,6 @@ class LampsRepositoryImpl @Inject constructor(
             delay(100)
         }
     }
-
 
 
 }

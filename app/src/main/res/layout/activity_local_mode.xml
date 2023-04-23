@@ -173,7 +173,7 @@
 
 
                     <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/localSeekBar1"
+                        android:id="@+id/local_seek_bar_dipol_1"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
@@ -182,7 +182,7 @@
                         android:thumb="@drawable/item_custom_thumb_red" />
 
                     <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/localSeekBar2"
+                        android:id="@+id/local_seek_bar_dipol_2"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
@@ -191,7 +191,7 @@
                         android:thumb="@drawable/item_custom_thumb_green" />
 
                     <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/localSeekBar3"
+                        android:id="@+id/local_seek_bar_dipol_3"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
@@ -230,7 +230,7 @@
 
 
                     <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/localSeekBar4"
+                        android:id="@+id/local_seek_bar_dipol_4"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
@@ -239,7 +239,7 @@
                         android:thumb="@drawable/item_custom_thumb_red" />
 
                     <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/localSeekBar5"
+                        android:id="@+id/local_seek_bar_dipol_5"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"
@@ -248,7 +248,7 @@
                         android:thumb="@drawable/item_custom_thumb_green" />
 
                     <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/localSeekBar6"
+                        android:id="@+id/local_seek_bar_dipol_6"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_margin="5dp"

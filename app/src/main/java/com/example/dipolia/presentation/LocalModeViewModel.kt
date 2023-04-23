@@ -6,7 +6,6 @@ import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.workers.SendColorListWorker
-import com.example.dipolia.domain.LampsRepository
 import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
@@ -117,10 +116,8 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-    fun changeLocalState(set: String, index: Int, componentValue: Double) {
-//        scope.launch {
-            changeLocalStateUseCase(set, index, componentValue)
-//        }
+    fun changeLocalState(id: String, index: Int, componentValue: Double) {
+            changeLocalStateUseCase(id, index, componentValue)
     }
 
 
