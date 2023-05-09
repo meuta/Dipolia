@@ -98,8 +98,12 @@ class MainActivity : AppCompatActivity() {
 
 
         with(binding) {
+            val toastRefresh = Toast.makeText(this@MainActivity, "This button doesn't work now..", Toast.LENGTH_SHORT)
+            val toastBackgroundWork = Toast.makeText(this@MainActivity, "This button doesn't work now..", Toast.LENGTH_SHORT)
             btnRefreshList.setOnClickListener {
-                refreshConnectedList()
+
+                toastBackgroundWork.cancel()
+                toastRefresh.show()
             }
 
             btnUnselect.setOnClickListener {
@@ -107,8 +111,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             btnBackgroundWork.setOnClickListener {
-                localModeViewModel.workerStartStop()
-//            Toast.makeText(this, "This button doesn't work now..", Toast.LENGTH_SHORT).show()
+//                localModeViewModel.workerStartStop()
+                toastRefresh.cancel()
+                toastBackgroundWork.show()
             }
 
 //            btnSaveLamp.setOnClickListener {
