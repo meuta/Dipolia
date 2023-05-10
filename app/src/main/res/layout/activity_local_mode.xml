@@ -68,8 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/gray"
-                android:padding="2dp"
-                >
+                android:padding="2dp">
 
 
                 <FrameLayout
@@ -169,35 +168,55 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_chainStyle="spread_inside"
-                    tools:visibility="invisible">
+                    tools:visibility="visible">
 
 
-                    <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/local_seek_bar_dipol_1"
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:progressDrawable="@drawable/custom_seekbar_local_red"
-                        android:splitTrack="false"
-                        android:thumb="@drawable/item_custom_thumb_red" />
+                        android:layout_margin="5dp">
 
-                    <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/local_seek_bar_dipol_2"
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_dipol_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_red"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_red" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:progressDrawable="@drawable/custom_seekbar_local_green"
-                        android:splitTrack="false"
-                        android:thumb="@drawable/item_custom_thumb_green" />
+                        android:layout_margin="5dp">
 
-                    <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/local_seek_bar_dipol_3"
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_dipol_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_green"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_green" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:progressDrawable="@drawable/custom_seekbar_local_blue"
-                        android:splitTrack="false"
-                        android:thumb="@drawable/item_custom_thumb_blue" />
+                        android:layout_margin="5dp">
+
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_dipol_3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_blue"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_blue" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+
                 </LinearLayout>
 
 
@@ -228,33 +247,50 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_chainStyle="spread_inside">
 
-
-                    <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/local_seek_bar_dipol_4"
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:progressDrawable="@drawable/custom_seekbar_local_red"
-                        android:splitTrack="false"
-                        android:thumb="@drawable/item_custom_thumb_red" />
+                        android:layout_margin="5dp">
 
-                    <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/local_seek_bar_dipol_5"
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_dipol_4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_red"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_red" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:progressDrawable="@drawable/custom_seekbar_local_green"
-                        android:splitTrack="false"
-                        android:thumb="@drawable/item_custom_thumb_green" />
+                        android:layout_margin="5dp">
 
-                    <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/local_seek_bar_dipol_6"
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_dipol_5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_green"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_green" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:progressDrawable="@drawable/custom_seekbar_local_blue"
-                        android:splitTrack="false"
-                        android:thumb="@drawable/item_custom_thumb_blue" />
+                        android:layout_margin="5dp">
+
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_dipol_6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_blue"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_blue" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
 
                 </LinearLayout>
 
@@ -292,53 +328,85 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_chainStyle="spread_inside"
-                    tools:visibility="visible">
+                    tools:visibility="invisible">
 
-
-                    <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/local_seek_bar_five_lights_1"
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:progressDrawable="@drawable/custom_seekbar_local_red"
-                        android:splitTrack="false"
-                        android:thumb="@drawable/item_custom_thumb_red" />
+                        android:layout_margin="5dp">
 
-                    <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/local_seek_bar_five_lights_2"
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_five_lights_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_red"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_red" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:progressDrawable="@drawable/custom_seekbar_local_green"
-                        android:splitTrack="false"
-                        android:thumb="@drawable/item_custom_thumb_green" />
+                        android:layout_margin="5dp">
 
-                    <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/local_seek_bar_five_lights_3"
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_five_lights_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_green"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_green" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:progressDrawable="@drawable/custom_seekbar_local_blue"
-                        android:splitTrack="false"
-                        android:thumb="@drawable/item_custom_thumb_blue" />
+                        android:layout_margin="5dp">
 
-                    <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/local_seek_bar_five_lights_4"
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_five_lights_3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_blue"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_blue" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:progressDrawable="@drawable/custom_seekbar_local_white"
-                        android:splitTrack="false"
-                        android:thumb="@drawable/item_custom_thumb_white" />
+                        android:layout_margin="5dp">
 
-                    <com.example.dipolia.presentation.utils.VerticalSeekBar
-                        android:id="@+id/local_seek_bar_five_lights_5"
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_five_lights_4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_white"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_white" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:progressDrawable="@drawable/custom_seekbar_local_ultra_violet"
-                        android:splitTrack="false"
-                        android:thumb="@drawable/item_custom_thumb_ultra_violet" />
+                        android:layout_margin="5dp">
+
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_five_lights_5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_ultra_violet"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_ultra_violet" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+
                 </LinearLayout>
 
 
@@ -423,8 +491,7 @@
                 android:text="@string/background_work_start"
                 android:textColor="@color/colorHighlighted"
                 android:textSize="10sp"
-                app:workerButtonText="@{viewModel.isBackGroundWork()}"
-                />
+                app:workerButtonText="@{viewModel.isBackGroundWork()}" />
 
         </LinearLayout>
 

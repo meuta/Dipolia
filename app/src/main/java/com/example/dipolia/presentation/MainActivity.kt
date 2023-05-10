@@ -3,6 +3,7 @@ package com.example.dipolia.presentation
 import android.os.Bundle
 import android.util.Log
 import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -60,7 +61,8 @@ class MainActivity : AppCompatActivity() {
             if (it.isNotEmpty()) {
                 Log.d(
                     "TEST_OF_SUBSCRIBE",
-                    "myLamps: ${it.map { item -> "${item.id}, ${item.selected}, ${item.lastConnection}" }}")
+                    "myLamps: ${it.map { item -> "${item.id}, ${item.selected}, ${item.c}" }}"
+                )
 //                Log.d("TEST_OF_SUBSCRIBE", "myLamps: $it")
                 currentLamps = it
             }
@@ -69,7 +71,8 @@ class MainActivity : AppCompatActivity() {
         localModeViewModel.myDipolsListLD.observe(this) {
             Log.d(
                 "TEST_OF_SUBSCRIBE",
-                "dipolList: ${it.map { item -> "${item.id}, ${item.selected}, ${item.lastConnection}" }}")
+                "dipolList: ${it.map { item -> "${item.id}, ${item.selected}, ${item.c1}, ${item.c2}" }}"
+            )
 //            Log.d("TEST_OF_SUBSCRIBE", "dipolList: $it")
             dipolListAdapter.submitList(it)      // Created new thread
         }
@@ -84,7 +87,7 @@ class MainActivity : AppCompatActivity() {
             lamp?.let {
                 Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: ${lamp.id}, ${lamp.c} ")
                 if (it.lampType == LampType.DIPOL) {
-                    setDipolSeekbars(mapper.mapLampEntityToDipolEntity(it))
+//                    setDipolSeekbars(mapper.mapLampEntityToDipolEntity(it))
                 } else if (it.lampType == LampType.FIVE_LIGHTS) {
                     setFiveLightsSeekbars(mapper.mapLampEntityToFiveLightsEntity(it))
                 }
@@ -98,8 +101,16 @@ class MainActivity : AppCompatActivity() {
 
 
         with(binding) {
-            val toastRefresh = Toast.makeText(this@MainActivity, "This button doesn't work now..", Toast.LENGTH_SHORT)
-            val toastBackgroundWork = Toast.makeText(this@MainActivity, "This button doesn't work now..", Toast.LENGTH_SHORT)
+            val toastRefresh = Toast.makeText(
+                this@MainActivity,
+                "This button doesn't work now..",
+                Toast.LENGTH_SHORT
+            )
+            val toastBackgroundWork = Toast.makeText(
+                this@MainActivity,
+                "This button doesn't work now..",
+                Toast.LENGTH_SHORT
+            )
             btnRefreshList.setOnClickListener {
 
                 toastBackgroundWork.cancel()
@@ -146,22 +157,24 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupSeekbars() {
         val seekAdapter = object :
-            SeekBar.OnSeekBarChangeListener {
+            OnSeekBarChangeListener {
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
                 // write custom code for progress is changed
-                onUpdateSeekBar(seek)
-                Log.d("seekAdapter", "onProgressChanged ${seek.id}")
+                if (fromUser) {
+                onUpdateSeekBar(seek, progress)
+                    }
+                Log.d("seekAdapter", "onProgressChanged ${seek.id} fromUser = $fromUser")
             }
 
             override fun onStartTrackingTouch(seek: SeekBar) {
                 // write custom code for progress is started
-                onUpdateSeekBar(seek)
+//                onUpdateSeekBar(seek)
                 Log.d("seekAdapter", "onStartTrackingTouch ${seek.id}.")
             }
 
             override fun onStopTrackingTouch(seek: SeekBar) {
                 // write custom code for progress is stopped
-                onUpdateSeekBar(seek)
+//                onUpdateSeekBar(seek)
                 Log.d("seekAdapter", "onStopTrackingTouch ${seek.id}")
             }
         }
@@ -201,13 +214,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun onUpdateSeekBar(seekBar: SeekBar) {
+    private fun onUpdateSeekBar(seekBar: SeekBar, progress: Int) {
         selectedLamp?.let {
-
-            val value: Int = seekBar.progress
-            Log.d("onUpdateSeekBar", "value = $value")
-
-            val valuePerCent = value / 100.0
+            Log.d("onUpdateSeekBar", "selectedLamp = ${selectedLamp?.id} ${selectedLamp?.c}")
+            Log.d("onUpdateSeekBar", "progress = $progress")
 
             var seekBarIndex = -1
             if (seekBar in seekBarDipolList) {
@@ -217,11 +227,11 @@ class MainActivity : AppCompatActivity() {
                 seekBarIndex = seekBarFiveLightsList.indexOf(seekBar)
                 Log.d("onUpdateSeekBar", "seekBarFiveLightsIndex = $seekBarIndex")
             }
-            Log.d(
-                "onUpdateSeekBar",
-                "selectedLamp = ${it.id}, lampType = ${it.lampType}, valuePerCent = $valuePerCent"
-            )
-            localModeViewModel.changeLocalState(it.id, seekBarIndex, valuePerCent)
+//            Log.d(
+//                "onUpdateSeekBar",
+//                "selectedLamp = ${it.id}, lampType = ${it.lampType}, valuePerCent = $valuePerCent"
+//            )
+            localModeViewModel.changeLocalState(it.id, seekBarIndex, progress)
         }
     }
 
@@ -237,6 +247,9 @@ class MainActivity : AppCompatActivity() {
         dipolListAdapter.onDipolItemClickListener = {
             localModeViewModel.selectLamp(it.id)
             Log.d("onDipolItemClickListener", "$it")
+
+            setDipolSeekbars(it)
+
         }
     }
 

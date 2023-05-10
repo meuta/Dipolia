@@ -116,8 +116,8 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-    fun changeLocalState(id: String, index: Int, componentValue: Double) {
-            changeLocalStateUseCase(id, index, componentValue)
+    fun changeLocalState(id: String, index: Int, value: Int) {
+            changeLocalStateUseCase(id, index, value / 100.0)
     }
 
 

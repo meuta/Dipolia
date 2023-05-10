@@ -5,16 +5,18 @@ import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.MotionEvent
 
-class VerticalSeekBar : androidx.appcompat.widget.AppCompatSeekBar {
-    constructor(context: Context?) : super(context!!) {}
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
-        context!!,
-        attrs,
-        defStyle
-    ) {
-    }
 
-    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs) {}
+class VerticalSeekBar(context: Context, attributeSet: AttributeSet) :  androidx.appcompat.widget.AppCompatSeekBar(context, attributeSet) {
+//class VerticalSeekBar : SeekBar {
+//    constructor(context: Context?) : super(context!!) {}
+//    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
+//        context!!,
+//        attrs,
+//        defStyle
+//    ) {
+//    }
+//
+//    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs) {}
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(h, w, oldh, oldw)
@@ -45,6 +47,7 @@ class VerticalSeekBar : androidx.appcompat.widget.AppCompatSeekBar {
         }
         when (event.action) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE, MotionEvent.ACTION_UP -> {
+
                 progress = max - (max * event.y / height).toInt()
                 onSizeChanged(width, height, 0, 0)
             }
@@ -52,4 +55,6 @@ class VerticalSeekBar : androidx.appcompat.widget.AppCompatSeekBar {
         }
         return true
     }
+
+
 }
