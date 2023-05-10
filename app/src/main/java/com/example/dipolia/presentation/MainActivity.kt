@@ -161,20 +161,21 @@ class MainActivity : AppCompatActivity() {
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
                 // write custom code for progress is changed
                 if (fromUser) {
-                onUpdateSeekBar(seek, progress)
-                    }
+//                    onUpdateSeekBar(seek, progress)
+                    onUpdateSeekBar(seek)
+                }
                 Log.d("seekAdapter", "onProgressChanged ${seek.id} fromUser = $fromUser")
             }
 
             override fun onStartTrackingTouch(seek: SeekBar) {
                 // write custom code for progress is started
-//                onUpdateSeekBar(seek)
+                onUpdateSeekBar(seek)
                 Log.d("seekAdapter", "onStartTrackingTouch ${seek.id}.")
             }
 
             override fun onStopTrackingTouch(seek: SeekBar) {
                 // write custom code for progress is stopped
-//                onUpdateSeekBar(seek)
+                onUpdateSeekBar(seek)
                 Log.d("seekAdapter", "onStopTrackingTouch ${seek.id}")
             }
         }
@@ -214,23 +215,26 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun onUpdateSeekBar(seekBar: SeekBar, progress: Int) {
-        selectedLamp?.let {
-            Log.d("onUpdateSeekBar", "selectedLamp = ${selectedLamp?.id} ${selectedLamp?.c}")
-            Log.d("onUpdateSeekBar", "progress = $progress")
+    //    private fun onUpdateSeekBar(seekBar: SeekBar, progress: Int) {
+    private fun onUpdateSeekBar(seekBar: SeekBar) {
+//        selectedLamp?.let {
+        val progress = seekBar.progress
+        Log.d("onUpdateSeekBar", "selectedLamp = ${selectedLamp?.id} ${selectedLamp?.c}")
+        Log.d("onUpdateSeekBar", "progress = $progress")
 
-            var seekBarIndex = -1
-            if (seekBar in seekBarDipolList) {
-                seekBarIndex = seekBarDipolList.indexOf(seekBar)
-                Log.d("onUpdateSeekBar", "seekBarIndex = $seekBarIndex")
-            } else if (seekBar in seekBarFiveLightsList) {
-                seekBarIndex = seekBarFiveLightsList.indexOf(seekBar)
-                Log.d("onUpdateSeekBar", "seekBarFiveLightsIndex = $seekBarIndex")
-            }
+        var seekBarIndex = -1
+        if (seekBar in seekBarDipolList) {
+            seekBarIndex = seekBarDipolList.indexOf(seekBar)
+            Log.d("onUpdateSeekBar", "seekBarIndex = $seekBarIndex")
+        } else if (seekBar in seekBarFiveLightsList) {
+            seekBarIndex = seekBarFiveLightsList.indexOf(seekBar)
+            Log.d("onUpdateSeekBar", "seekBarFiveLightsIndex = $seekBarIndex")
+        }
 //            Log.d(
 //                "onUpdateSeekBar",
 //                "selectedLamp = ${it.id}, lampType = ${it.lampType}, valuePerCent = $valuePerCent"
 //            )
+        selectedLamp?.let {
             localModeViewModel.changeLocalState(it.id, seekBarIndex, progress)
         }
     }
