@@ -10,6 +10,7 @@ import com.example.dipolia.data.network.UDPClient
 import com.example.dipolia.domain.LampsRepository
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -27,14 +28,15 @@ class LampsRepositoryImpl @Inject constructor(
 
     private val lampEntityList = mutableListOf<LampDomainEntity>()
 
-    private val lampListFlow: Flow<List<LampDomainEntity>> = flow {
+    val lampListFlow: SharedFlow<List<LampDomainEntity>> = flow {
         while (true) {
             val latestLampList = lampEntityList
+
             Log.d("TEST", "latestLampList = ${latestLampList.map { it.id to it.lastConnection }}")
             emit(latestLampList)
             delay(100)
         }
-    }
+    }.shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily)
 
     override suspend fun sendFollowMe() {
         while (true) {
@@ -54,7 +56,7 @@ class LampsRepositoryImpl @Inject constructor(
                         it.lastConnection = lampDto.lastConnection
 
                         lampEntityList[lampFromListIndex] = it
-                        Log.d("getLatestLampList","${lampEntityList.map { lamp ->
+                        Log.d("collectList","${lampEntityList.map { lamp ->
                                     listOf(lamp.id, lamp.selected, lamp.c, lamp.lastConnection)
                                 }
                             }"
@@ -83,9 +85,10 @@ class LampsRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getLatestLampList(): Flow<List<LampDomainEntity>> =
-        lampListFlow.flowOn(Dispatchers.IO)
-
+    override fun getLatestLampList(): SharedFlow<List<LampDomainEntity>> {
+        Log.d("getLatestLampList", " lampListFlow: $lampListFlow")
+        return lampListFlow
+    }
 
     override fun selectLamp(lampId: String) {
 //        Log.d("onItemClickListener", " lampId: $lampId")

@@ -2,6 +2,7 @@ package com.example.dipolia.presentation
 
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.workers.SendColorListWorker
@@ -27,7 +28,7 @@ class LocalModeViewModel @Inject constructor(
     private val saveLampListUseCase: SaveLampListUseCase,
     private val workManager: WorkManager,
     private val mapper: DipoliaMapper,
-    private val sendColorsUseCase: SendColorsUseCase,
+    private val sendColorsUseCase: SendColorsUseCase
 ) : ViewModel() {
 
 
@@ -45,8 +46,7 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-
-    var myLampsSharedFlow: SharedFlow<List<LampDomainEntity>> = getLampsUseCase().shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily)
+    var myLampsSharedFlow: SharedFlow<List<LampDomainEntity>> = getLampsUseCase()
 
     var myLampsLD: LiveData<List<LampDomainEntity>> = myLampsSharedFlow.asLiveData()
 
@@ -82,13 +82,14 @@ class LocalModeViewModel @Inject constructor(
             collectListUseCase()
         }
 //        scope.launch {
-//            getLampsUseCase().shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily).collectLatest { lamps ->
-//                Log.d("TEST_", "LampDomainEntityList = ${lamps.map { it.id to it.lastConnection }}")
+////            repository.getLatestLampListToWorker().collectLatest { lamps ->
+//            repository.getLatestLampList().collectLatest { lamps ->
+//                Log.d("TEST_ViewModel", "LampDomainEntityList = ${lamps.map { it.id to it.lastConnection }}")
 //            }
 //        }
 
         scope.launch {
-            sendColorsUseCase()
+//            sendColorsUseCase()
         }
 
     }
@@ -137,11 +138,11 @@ class LocalModeViewModel @Inject constructor(
 
             scope.launch {
 
-//                workManager.enqueueUniqueWork(
-//                    SendColorListWorker.WORK_NAME,
-//                    ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
-//                    SendColorListWorker.makeRequest()
-//                )
+                workManager.enqueueUniqueWork(
+                    SendColorListWorker.WORK_NAME,
+                    ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
+                    SendColorListWorker.makeRequest()
+                )
             }
         }
     }

@@ -63,7 +63,6 @@ class MainActivity : AppCompatActivity() {
                     "TEST_OF_SUBSCRIBE",
                     "myLamps: ${it.map { item -> "${item.id}, ${item.selected}, ${item.c}" }}"
                 )
-//                Log.d("TEST_OF_SUBSCRIBE", "myLamps: $it")
                 currentLamps = it
             }
         }
@@ -73,8 +72,7 @@ class MainActivity : AppCompatActivity() {
                 "TEST_OF_SUBSCRIBE",
                 "dipolList: ${it.map { item -> "${item.id}, ${item.selected}, ${item.c1}, ${item.c2}" }}"
             )
-//            Log.d("TEST_OF_SUBSCRIBE", "dipolList: $it")
-            dipolListAdapter.submitList(it)      // Created new thread
+            dipolListAdapter.submitList(it)
         }
 
         localModeViewModel.myFiveLightListLD.observe(this) { list ->
@@ -113,7 +111,7 @@ class MainActivity : AppCompatActivity() {
             )
             btnRefreshList.setOnClickListener {
 
-                toastBackgroundWork.cancel()
+//                toastBackgroundWork.cancel()
                 toastRefresh.show()
             }
 
@@ -122,9 +120,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             btnBackgroundWork.setOnClickListener {
-//                localModeViewModel.workerStartStop()
-                toastRefresh.cancel()
-                toastBackgroundWork.show()
+                localModeViewModel.workerStartStop()
+//                toastRefresh.cancel()
+//                toastBackgroundWork.show()
             }
 
 //            btnSaveLamp.setOnClickListener {
