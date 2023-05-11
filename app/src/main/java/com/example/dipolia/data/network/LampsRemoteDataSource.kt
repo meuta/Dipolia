@@ -16,7 +16,7 @@ class LampsRemoteDataSource @Inject constructor(private val lampsApi: LampsApi) 
             Log.d("TEST", "latestLamp = ${latestLamp?.id}")
             latestLamp?.let {
                 emit(it) // Emits the result of the request to the flow
-                delay(100) // Suspends the coroutine for some time
+                delay(1000) // Suspends the coroutine for some time
             }
         }
     }

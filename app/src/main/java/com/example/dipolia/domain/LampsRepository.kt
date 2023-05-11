@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface LampsRepository {
 
     suspend fun sendFollowMe()
+    suspend fun collectList()
 
     fun getLatestLampList(): Flow<List<LampDomainEntity>>
 

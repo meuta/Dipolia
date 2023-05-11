@@ -1,6 +1,5 @@
 package com.example.dipolia.data
 
-import android.app.Application
 import android.util.Log
 
 import com.example.dipolia.data.database.ColorList
@@ -26,59 +25,66 @@ class LampsRepositoryImpl @Inject constructor(
 //    private val application: Application
 ) : LampsRepository {
 
-
     private val lampEntityList = mutableListOf<LampDomainEntity>()
-//    private var selectedLamp: LampDomainEntity? = null
 
-    override suspend fun sendFollowMe() {
+    private val lampListFlow: Flow<List<LampDomainEntity>> = flow {
         while (true) {
-            sender.sendUDPSuspend("Follow me")
+            val latestLampList = lampEntityList
+            Log.d("TEST", "latestLampList = ${latestLampList.map { it.id to it.lastConnection }}")
+            emit(latestLampList)
             delay(100)
         }
     }
 
-    override fun getLatestLampList(): Flow<List<LampDomainEntity>> = lampsRemoteDataSource.myLampDto
-        .map { lampDto ->
-            var already = 0
+    override suspend fun sendFollowMe() {
+        while (true) {
+            sender.sendUDPSuspend("Follow me")
+            delay(1000)
+        }
+    }
 
-            if (lampDto.id in lampEntityList.map { it.id }) {
-                val lampFromList = lampEntityList.find { lamp -> lamp.id == lampDto.id }
-                val lampFromListIndex = lampEntityList.indexOf(lampFromList)
-                lampFromList?.let {
-                    it.lastConnection = lampDto.lastConnection
-//                    it.selected = (selectedLamp?.id == it.id)
+    override suspend fun collectList() {
+        while (true) {
+            lampsRemoteDataSource.myLampDto.collect { lampDto ->
 
-                    lampEntityList[lampFromListIndex] = it
-                    Log.d(
-                        "getLatestLampList",
-//                        "${lampEntityList.map { lamp -> lamp.id to lamp.c }}"
-                        "${lampEntityList.map { lamp -> listOf(lamp.id, lamp.selected, lamp.c) } }}"
-                    )
-                }
-                already = 1
-            }
+                if (lampDto.id in lampEntityList.map { it.id }) {
+                    val lampFromList = lampEntityList.find { lamp -> lamp.id == lampDto.id }
+                    val lampFromListIndex = lampEntityList.indexOf(lampFromList)
+                    lampFromList?.let {
+                        it.lastConnection = lampDto.lastConnection
 
-            if (already == 0) {
-                val lampDomainEntity = mapper.mapLampDtoToEntity(lampDto)
+                        lampEntityList[lampFromListIndex] = it
+                        Log.d("getLatestLampList","${lampEntityList.map { lamp ->
+                                    listOf(lamp.id, lamp.selected, lamp.c, lamp.lastConnection)
+                                }
+                            }"
+                        )
+                    }
 
-                val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
-                Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
-                if (itemFromDb == null) {
-                    val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
-                    dipolsDao.addLampItem(itemToAdd)
                 } else {
-                    lampDomainEntity.c = itemFromDb.colorList
-//                        Log.d("sendColors", "exists")
-                }
-                lampEntityList.add(lampDomainEntity)
-//                Log.d(
-//                    "TEST",
-//                    "lampEntityList = ${lampEntityList.map { item -> item.id to item.lastConnection }}"
-//                )
-            }
+                    val lampDomainEntity = mapper.mapLampDtoToEntity(lampDto)
 
-            lampEntityList
-        }.flowOn(Dispatchers.IO)
+                    val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
+                    Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
+                    if (itemFromDb == null) {
+                        val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
+                        dipolsDao.addLampItem(itemToAdd)
+                    } else {
+                        lampDomainEntity.c = itemFromDb.colorList
+                    }
+                    lampEntityList.add(lampDomainEntity)
+
+                }
+                Log.d(
+                    "TEST",
+                    " = ${lampEntityList.map { it.id to it.lastConnection }}"
+                )
+            }
+        }
+    }
+
+    override fun getLatestLampList(): Flow<List<LampDomainEntity>> =
+        lampListFlow.flowOn(Dispatchers.IO)
 
 
     override fun selectLamp(lampId: String) {
@@ -103,11 +109,6 @@ class LampsRepositoryImpl @Inject constructor(
 
                 val newSelectedItemToUpdate = it.copy(selected = true)
                 lampEntityList[newSelectedItemIndex] = newSelectedItemToUpdate
-//                selectedLamp = newSelectedItemToUpdate
-//                Log.d(
-//                    "onItemClickListener",
-//                    " selectedLamp: ${selectedLamp?.id} ${selectedLamp?.selected} ${selectedLamp?.c}"
-//                )
             }
         }
     }
@@ -116,7 +117,6 @@ class LampsRepositoryImpl @Inject constructor(
         val selectedItem = lampEntityList.find { lamp -> lamp.selected }
         selectedItem?.let {
             val selectedItemIndex = lampEntityList.indexOf(it)
-//            selectedLamp = null
             lampEntityList[selectedItemIndex].selected = false
         }
     }
@@ -138,9 +138,7 @@ class LampsRepositoryImpl @Inject constructor(
             colorList[index] = value
             val changedLamp = lamp.copy(c = ColorList(colorList))
             lampEntityList[itemIndex] = changedLamp
-//            if (selectedLamp?.id == changedLamp.id){
-//                selectedLamp = changedLamp
-//            }
+
         }
     }
 
@@ -160,7 +158,7 @@ class LampsRepositoryImpl @Inject constructor(
     override suspend fun sendColors() {
         var rabbitColorSpeed = 0.5
         while (true) {
-            Log.d("sendColors", "${lampEntityList.map { it.id to it.c }}")
+//            Log.d("sendColors", "${lampEntityList.map { it.id to it.c }}")
 
             for (lamp in lampEntityList) {
                 val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
@@ -188,7 +186,7 @@ class LampsRepositoryImpl @Inject constructor(
                     stringToSend = "r=$r;g=$g;b=$b;w=$w;u=$u;rcs=$rcs"
                 }
                 val address = sender.getInetAddressByName(lamp.ip)
-                Log.d("sendColors", "$stringToSend, $address")
+//                Log.d("sendColors", "$stringToSend, $address")
                 sender.sendUDPSuspend(stringToSend, address)
             }
             delay(100)

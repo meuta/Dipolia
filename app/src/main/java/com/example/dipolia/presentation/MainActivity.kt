@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
             lamp?.let {
                 Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: ${lamp.id}, ${lamp.c} ")
                 if (it.lampType == LampType.DIPOL) {
-//                    setDipolSeekbars(mapper.mapLampEntityToDipolEntity(it))
+                    setDipolSeekbars(mapper.mapLampEntityToDipolEntity(it))
                 } else if (it.lampType == LampType.FIVE_LIGHTS) {
                     setFiveLightsSeekbars(mapper.mapLampEntityToFiveLightsEntity(it))
                 }
@@ -143,7 +143,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupSeekbars()
-//        localModeViewModel.testSendLocalModeData()
     }
 
     override fun onStop() {
@@ -161,7 +160,6 @@ class MainActivity : AppCompatActivity() {
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
                 // write custom code for progress is changed
                 if (fromUser) {
-//                    onUpdateSeekBar(seek, progress)
                     onUpdateSeekBar(seek)
                 }
                 Log.d("seekAdapter", "onProgressChanged ${seek.id} fromUser = $fromUser")
@@ -214,10 +212,7 @@ class MainActivity : AppCompatActivity() {
 //        Log.d("setupSeekbars", "seekBarFiveLightsList $seekBarFiveLightsList")
     }
 
-
-    //    private fun onUpdateSeekBar(seekBar: SeekBar, progress: Int) {
     private fun onUpdateSeekBar(seekBar: SeekBar) {
-//        selectedLamp?.let {
         val progress = seekBar.progress
         Log.d("onUpdateSeekBar", "selectedLamp = ${selectedLamp?.id} ${selectedLamp?.c}")
         Log.d("onUpdateSeekBar", "progress = $progress")
@@ -230,10 +225,6 @@ class MainActivity : AppCompatActivity() {
             seekBarIndex = seekBarFiveLightsList.indexOf(seekBar)
             Log.d("onUpdateSeekBar", "seekBarFiveLightsIndex = $seekBarIndex")
         }
-//            Log.d(
-//                "onUpdateSeekBar",
-//                "selectedLamp = ${it.id}, lampType = ${it.lampType}, valuePerCent = $valuePerCent"
-//            )
         selectedLamp?.let {
             localModeViewModel.changeLocalState(it.id, seekBarIndex, progress)
         }
@@ -251,9 +242,6 @@ class MainActivity : AppCompatActivity() {
         dipolListAdapter.onDipolItemClickListener = {
             localModeViewModel.selectLamp(it.id)
             Log.d("onDipolItemClickListener", "$it")
-
-            setDipolSeekbars(it)
-
         }
     }
 

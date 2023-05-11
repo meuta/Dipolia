@@ -2,7 +2,6 @@ package com.example.dipolia.presentation
 
 import android.util.Log
 import androidx.lifecycle.*
-import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.workers.SendColorListWorker
@@ -19,6 +18,7 @@ import javax.inject.Inject
 
 class LocalModeViewModel @Inject constructor(
     private val sendFollowMeUseCase: SendFollowMeUseCase,
+    private val collectListUseCase: CollectListUseCase,
     private val getLampsUseCase: GetConnectedLampsUseCase,
     private val selectItemUseCase: SelectLampUseCase,
     private val unselectLampUseCase: UnselectLampUseCase,
@@ -27,7 +27,7 @@ class LocalModeViewModel @Inject constructor(
     private val saveLampListUseCase: SaveLampListUseCase,
     private val workManager: WorkManager,
     private val mapper: DipoliaMapper,
-    private val sendColorsUseCase: SendColorsUseCase
+    private val sendColorsUseCase: SendColorsUseCase,
 ) : ViewModel() {
 
 
@@ -47,6 +47,7 @@ class LocalModeViewModel @Inject constructor(
 
 
     var myLampsSharedFlow: SharedFlow<List<LampDomainEntity>> = getLampsUseCase().shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily)
+
     var myLampsLD: LiveData<List<LampDomainEntity>> = myLampsSharedFlow.asLiveData()
 
     val myDipolsListLD: LiveData<List<DipolDomainEntity>> = Transformations.map(myLampsLD) { list ->
@@ -78,21 +79,17 @@ class LocalModeViewModel @Inject constructor(
             sendFollowMeUseCase()
         }
         scope.launch {
+            collectListUseCase()
+        }
+//        scope.launch {
+//            getLampsUseCase().shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily).collectLatest { lamps ->
+//                Log.d("TEST_", "LampDomainEntityList = ${lamps.map { it.id to it.lastConnection }}")
+//            }
+//        }
+
+        scope.launch {
             sendColorsUseCase()
         }
-
-//        scope.launch {
-//            // Trigger the flow and consume its elements using collect
-//            myLampsSharedFlow.collectLatest { lamps ->
-//                // Update View
-//                Log.d("TEST_", "LampDomainEntityList = ${lamps.map { it.id to it.lastConnection}}")
-//            }
-//        }
-//        scope.launch {
-//            myLampsSharedFlow.collectLatest { lamps ->
-//                Log.d("TEST_", "LampDomainEntityList1 = ${lamps.map { it.id to it.lastConnection}}")
-//            }
-//        }
 
     }
 
