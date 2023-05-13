@@ -195,13 +195,13 @@ class DipoliaRepositoryImpl(private val application: Application) : DipoliaRepos
         }
     }
 
-    override fun getIsBroadcast(): LiveData<Boolean?> {
+    override fun getIsStreaming(): LiveData<Boolean?> {
 
         val workManager = WorkManager.getInstance(application)
         val infoLD = workManager.getWorkInfosForUniqueWorkLiveData(RefreshSendUDPWorker.WORK_NAME)
-//        Log.d("getIsBroadcast", "infoLD = $infoLD")
+//        Log.d("getIsStreaming", "infoLD = $infoLD")
         return Transformations.map(infoLD) {
-//            Log.d("getIsBroadcast", "$it")
+//            Log.d("getIsStreaming", "$it")
             it.isNotEmpty() && it[0].state.toString() == "RUNNING"
         }
     }

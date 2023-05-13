@@ -4,8 +4,8 @@
     <string name="refresh_list_btn">REMOVE\nNOT\nCONNECTED\nDIPOLS</string>
     <string name="please_select_the_lamp">please select the lamp</string>
     <string name="unselect_lamp">UNSELECT\nLAMP</string>
-    <string name="background_work_start">START\nBROADCAST</string>
-    <string name="background_work_stop">STOP\nBROADCAST</string>
+    <string name="background_work_start">START\nSTREAMING</string>
+    <string name="background_work_stop">STOP\nSTREAMING</string>
     <string name="save_lamp">SAVE\nLAMP</string>
     <string name="save_lamp_list">SAVE\n LAMP LIST</string>
 </resources>

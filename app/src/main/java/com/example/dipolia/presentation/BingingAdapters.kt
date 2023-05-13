@@ -18,15 +18,15 @@ interface OnFiveLightsClickListener{
     fun onClick(id: String)
 }
 
-@BindingAdapter("dipolLableColor")
-fun bindDipolLableColor(view: View, colorList: List<Double>?) {
+@BindingAdapter("dipolLabelColor")
+fun bindDipolLabelColor(view: View, colorList: List<Double>?) {
 //    Log.d("View", "colorlist $colorList $view ")
     val list = colorList ?: listOf(0.0, 0.0, 0.0)
      view.setBackgroundColor(Color.parseColor(colorToUI(list)))
 }
 
-@BindingAdapter("fiveLightsLableColor")
-fun bindFiveLightsLableColor(view: View, colorList: List<Double>?) {
+@BindingAdapter("fiveLightsLabelColor")
+fun bindFiveLightsLabelColor(view: View, colorList: List<Double>?) {
 //    Log.d("View", "colorlist $colorList $view ")
     val list = colorList ?: listOf(0.0, 0.0, 0.0, 0.0, 0.0)
      view.setBackgroundColor(Color.parseColor(colorFiveLightsToUI(list)))
@@ -42,7 +42,7 @@ private fun colorFiveLightsToUI(colorList: List<Double>): String {
 //        (colorList[3] * 255).toInt(),
 //        (colorList[4] * 255).toInt()
     )
-//    Log.d("bindFiveLightsLableColor", "colorToUI $string")
+//    Log.d("bindFiveLightsLabelColor", "colorToUI $string")
     return string
 }
 
@@ -54,7 +54,7 @@ private fun colorToUI(colorList: List<Double>): String {
         (colorList[1] * 255).toInt(),
         (colorList[2] * 255).toInt()
     )
-//    Log.d("bindLableColor", "colorToUI $string")
+//    Log.d("bindLabelColor", "colorToUI $string")
     return string
 }
 

@@ -38,7 +38,7 @@ interface DipoliaRepository {
 
     fun workerStartStop()
 
-    fun getIsBroadcast(): LiveData<Boolean?>
+    fun getIsStreaming(): LiveData<Boolean?>
 
     fun getLampsTable(): LiveData<List<LampDomainEntity>>
 

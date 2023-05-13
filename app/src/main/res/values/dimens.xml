@@ -4,4 +4,7 @@
     <dimen name="item_card_content_margin">8dp</dimen>
     <dimen name="item_card_cv_elevation">5dp</dimen>
 
+    <dimen name="color_label_height">100dp</dimen>
+    <dimen name="color_label_width">5dp</dimen>
+
 </resources>

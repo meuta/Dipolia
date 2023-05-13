@@ -35,13 +35,13 @@ class LocalModeViewModel @Inject constructor(
     private val scope = CoroutineScope(Dispatchers.IO)
 
 
-    val isBackGroundWork = getIsBroadcast()
-    private fun getIsBroadcast(): LiveData<Boolean?> {
+    val isBackGroundWork = getIsSteaming()
+    private fun getIsSteaming(): LiveData<Boolean?> {
 
         val infoLD = workManager.getWorkInfosForUniqueWorkLiveData(SendColorListWorker.WORK_NAME)
-        Log.d("getIsBroadcast", "infoLD = $infoLD")
+        Log.d("getIsSteaming", "infoLD = $infoLD")
         return Transformations.map(infoLD) {
-            Log.d("getIsBroadcast", "$it")
+            Log.d("getIsSteaming", "$it")
             it.isNotEmpty() && it[0].state.toString() == "RUNNING"
         }
     }
