@@ -1,7 +1,6 @@
 package com.example.dipolia.domain
 
 import com.example.dipolia.domain.entities.LampDomainEntity
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 
 interface LampsRepository {

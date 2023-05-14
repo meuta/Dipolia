@@ -5,7 +5,5 @@ import javax.inject.Inject
 
 class UnselectLampUseCase @Inject constructor(private val repository: LampsRepository) {
 
-    operator fun invoke(){
-        repository.unselectLamp()
-    }
+    operator fun invoke() = repository.unselectLamp()
 }

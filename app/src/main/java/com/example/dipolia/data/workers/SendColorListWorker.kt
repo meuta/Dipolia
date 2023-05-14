@@ -67,10 +67,6 @@ class SendColorListWorker (
 
     companion object {
 
-        private const val IP = "ip"
-        private const val LAMPTYPE = "lamptype"
-        private const val LIST = "list"
-
         const val WORK_NAME = "SendColorListWorker"
 
         fun makeRequest(): OneTimeWorkRequest {
@@ -79,10 +75,10 @@ class SendColorListWorker (
                 .build()
         }
 
-        fun makePeriodicRequest(): PeriodicWorkRequest {
-//            Log.d("SendColorListWorker", "makePeriodicRequest")
-            return PeriodicWorkRequestBuilder<SendColorListWorker>(8, TimeUnit.MINUTES)
-                .build()
-        }
+//        fun makePeriodicRequest(): PeriodicWorkRequest {
+////            Log.d("SendColorListWorker", "makePeriodicRequest")
+//            return PeriodicWorkRequestBuilder<SendColorListWorker>(15, TimeUnit.MINUTES)
+//                .build()
+//        }
     }
 }

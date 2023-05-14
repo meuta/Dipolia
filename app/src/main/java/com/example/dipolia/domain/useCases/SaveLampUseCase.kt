@@ -6,8 +6,6 @@ import javax.inject.Inject
 
 class SaveLampUseCase @Inject constructor(private val repository: LampsRepository) {
 
-    operator fun invoke(lampDomainEntity: LampDomainEntity){
+    operator fun invoke(lampDomainEntity: LampDomainEntity) =
         repository.saveLampToDb(lampDomainEntity)
-    }
-
 }

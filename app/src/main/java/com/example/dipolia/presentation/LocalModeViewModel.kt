@@ -28,7 +28,7 @@ class LocalModeViewModel @Inject constructor(
     private val saveLampListUseCase: SaveLampListUseCase,
     private val workManager: WorkManager,
     private val mapper: DipoliaMapper,
-    private val sendColorsUseCase: SendColorsUseCase
+//    private val sendColorsUseCase: SendColorsUseCase
 ) : ViewModel() {
 
 
@@ -82,7 +82,6 @@ class LocalModeViewModel @Inject constructor(
             collectListUseCase()
         }
 //        scope.launch {
-////            repository.getLatestLampListToWorker().collectLatest { lamps ->
 //            repository.getLatestLampList().collectLatest { lamps ->
 //                Log.d("TEST_ViewModel", "LampDomainEntityList = ${lamps.map { it.id to it.lastConnection }}")
 //            }

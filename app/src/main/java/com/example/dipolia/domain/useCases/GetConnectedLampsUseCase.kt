@@ -7,8 +7,5 @@ import javax.inject.Inject
 
 class GetConnectedLampsUseCase @Inject constructor(private val repository: LampsRepository) {
 
-    operator fun invoke(): SharedFlow<List<LampDomainEntity>> {
-
-        return repository.getLatestLampList()
-    }
+    operator fun invoke(): SharedFlow<List<LampDomainEntity>> = repository.getLatestLampList()
 }

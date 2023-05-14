@@ -1,6 +1,6 @@
 package com.example.dipolia.domain.entities
 
-data class FiveLightsDomainEntity (
+data class FiveLightsDomainEntity(
     val id: String,
     val ip: String,
 
@@ -14,5 +14,5 @@ data class FiveLightsDomainEntity (
 
 ) {
     val connected: Boolean
-        get() = lastConnection > System.currentTimeMillis() / 1000 - 30
+        get() = lastConnection > System.currentTimeMillis() / 1000 - 20
 }

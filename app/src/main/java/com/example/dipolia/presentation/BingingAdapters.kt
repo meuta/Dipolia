@@ -39,8 +39,6 @@ private fun colorFiveLightsToUI(colorList: List<Double>): String {
         (colorList[0] * 255 * 2 / 3 + colorList[3] * 255 / 3).toInt(),
         (colorList[1] * 255 * 2 / 3 + colorList[3] * 255 / 3).toInt(),
         (colorList[2] * 255 * 2 / 3 + colorList[3] * 255 / 3).toInt()
-//        (colorList[3] * 255).toInt(),
-//        (colorList[4] * 255).toInt()
     )
 //    Log.d("bindFiveLightsLabelColor", "colorToUI $string")
     return string
@@ -129,14 +127,14 @@ fun setFiveLightsControlLayoutVisibility(view: View, lampType: LampType?){
 }
 
 
-@BindingAdapter("selectedButtonRemoveVisibility")
-fun setSelectedButtonRemoveVisibility(textView: TextView, list: List<DipolDomainEntity>?){
-    if (list != null && list.isNotEmpty()) {
-        textView.visibility = VISIBLE
-    } else {
-        textView.visibility = INVISIBLE
-    }
-}
+//@BindingAdapter("selectedButtonRemoveVisibility")
+//fun setSelectedButtonRemoveVisibility(textView: TextView, list: List<DipolDomainEntity>?){
+//    if (list != null && list.isNotEmpty()) {
+//        textView.visibility = VISIBLE
+//    } else {
+//        textView.visibility = INVISIBLE
+//    }
+//}
 
 
 @BindingAdapter("workerButtonText")

@@ -22,13 +22,12 @@ class LampsRepositoryImpl @Inject constructor(
     private val dipolsDao: DipolsDao,
     private val mapper: DipoliaMapper,
     private val lampsRemoteDataSource: LampsRemoteDataSource,
-    private val sender: UDPClient//,
-//    private val application: Application
+    private val sender: UDPClient
 ) : LampsRepository {
 
     private val lampEntityList = mutableListOf<LampDomainEntity>()
 
-    val lampListFlow: SharedFlow<List<LampDomainEntity>> = flow {
+    private val lampListFlow: SharedFlow<List<LampDomainEntity>> = flow {
         while (true) {
             val latestLampList = lampEntityList
 
@@ -50,14 +49,16 @@ class LampsRepositoryImpl @Inject constructor(
             lampsRemoteDataSource.myLampDto.collect { lampDto ->
 
                 if (lampDto.id in lampEntityList.map { it.id }) {
+//                    Log.d("collectList","lampDto.id in lampEntityList ${lampDto.id}")
                     val lampFromList = lampEntityList.find { lamp -> lamp.id == lampDto.id }
                     val lampFromListIndex = lampEntityList.indexOf(lampFromList)
                     lampFromList?.let {
                         it.lastConnection = lampDto.lastConnection
 
                         lampEntityList[lampFromListIndex] = it
-                        Log.d("collectList","${lampEntityList.map { lamp ->
-                                    listOf(lamp.id, lamp.selected, lamp.c, lamp.lastConnection)
+                        Log.d("collectList","delay test ${lampEntityList.map { lamp ->
+//                                    listOf(lamp.id, lamp.selected, lamp.c, lamp.lastConnection)
+                                    listOf(lamp.id, lamp.lastConnection)
                                 }
                             }"
                         )
@@ -67,7 +68,7 @@ class LampsRepositoryImpl @Inject constructor(
                     val lampDomainEntity = mapper.mapLampDtoToEntity(lampDto)
 
                     val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
-                    Log.d("UDP receiveLocalModeData", "itemFromDb = $itemFromDb")
+                    Log.d("collectList", "itemFromDb = $itemFromDb")
                     if (itemFromDb == null) {
                         val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
                         dipolsDao.addLampItem(itemToAdd)
