@@ -2,8 +2,5 @@
     <!-- Base application theme. -->
     <style name="Theme.Dipolia" parent="AppTheme.NoActionBar">
 
-        <item name="android:statusBarColor" >@color/colorPrimaryDark</item>
-        <item name="android:navigationBarColor" >@color/colorPrimaryDark</item>
-
     </style>
 </resources>
