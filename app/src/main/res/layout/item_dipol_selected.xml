@@ -11,21 +11,21 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="@dimen/item_dipol_margin_top"
         android:background="?attr/selectableItemBackground"
-        android:elevation="@dimen/item_card_cv_elevation">
+        android:elevation="@dimen/item_card_view_elevation">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/gray"
             android:orientation="vertical"
-            android:padding="2dp">
+            android:padding="@dimen/item_dipol_padding">
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingBottom="2dp">
+                android:paddingBottom="@dimen/item_dipol_frame_padding_bottom">
 
                 <TextView
                     android:id="@+id/tvItem"
@@ -33,9 +33,9 @@
                     android:layout_height="match_parent"
                     app:selectedBackground="@{dipolItem.selected}"
                     android:gravity="center"
-                    android:padding="10dp"
+                    android:padding="@dimen/item_dipol_text_padding"
                     android:textColor="@color/colorHighlighted"
-                    android:textSize="16sp"
+                    android:textSize="@dimen/item_dipol_text_size"
                     android:text="@{dipolItem.id}"
                     tools:text="Item" />
 
@@ -43,7 +43,7 @@
                     android:id="@+id/view_selected_item"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="2dp"
+                    android:layout_margin="@dimen/item_dipol_selected_margin"
                     app:selectedVisibility="@{dipolItem.selected}"
                     android:visibility="gone"
                     android:background="@drawable/item_selected_background"
@@ -58,7 +58,7 @@
                 <View
                     android:id="@+id/view_list_item_color_label_1"
                     android:layout_width="0dp"
-                    android:layout_height="30dp"
+                    android:layout_height="@dimen/item_dipol_color_label_height"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     app:dipolLabelColor="@{dipolItem.c1}"
@@ -67,9 +67,9 @@
                 <View
                     android:id="@+id/view_list_item_color_label_2"
                     android:layout_width="0dp"
-                    android:layout_height="30dp"
+                    android:layout_height="@dimen/item_dipol_color_label_height"
                     android:layout_gravity="center"
-                    android:layout_marginStart="2dp"
+                    android:layout_marginStart="@dimen/item_dipol_color_label_2_margin_start"
                     android:layout_weight="1"
                     app:dipolLabelColor="@{dipolItem.c2}"
                     android:background="@color/gray" />

@@ -2,9 +2,41 @@
 <resources>
 
     <dimen name="item_card_content_margin">8dp</dimen>
-    <dimen name="item_card_cv_elevation">5dp</dimen>
+
+    <dimen name="item_card_view_elevation">5dp</dimen>
+    <dimen name="item_dipol_margin_top">5dp</dimen>
+    <dimen name="item_dipol_padding">2dp</dimen>
+    <dimen name="item_dipol_frame_padding_bottom">2dp</dimen>
+    <dimen name="item_dipol_text_padding">10dp</dimen>
+    <dimen name="item_dipol_text_size">16sp</dimen>
+    <dimen name="item_dipol_selected_margin">5dp</dimen>
+    <dimen name="item_dipol_color_label_height">30dp</dimen>
+    <dimen name="item_dipol_color_label_2_margin_start">2dp</dimen>
+
+
+    <dimen name="recycler_view_dipols_width">60dp</dimen>
+    <dimen name="recycler_view_dipols_margin">10dp</dimen>
+
+    <dimen name="item_five_lights_height">130dp</dimen>
+    <dimen name="item_five_lights_text_view_height">100dp</dimen>
+    <dimen name="item_five_lights_selected_width">48dp</dimen>
+    <dimen name="item_five_lights_selected_height">80dp</dimen>
+    <dimen name="item_five_lights_selected_margin">2dp</dimen>
+
+    <dimen name="seekbar_dipol_margin">5dp</dimen>
+
+    <dimen name="view_buttons_divider_height">2dp</dimen>
+    <dimen name="layout_buttons_margin">10dp</dimen>
+    <dimen name="button_margin_horizontal">5dp</dimen>
+    <dimen name="button_padding_horizontal">5dp</dimen>
+    <dimen name="button_padding_vertical">10dp</dimen>
+    <dimen name="view_buttons_divider_bottom_margin_vertical">5dp</dimen>
+    <dimen name="button_text_size">10sp</dimen>
+
 
     <dimen name="color_label_height">100dp</dimen>
-    <dimen name="color_label_width">5dp</dimen>
+    <dimen name="color_label_dipol_width">100dp</dimen>
+    <dimen name="color_label_five_lights_width">150dp</dimen>
+    <dimen name="color_label_margin">10dp</dimen>
 
 </resources>
