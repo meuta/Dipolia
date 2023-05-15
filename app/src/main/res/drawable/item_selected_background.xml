@@ -3,7 +3,7 @@
     android:shape="rectangle">
 
     <stroke
-        android:width="2dp"
+        android:width="@dimen/item_lamp_selected_background_stroke_width"
         android:color="@color/colorHighlighted"/>
 
 </shape>

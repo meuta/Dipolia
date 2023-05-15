@@ -7,10 +7,11 @@
     <dimen name="item_dipol_margin_top">5dp</dimen>
     <dimen name="item_dipol_padding">2dp</dimen>
     <dimen name="item_dipol_frame_padding_bottom">2dp</dimen>
-    <dimen name="item_dipol_text_padding">10dp</dimen>
-    <dimen name="item_dipol_text_size">16sp</dimen>
-    <dimen name="item_dipol_selected_margin">5dp</dimen>
-    <dimen name="item_dipol_color_label_height">30dp</dimen>
+    <dimen name="item_lamp_text_padding">10dp</dimen>
+    <dimen name="item_lamp_text_size">16sp</dimen>
+    <dimen name="item_lamp_selected_margin">5dp</dimen>
+    <dimen name="item_lamp_selected_background_stroke_width">2dp</dimen>
+    <dimen name="item_lamp_color_label_height">30dp</dimen>
     <dimen name="item_dipol_color_label_2_margin_start">2dp</dimen>
 
 
@@ -23,7 +24,7 @@
     <dimen name="item_five_lights_selected_height">80dp</dimen>
     <dimen name="item_five_lights_selected_margin">2dp</dimen>
 
-    <dimen name="seekbar_dipol_margin">5dp</dimen>
+    <dimen name="seekbar_margin">5dp</dimen>
 
     <dimen name="view_buttons_divider_height">2dp</dimen>
     <dimen name="layout_buttons_margin">10dp</dimen>
@@ -38,5 +39,17 @@
     <dimen name="color_label_dipol_width">100dp</dimen>
     <dimen name="color_label_five_lights_width">150dp</dimen>
     <dimen name="color_label_margin">10dp</dimen>
+
+    <dimen name="seekbar_width">10dp</dimen>
+    <dimen name="seekbar_thumb_width">30dp</dimen>
+    <dimen name="seekbar_thumb_stroke_width">5dp</dimen>
+
+    <dimen name="item_circular_color_accent_background_width">5dp</dimen>
+
+
+    <dimen name="button_back_width">24dp</dimen>
+    <dimen name="button_back_viewport_width">24</dimen>
+
+
 
 </resources>

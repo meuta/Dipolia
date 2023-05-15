@@ -2,19 +2,14 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval" >
 
-    <gradient
-        android:type="radial"
-        android:gradientRadius="10dp"
-        android:endColor="@color/teal_700"
-        android:startColor="@color/black" />
     <stroke
-        android:width="5dp"
+        android:width="@dimen/seekbar_thumb_stroke_width"
         android:color="@color/colorSeekbarThumbRed"/>
     <solid
-        android:color="@color/black"/>
+        android:color="@color/colorPrimaryDark"/>
 
     <size
-        android:height="30dp"
-        android:width="30dp" />
+        android:height="@dimen/seekbar_thumb_width"
+        android:width="@dimen/seekbar_thumb_width" />
 
 </shape>

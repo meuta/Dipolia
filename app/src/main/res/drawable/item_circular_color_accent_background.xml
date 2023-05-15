@@ -3,6 +3,6 @@
     android:shape="oval">
 
     <solid android:color="@color/colorAccent"/>
-    <stroke android:color="@color/black"
-        android:width="5dp"/>
+    <stroke android:color="@color/colorPrimaryDark"
+        android:width="@dimen/item_circular_color_accent_background_width"/>
 </shape>

@@ -88,10 +88,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/item_five_lights_text_view_height"
                         android:gravity="center"
-                        android:padding="@dimen/item_dipol_text_padding"
+                        android:padding="@dimen/item_lamp_text_padding"
                         android:text="@{viewModel.myFiveLightListLD[0].id}"
                         android:textColor="@color/colorHighlighted"
-                        android:textSize="@dimen/item_dipol_text_size"
+                        android:textSize="@dimen/item_lamp_text_size"
                         app:onFiveLightsClickListener="@{(string) -> viewModel.selectLamp(string)}"
                         app:selectedBackground="@{viewModel.myFiveLightListLD[0].selected}"
                         tools:text="Item" />
@@ -102,7 +102,7 @@
                         android:layout_width="@dimen/item_five_lights_selected_width"
                         android:layout_height="@dimen/item_five_lights_selected_height"
                         android:layout_gravity="center"
-                        android:layout_margin="@dimen/item_dipol_selected_margin"
+                        android:layout_margin="@dimen/item_lamp_selected_margin"
                         android:background="@drawable/item_selected_background"
                         android:visibility="gone"
                         app:selectedVisibility="@{viewModel.myFiveLightListLD[0].selected}"
@@ -113,7 +113,7 @@
                 <View
                     android:id="@+id/view_local_color_label_five_lights_item"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/item_dipol_color_label_height"
+                    android:layout_height="@dimen/item_lamp_color_label_height"
                     android:layout_gravity="center"
                     android:background="@color/gray"
                     app:fiveLightsLabelColor="@{viewModel.myFiveLightListLD[0].c}"
@@ -175,7 +175,7 @@
                     <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/seekbar_dipol_margin">
+                        android:layout_margin="@dimen/seekbar_margin">
 
                         <SeekBar
                             android:id="@+id/local_seek_bar_dipol_1"
@@ -190,7 +190,7 @@
                     <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/seekbar_dipol_margin">
+                        android:layout_margin="@dimen/seekbar_margin">
 
                         <SeekBar
                             android:id="@+id/local_seek_bar_dipol_2"
@@ -205,7 +205,7 @@
                     <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/seekbar_dipol_margin">
+                        android:layout_margin="@dimen/seekbar_margin">
 
                         <SeekBar
                             android:id="@+id/local_seek_bar_dipol_3"
@@ -251,7 +251,7 @@
                     <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/seekbar_dipol_margin">
+                        android:layout_margin="@dimen/seekbar_margin">
 
                         <SeekBar
                             android:id="@+id/local_seek_bar_dipol_4"
@@ -266,7 +266,7 @@
                     <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/seekbar_dipol_margin">
+                        android:layout_margin="@dimen/seekbar_margin">
 
                         <SeekBar
                             android:id="@+id/local_seek_bar_dipol_5"
@@ -281,7 +281,7 @@
                     <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/seekbar_dipol_margin">
+                        android:layout_margin="@dimen/seekbar_margin">
 
                         <SeekBar
                             android:id="@+id/local_seek_bar_dipol_6"
@@ -334,7 +334,7 @@
                     <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/seekbar_dipol_margin">
+                        android:layout_margin="@dimen/seekbar_margin">
 
                         <SeekBar
                             android:id="@+id/local_seek_bar_five_lights_1"
@@ -349,7 +349,7 @@
                     <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/seekbar_dipol_margin">
+                        android:layout_margin="@dimen/seekbar_margin">
 
                         <SeekBar
                             android:id="@+id/local_seek_bar_five_lights_2"
@@ -364,7 +364,7 @@
                     <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/seekbar_dipol_margin">
+                        android:layout_margin="@dimen/seekbar_margin">
 
                         <SeekBar
                             android:id="@+id/local_seek_bar_five_lights_3"
@@ -380,7 +380,7 @@
                     <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/seekbar_dipol_margin">
+                        android:layout_margin="@dimen/seekbar_margin">
 
                         <SeekBar
                             android:id="@+id/local_seek_bar_five_lights_4"
@@ -395,7 +395,7 @@
                     <com.example.dipolia.presentation.utils.SeekBarRotator
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_margin="@dimen/seekbar_dipol_margin">
+                        android:layout_margin="@dimen/seekbar_margin">
 
                         <SeekBar
                             android:id="@+id/local_seek_bar_five_lights_5"

@@ -6,8 +6,8 @@
         <shape
             android:shape="line">
             <stroke
-                android:color="@color/gray"
-                android:width="10dp"/>
+                android:color="@color/colorPrimary"
+                android:width="@dimen/seekbar_width"/>
         </shape>
     </item>
 
@@ -17,7 +17,7 @@
                 android:shape="line">
                 <stroke
                     android:color="@color/colorSeekbarProgressGreen"
-                    android:width="10dp"/>
+                    android:width="@dimen/seekbar_width"/>
             </shape>
         </clip>
     </item>

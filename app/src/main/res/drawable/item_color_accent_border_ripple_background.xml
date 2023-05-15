@@ -3,7 +3,7 @@
     android:color="@color/colorHighlighted">
     <item android:id="@+id/mask">
         <shape android:shape="oval">
-            <solid android:color="@color/black"/>
+            <solid android:color="@color/colorPrimaryDark"/>
         </shape>
     </item>
     <item android:drawable="@drawable/item_circular_color_accent_background"/>
