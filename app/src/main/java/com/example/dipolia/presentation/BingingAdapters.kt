@@ -8,9 +8,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.example.dipolia.R
-import com.example.dipolia.domain.entities.DipolDomainEntity
-import com.example.dipolia.domain.entities.FiveLightsDomainEntity
-import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
 
 
@@ -69,7 +66,7 @@ fun setFiveLightsItemVisibility(view: View, isConnected: Boolean){
 fun setSelectedBackground(textView: TextView, isSelected: Boolean){
 //    Log.d("setSelectedBackground", "$isSelected")
     if (isSelected) {
-        textView.setBackgroundColor(ContextCompat.getColor(textView.context, R.color.colorAccent))
+        textView.setBackgroundColor(ContextCompat.getColor(textView.context, R.color.colorSelect))
     } else {
         textView.setBackgroundColor(ContextCompat.getColor(textView.context, R.color.colorPrimaryDark))
     }
