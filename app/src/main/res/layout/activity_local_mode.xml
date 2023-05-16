@@ -95,17 +95,6 @@
                         app:selectedBackground="@{viewModel.myFiveLightListLD[0].selected}"
                         tools:text="Item" />
 
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_five_lights_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:hint="@string/name_hint"
-                        android:inputType="text"
-                        android:visibility="invisible" />
-
-
                     <View
                         android:id="@+id/view_selected_item"
                         android:layout_width="@dimen/item_five_lights_selected_width"
@@ -433,6 +422,35 @@
                     tools:background="@color/gray" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_edit_lamp_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:visibility="invisible"
+                android:background="@color/colorPrimaryDark"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tv_edit_lamp_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="32sp"
+                    />
+
+                <EditText
+                    android:id="@+id/et_edit_lamp_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:inputType="text"
+                    android:textSize="32sp"
+                    />
+
+            </LinearLayout>
         </FrameLayout>
 
 

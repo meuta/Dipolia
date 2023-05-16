@@ -28,7 +28,7 @@
                 android:paddingBottom="@dimen/item_dipol_frame_padding_bottom">
 
                 <TextView
-                    android:id="@+id/tvItem"
+                    android:id="@+id/tv_item"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:selectedBackground="@{dipolItem.selected}"
@@ -36,8 +36,9 @@
                     android:padding="@dimen/item_lamp_text_padding"
                     android:textColor="@color/colorHighlighted"
                     android:textSize="@dimen/item_lamp_text_size"
-                    android:text="@{dipolItem.id}"
-                    tools:text="Item" />
+                    android:text="@{dipolItem.currentLampName}"
+                    tools:text="Item"
+                    android:visibility="visible"/>
 
                 <View
                     android:id="@+id/view_selected_item"
@@ -62,7 +63,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     app:dipolLabelColor="@{dipolItem.c1}"
-                    tools:background="@color/gray" />
+                    tools:background="@color/colorPrimary" />
 
                 <View
                     android:id="@+id/view_list_item_color_label_2"
@@ -72,7 +73,7 @@
                     android:layout_marginStart="@dimen/item_dipol_color_label_2_margin_start"
                     android:layout_weight="1"
                     app:dipolLabelColor="@{dipolItem.c2}"
-                    android:background="@color/gray" />
+                    android:background="@color/colorPrimary" />
 
             </LinearLayout>
 

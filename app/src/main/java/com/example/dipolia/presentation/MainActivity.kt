@@ -44,6 +44,9 @@ class MainActivity : AppCompatActivity() {
     private var fiveLightsName = ""
     private var fiveLightsId = ""
 
+    private var isDipolNameEditing = false
+    private var currentDipolNameEditingId: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         component.inject(this)
@@ -160,49 +163,67 @@ class MainActivity : AppCompatActivity() {
 
             tvFiveLightsItem.setOnLongClickListener {
                 Log.d("flFiveLightsItem", ".setOnLongClickListener")
-                etFiveLightsName.setText(fiveLightsName)
-                etFiveLightsName.visibility = View.VISIBLE
-                etFiveLightsName.requestFocus()
+
+                tvEditLampName.text = fiveLightsName
+                etEditLampName.requestFocus()
 
                 val inputMethodManager =
                     getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
 
-                inputMethodManager.showSoftInput(etFiveLightsName, 0)
+                inputMethodManager.showSoftInput(etEditLampName, 0)
 
-                tvFiveLightsItem.visibility = View.INVISIBLE
+                llEditLampName.visibility = View.VISIBLE
+
+
+//                dipolControlLayout.visibility = View.GONE
+//                fiveLightsControlLayout.visibility = View.GONE
+
                 llButtons.visibility = View.INVISIBLE
                 llEditLampNameButtons.visibility = View.VISIBLE
+
                 true
             }
 
 
             btnSaveLampName.setOnClickListener {
-                val newName = etFiveLightsName.text.toString()
-                localModeViewModel.editLampName(fiveLightsId, newName)
+                val newName = etEditLampName.text.toString()
 
-                etFiveLightsName.visibility = View.INVISIBLE
-                etFiveLightsName.setText("")
-                etFiveLightsName.clearFocus()
-                tvFiveLightsItem.visibility = View.VISIBLE
+                if (isDipolNameEditing){
+                    Log.d("btnSaveLampName", "isDipolNameEditing newName = $newName")
+                    currentDipolNameEditingId?.let { id -> localModeViewModel.editLampName(id, newName) }
+
+                } else {
+                    localModeViewModel.editLampName(fiveLightsId, newName)
+                }
+
+
+                llEditLampName.visibility = View.INVISIBLE
+
+                etEditLampName.setText("")
+                etEditLampName.clearFocus()
                 llButtons.visibility = View.VISIBLE
                 llEditLampNameButtons.visibility = View.INVISIBLE
                 val inputMethodManager =
                     getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
+                isDipolNameEditing = false
+                currentDipolNameEditingId = null
 
             }
 
             btnCancelSaveLampName.setOnClickListener {
 
-                etFiveLightsName.visibility = View.INVISIBLE
-                etFiveLightsName.setText("")
-                etFiveLightsName.clearFocus()
-                tvFiveLightsItem.visibility = View.VISIBLE
+                llEditLampName.visibility = View.INVISIBLE
+
+                etEditLampName.setText("")
+                etEditLampName.clearFocus()
                 llButtons.visibility = View.VISIBLE
                 llEditLampNameButtons.visibility = View.INVISIBLE
                 val inputMethodManager =
                     getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
+                isDipolNameEditing = false
+                currentDipolNameEditingId = null
 
             }
         }
@@ -313,8 +334,23 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupLongClickListener() {
         dipolListAdapter.onDipolItemLongClickListener = {
+            Log.d("setupLongClickListener", "dipolListAdapter.setOnLongClickListener")
+            isDipolNameEditing = true
+            currentDipolNameEditingId = it.id
+            binding.tvEditLampName.text = it.currentLampName
+            binding.etEditLampName.requestFocus()
 
-//            localModeViewModel.editLampName(it)
+            val inputMethodManager =
+                getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+
+            inputMethodManager.showSoftInput(binding.etEditLampName, 0)
+            binding.llEditLampName.visibility = View.VISIBLE
+            binding.viewPleaseSelect.visibility = View.INVISIBLE
+            binding.dipolControlLayout.visibility = View.INVISIBLE
+            binding.fiveLightsControlLayout.visibility = View.INVISIBLE
+            binding.llButtons.visibility = View.INVISIBLE
+            binding.llEditLampNameButtons.visibility = View.VISIBLE
+
         }
     }
 

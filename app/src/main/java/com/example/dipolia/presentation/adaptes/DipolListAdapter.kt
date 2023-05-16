@@ -41,5 +41,7 @@ class DipolListAdapter : ListAdapter<DipolDomainEntity, DipolItemViewHolder>(Dip
             onDipolItemLongClickListener?.invoke(dipolItem)
             true
         }
+
+//        binding.etDipolName.setText(dipolItem.lampName)
     }
 }

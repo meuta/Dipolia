@@ -48,7 +48,8 @@ class DipoliaMapper @Inject constructor() {
             c1 = c1,
             c2 = c2,
             selected = lampDomainEntity.selected,
-            lastConnection = lampDomainEntity.lastConnection
+            lastConnection = lampDomainEntity.lastConnection,
+            lampName = lampDomainEntity.lampName
         ).also {
 //            Log.d("mapLampDbModelToDipolEntity", "$it")
         }
