@@ -20,4 +20,6 @@ interface LampsRepository {
     fun saveLampListToDb(list: List<LampDomainEntity>)
 
     suspend fun sendColors()
+
+    fun editLampName(lampId: String, newName: String)
 }

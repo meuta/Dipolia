@@ -11,9 +11,6 @@ import com.example.dipolia.R
 import com.example.dipolia.domain.entities.LampType
 
 
-interface OnFiveLightsClickListener{
-    fun onClick(id: String)
-}
 
 @BindingAdapter("dipolLabelColor")
 fun bindDipolLabelColor(view: View, colorList: List<Double>?) {
@@ -142,12 +139,3 @@ fun setWorkerButtonText(textView: TextView, isRunning: Boolean){
         textView.text = textView.context.getString(R.string.background_work_start)
     }
 }
-
-
-@BindingAdapter("onFiveLightsClickListener")
-fun bindOnFiveLightsClickListener(textView: TextView, clickListener: OnFiveLightsClickListener){
-    textView.setOnClickListener {
-        clickListener.onClick(textView.text.toString())
-    }
-}
-

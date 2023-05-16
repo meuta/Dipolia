@@ -17,7 +17,8 @@ class LampsApiImpl @Inject constructor(private val receiver: UDPServer): LampsAp
 
             val ar = it.first.split(" ")
             val lampTypeString = ar[0]
-//            Log.d("receiveLocalModeData", "lampTypeString = $lampTypeString")
+            Log.d("receiveLocalModeData", "lampTypeString = $lampTypeString")
+            Log.d("receiveLocalModeData", "ip = ${it.second}")
 
             if (lampTypeString == DIPOL || lampTypeString == FIVE_LIGHTS) {
                 if (lampTypeString == FIVE_LIGHTS) {

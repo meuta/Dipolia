@@ -12,5 +12,6 @@ data class LampDbModel (
 //    var selected: Boolean = false,
     var lastConnection: Long = 0,
     val lampType: LampType = LampType.UNKNOWN_LAMP_TYPE,
-    var colorList: ColorList
+    var colorList: ColorList,
+    var lampName: String? = null
 )

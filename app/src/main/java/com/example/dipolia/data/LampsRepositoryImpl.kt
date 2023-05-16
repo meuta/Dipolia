@@ -31,7 +31,7 @@ class LampsRepositoryImpl @Inject constructor(
         while (true) {
             val latestLampList = lampEntityList
 
-            Log.d("TEST", "latestLampList = ${latestLampList.map { it.id to it.lastConnection }}")
+            Log.d("TEST", "latestLampList = ${latestLampList.map { listOf(it.id, it.lampName, it.lastConnection) }}")
             emit(latestLampList)
             delay(100)
         }
@@ -74,6 +74,7 @@ class LampsRepositoryImpl @Inject constructor(
                         dipolsDao.addLampItem(itemToAdd)
                     } else {
                         lampDomainEntity.c = itemFromDb.colorList
+                        lampDomainEntity.lampName = itemFromDb.lampName
                     }
                     lampEntityList.add(lampDomainEntity)
 
@@ -197,5 +198,13 @@ class LampsRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun editLampName(lampId: String, newName: String) {
+        Log.d("editLampName", "lampId = $lampId, newName = $newName")
+        val lampFromList = lampEntityList.find { lamp -> lamp.id == lampId }
+        val lampFromListIndex = lampEntityList.indexOf(lampFromList)
+        Log.d("editLampName", "lampFromList = ${lampFromList?.id}, Index = $lampFromListIndex")
+        lampEntityList[lampFromListIndex].lampName = newName
+        Log.d("editLampName", "lampEntityList[lampFromListIndex].lampName = ${lampEntityList[lampFromListIndex].lampName}")
 
+    }
 }

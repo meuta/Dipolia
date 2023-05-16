@@ -26,6 +26,7 @@ class LocalModeViewModel @Inject constructor(
     private val changeLocalStateUseCase: ChangeLocalStateUseCase,
     private val saveLampUseCase: SaveLampUseCase,
     private val saveLampListUseCase: SaveLampListUseCase,
+    private val editLampNameUseCase: EditLampNameUseCase,
     private val workManager: WorkManager,
     private val mapper: DipoliaMapper,
 //    private val sendColorsUseCase: SendColorsUseCase
@@ -99,6 +100,10 @@ class LocalModeViewModel @Inject constructor(
         scope.launch {
             selectItemUseCase(itemId)
         }
+    }
+
+    fun editLampName(lampId: String, newName: String){
+        editLampNameUseCase(lampId, newName)
     }
 
     fun unselectLamp() {

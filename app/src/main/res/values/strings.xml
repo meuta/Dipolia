@@ -8,4 +8,7 @@
     <string name="background_work_stop">STOP\nSTREAMING</string>
     <string name="save_lamp">SAVE\nLAMP</string>
     <string name="save_lamp_list">SAVE\n LAMP LIST</string>
+    <string name="name_hint">name</string>
+    <string name="save_lamp_name">SAVE NAME</string>
+    <string name="cancel">CANCEL</string>
 </resources>

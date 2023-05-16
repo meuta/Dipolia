@@ -12,10 +12,11 @@ data class LampDomainEntity(
     var last_set_c: List<Double?>? = null,
 
     var selected: Boolean = false,
-    var lastConnection: Long = 0
+    var lastConnection: Long = 0,
 
+    var lampName: String? = null
 ) {
+
     val connected: Boolean
         get() = lastConnection > System.currentTimeMillis() / 1000 - 20
-
 }

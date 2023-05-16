@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @TypeConverters(value = [RoomTypeConverters::class])
-@Database(entities = [LampDbModel::class], version = 11,  exportSchema = false)
+@Database(entities = [LampDbModel::class], version = 12,  exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {
 
     abstract fun dipolsDao(): DipolsDao

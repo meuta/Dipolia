@@ -2,6 +2,8 @@ package com.example.dipolia.presentation
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
@@ -38,6 +40,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var seekBarFiveLightsList: List<SeekBar>
     private var selectedLamp: LampDomainEntity? = null
     private var currentLamps: List<LampDomainEntity> = emptyList()
+
+    private var fiveLightsName = ""
+    private var fiveLightsId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -77,8 +82,13 @@ class MainActivity : AppCompatActivity() {
 
         localModeViewModel.myFiveLightListLD.observe(this) { list ->
             if (list.isNotEmpty()) {
-                Log.d("TEST_OF_SUBSCRIBE", "fiveLights: ${list[0]}")
+                Log.d("TEST_OF_SUBSCRIBE", "fiveLights: ${list[0].id} ${list[0].lampName}")
+                if (list[0].lampName != fiveLightsName){
+                    fiveLightsName = list[0].lampName ?: ""
+                }
+                fiveLightsId = list[0].id
             }
+
         }
 
         localModeViewModel.selectedLampLD.observe(this) { lamp ->
@@ -138,6 +148,63 @@ class MainActivity : AppCompatActivity() {
 //                    Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
 //                }
 //            }
+
+            cardViewFiveLights.setOnClickListener {
+                localModeViewModel.selectLamp(fiveLightsId)
+                Log.d("cardViewFiveLights", ".setOnClickListener")
+            }
+            tvFiveLightsItem.setOnClickListener {
+                localModeViewModel.selectLamp(fiveLightsId)
+                Log.d("cardViewFiveLights", ".setOnClickListener")
+            }
+
+            tvFiveLightsItem.setOnLongClickListener {
+                Log.d("flFiveLightsItem", ".setOnLongClickListener")
+                etFiveLightsName.setText(fiveLightsName)
+                etFiveLightsName.visibility = View.VISIBLE
+                etFiveLightsName.requestFocus()
+
+                val inputMethodManager =
+                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+
+                inputMethodManager.showSoftInput(etFiveLightsName, 0)
+
+                tvFiveLightsItem.visibility = View.INVISIBLE
+                llButtons.visibility = View.INVISIBLE
+                llEditLampNameButtons.visibility = View.VISIBLE
+                true
+            }
+
+
+            btnSaveLampName.setOnClickListener {
+                val newName = etFiveLightsName.text.toString()
+                localModeViewModel.editLampName(fiveLightsId, newName)
+
+                etFiveLightsName.visibility = View.INVISIBLE
+                etFiveLightsName.setText("")
+                etFiveLightsName.clearFocus()
+                tvFiveLightsItem.visibility = View.VISIBLE
+                llButtons.visibility = View.VISIBLE
+                llEditLampNameButtons.visibility = View.INVISIBLE
+                val inputMethodManager =
+                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
+
+            }
+
+            btnCancelSaveLampName.setOnClickListener {
+
+                etFiveLightsName.visibility = View.INVISIBLE
+                etFiveLightsName.setText("")
+                etFiveLightsName.clearFocus()
+                tvFiveLightsItem.visibility = View.VISIBLE
+                llButtons.visibility = View.VISIBLE
+                llEditLampNameButtons.visibility = View.INVISIBLE
+                val inputMethodManager =
+                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
+
+            }
         }
 
         setupSeekbars()
@@ -234,12 +301,20 @@ class MainActivity : AppCompatActivity() {
         dipolListAdapter = DipolListAdapter()
         binding.rvDipolItemList.adapter = dipolListAdapter
         setupClickListener()
+        setupLongClickListener()
     }
 
     private fun setupClickListener() {
         dipolListAdapter.onDipolItemClickListener = {
             localModeViewModel.selectLamp(it.id)
             Log.d("onDipolItemClickListener", "$it")
+        }
+    }
+
+    private fun setupLongClickListener() {
+        dipolListAdapter.onDipolItemLongClickListener = {
+
+//            localModeViewModel.editLampName(it)
         }
     }
 

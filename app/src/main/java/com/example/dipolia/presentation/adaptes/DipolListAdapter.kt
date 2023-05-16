@@ -4,17 +4,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
-import com.example.dipolia.databinding.ItemDipolSelectedBinding
+import com.example.dipolia.databinding.ItemDipolBinding
 import com.example.dipolia.domain.entities.DipolDomainEntity
 
 
 class DipolListAdapter : ListAdapter<DipolDomainEntity, DipolItemViewHolder>(DipolItemDiffCallback()) {
 
     var onDipolItemClickListener: ((DipolDomainEntity) -> Unit)? = null
+    var onDipolItemLongClickListener: ((DipolDomainEntity) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DipolItemViewHolder {
 
-        val binding = ItemDipolSelectedBinding.inflate(
+        val binding = ItemDipolBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -35,6 +36,10 @@ class DipolListAdapter : ListAdapter<DipolDomainEntity, DipolItemViewHolder>(Dip
 
         binding.root.setOnClickListener {
             onDipolItemClickListener?.invoke(dipolItem)
+        }
+        binding.root.setOnLongClickListener {
+            onDipolItemLongClickListener?.invoke(dipolItem)
+            true
         }
     }
 }
