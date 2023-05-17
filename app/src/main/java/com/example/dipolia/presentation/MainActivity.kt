@@ -44,8 +44,7 @@ class MainActivity : AppCompatActivity() {
     private var fiveLightsName = ""
     private var fiveLightsId = ""
 
-    private var isDipolNameEditing = false
-    private var currentDipolNameEditingId: String? = null
+    private var editableNameLampId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -152,44 +151,36 @@ class MainActivity : AppCompatActivity() {
 //                }
 //            }
 
-            cardViewFiveLights.setOnClickListener {
-                localModeViewModel.selectLamp(fiveLightsId)
-                Log.d("cardViewFiveLights", ".setOnClickListener")
-            }
-            tvFiveLightsItem.setOnClickListener {
-                localModeViewModel.selectLamp(fiveLightsId)
-                Log.d("cardViewFiveLights", ".setOnClickListener")
-            }
 
             btnSaveLampName.setOnClickListener {
+
                 val newName = etEditLampName.text.toString()
-
-                if (isDipolNameEditing) {
-                    Log.d("btnSaveLampName", "isDipolNameEditing newName = $newName")
-                    currentDipolNameEditingId?.let { id ->
-                        localModeViewModel.editLampName(
-                            id,
-                            newName
-                        )
-                    }
-
-                } else {
-                    localModeViewModel.editLampName(fiveLightsId, newName)
+                editableNameLampId?.let { id ->
+                    localModeViewModel.editLampName(id, newName)
                 }
-
                 exitEditNameViews(it)
-
             }
 
             btnCancelSaveLampName.setOnClickListener {
 
                 exitEditNameViews(it)
-
-
             }
         }
 
         setupSeekbars()
+    }
+
+    private fun ActivityLocalModeBinding.setEditNameViews(oldLampName: String) {
+        tvEditLampName.text = oldLampName
+        etEditLampName.setText(oldLampName)
+        etEditLampName.requestFocus()
+        val inputMethodManager =
+            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.showSoftInput(etEditLampName, 0)
+        llEditLampName.visibility = View.VISIBLE
+        currentLampLayout.visibility = View.INVISIBLE
+        llButtons.visibility = View.INVISIBLE
+        llEditLampNameButtons.visibility = View.VISIBLE
     }
 
     private fun ActivityLocalModeBinding.exitEditNameViews(it: View) {
@@ -202,18 +193,9 @@ class MainActivity : AppCompatActivity() {
         val inputMethodManager =
             getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
-        isDipolNameEditing = false
-        currentDipolNameEditingId = null
+        editableNameLampId = null
     }
 
-    override fun onStop() {
-        Log.d("onStop", "here")
-        if (currentLamps.isNotEmpty()) {
-            localModeViewModel.saveLampList(currentLamps)
-            Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
-        }
-        super.onStop()
-    }
 
     private fun setupSeekbars() {
         val seekAdapter = object :
@@ -302,43 +284,45 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupClickListener() {
         dipolListAdapter.onDipolItemClickListener = {
-            localModeViewModel.selectLamp(it.id)
+            selectLamp(it.id)
             Log.d("onDipolItemClickListener", "$it")
+        }
+        with(binding) {
+            cardViewFiveLights.setOnClickListener {
+                selectLamp(fiveLightsId)
+                Log.d("cardViewFiveLights", ".setOnClickListener")
+            }
+            tvFiveLightsItem.setOnClickListener {
+                selectLamp(fiveLightsId)
+                Log.d("cardViewFiveLights", ".setOnClickListener")
+            }
         }
     }
 
+    private fun selectLamp(lampId: String) {
+        localModeViewModel.selectLamp(lampId)
+    }
+
     private fun setupLongClickListener() {
-            dipolListAdapter.onDipolItemLongClickListener = {
-                Log.d("setupLongClickListener", "dipolListAdapter.setOnLongClickListener")
-                isDipolNameEditing = true
-                currentDipolNameEditingId = it.id
-                val oldLampName = it.currentLampName
+        dipolListAdapter.onDipolItemLongClickListener = {
+            Log.d("setupLongClickListener", "dipolListAdapter.setOnLongClickListener")
+            editableNameLampId = it.id
+            val oldLampName = it.currentLampName
 
-                binding.setEditNameViews(oldLampName)
-            }
+            binding.setEditNameViews(oldLampName)
+        }
 
-            binding.tvFiveLightsItem.setOnLongClickListener {
-                Log.d("flFiveLightsItem", ".setOnLongClickListener")
-                val oldLampName = fiveLightsName
+        binding.tvFiveLightsItem.setOnLongClickListener {
+            Log.d("flFiveLightsItem", ".setOnLongClickListener")
+            editableNameLampId = fiveLightsId
+            val oldLampName = fiveLightsName
 
-                binding.setEditNameViews(oldLampName)
+            binding.setEditNameViews(oldLampName)
 
-                true
-            }
+            true
+        }
     }
 
-    private fun ActivityLocalModeBinding.setEditNameViews(oldLampName: String) {
-        tvEditLampName.text = oldLampName
-        etEditLampName.setText(oldLampName)
-        etEditLampName.requestFocus()
-        val inputMethodManager =
-            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.showSoftInput(etEditLampName, 0)
-        llEditLampName.visibility = View.VISIBLE
-        currentLampLayout.visibility = View.INVISIBLE
-        llButtons.visibility = View.INVISIBLE
-        llEditLampNameButtons.visibility = View.VISIBLE
-    }
 
     private fun setDipolSeekbars(dipolDomainEntity: DipolDomainEntity?) {
         Log.d("setDipolSeekbars", "Seekbars:$dipolDomainEntity")
@@ -393,4 +377,12 @@ class MainActivity : AppCompatActivity() {
 //        localModeViewModel.refreshConnectedList()
     }
 
+    override fun onStop() {
+        Log.d("onStop", "here")
+        if (currentLamps.isNotEmpty()) {
+            localModeViewModel.saveLampList(currentLamps)
+            Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
+        }
+        super.onStop()
+    }
 }
