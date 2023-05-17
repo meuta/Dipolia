@@ -165,6 +165,7 @@ class MainActivity : AppCompatActivity() {
                 Log.d("flFiveLightsItem", ".setOnLongClickListener")
 
                 tvEditLampName.text = fiveLightsName
+                etEditLampName.setText(fiveLightsName)
                 etEditLampName.requestFocus()
 
                 val inputMethodManager =
@@ -174,9 +175,7 @@ class MainActivity : AppCompatActivity() {
 
                 llEditLampName.visibility = View.VISIBLE
 
-
-//                dipolControlLayout.visibility = View.GONE
-//                fiveLightsControlLayout.visibility = View.GONE
+                currentLampLayout.visibility = View.INVISIBLE
 
                 llButtons.visibility = View.INVISIBLE
                 llEditLampNameButtons.visibility = View.VISIBLE
@@ -198,6 +197,7 @@ class MainActivity : AppCompatActivity() {
 
 
                 llEditLampName.visibility = View.INVISIBLE
+                currentLampLayout.visibility = View.VISIBLE
 
                 etEditLampName.setText("")
                 etEditLampName.clearFocus()
@@ -214,6 +214,7 @@ class MainActivity : AppCompatActivity() {
             btnCancelSaveLampName.setOnClickListener {
 
                 llEditLampName.visibility = View.INVISIBLE
+                currentLampLayout.visibility = View.VISIBLE
 
                 etEditLampName.setText("")
                 etEditLampName.clearFocus()
@@ -338,6 +339,7 @@ class MainActivity : AppCompatActivity() {
             isDipolNameEditing = true
             currentDipolNameEditingId = it.id
             binding.tvEditLampName.text = it.currentLampName
+            binding.etEditLampName.setText(it.currentLampName)
             binding.etEditLampName.requestFocus()
 
             val inputMethodManager =
@@ -345,9 +347,9 @@ class MainActivity : AppCompatActivity() {
 
             inputMethodManager.showSoftInput(binding.etEditLampName, 0)
             binding.llEditLampName.visibility = View.VISIBLE
-            binding.viewPleaseSelect.visibility = View.INVISIBLE
-            binding.dipolControlLayout.visibility = View.INVISIBLE
-            binding.fiveLightsControlLayout.visibility = View.INVISIBLE
+
+            binding.currentLampLayout.visibility = View.INVISIBLE
+
             binding.llButtons.visibility = View.INVISIBLE
             binding.llEditLampNameButtons.visibility = View.VISIBLE
 

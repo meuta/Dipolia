@@ -79,13 +79,24 @@ fun setSelectedVisibility(view: View, isSelected: Boolean){
 }
 
 
-@BindingAdapter("lampControlLayoutVisibility")
-fun setLampControlLayoutVisibility(view: View, notEmpty: Boolean){
-//    Log.d("setSelectedDipolLayoutVisibility", "$isConnected")
+//@BindingAdapter("lampControlLayoutVisibility")
+//fun setLampControlLayoutVisibility(view: View, notEmpty: Boolean){
+//    Log.d("setLampControlLayoutVisibility", "$notEmpty")
+//    if (notEmpty) {
+//        view.visibility = VISIBLE
+//    } else {
+//        view.visibility = INVISIBLE
+//    }
+//}
+@BindingAdapter("viewPleaseSelectText")
+fun setViewPleaseSelectText(textView: TextView, notEmpty: Boolean){
+    Log.d("setLampControlLayoutVisibility", "$notEmpty")
     if (notEmpty) {
-        view.visibility = VISIBLE
+        textView.text = String.format(
+            textView.context.getString(R.string.please_select_the_lamp)
+        )
     } else {
-        view.visibility = INVISIBLE
+        textView.text = ""
     }
 }
 
