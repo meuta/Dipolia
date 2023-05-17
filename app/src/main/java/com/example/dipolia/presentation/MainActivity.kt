@@ -6,6 +6,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -38,12 +39,10 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var seekBarDipolList: List<SeekBar>
     private lateinit var seekBarFiveLightsList: List<SeekBar>
-    private var selectedLamp: LampDomainEntity? = null
+
     private var currentLamps: List<LampDomainEntity> = emptyList()
 
-    private var fiveLightsName = ""
-    private var fiveLightsId = ""
-
+    private var selectedLampId: String? = null
     private var editableNameLampId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +53,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityLocalModeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupRecyclerView()
 
         localModeViewModel =
             ViewModelProvider(this, viewModelFactory)[LocalModeViewModel::class.java]
@@ -62,8 +60,81 @@ class MainActivity : AppCompatActivity() {
         binding.viewModel = localModeViewModel
         binding.lifecycleOwner = this
 
+        setupRecyclerView()
+
+        setupClickListener()
+        setupLongClickListener()
+
+        setupSeekbars()
+
+        setupButtons()
+
+        observeViewModel()
+
+    }
 
 
+
+    private fun setupButtons() {
+        with(binding) {
+
+            val toastRefresh = Toast.makeText(
+                this@MainActivity,
+                "This button doesn't work now..",
+                Toast.LENGTH_SHORT
+            )
+
+            val toastBackgroundWork = Toast.makeText(
+                this@MainActivity,
+                "This button doesn't work now..",
+                Toast.LENGTH_SHORT
+            )
+
+            btnRefreshList.setOnClickListener {
+    //                toastBackgroundWork.cancel()
+                toastRefresh.show()
+            }
+
+            btnUnselect.setOnClickListener {
+                localModeViewModel.unselectLamp()
+            }
+
+            btnBackgroundWork.setOnClickListener {
+                localModeViewModel.workerStartStop()
+    //                toastRefresh.cancel()
+    //                toastBackgroundWork.show()
+            }
+
+    //            btnSaveLamp.setOnClickListener {
+    //                selectedLamp?.let {
+    //                    localModeViewModel.saveLamp(it)
+    //                    Toast.makeText(this@MainActivity, "@${it.lampType} colorSet have been saved", Toast.LENGTH_SHORT).show()
+    //                }
+    //            }
+    //
+    //            btnSaveLampList.setOnClickListener {
+    //                if (currentLamps.isNotEmpty()) {
+    //                    localModeViewModel.saveLampList(currentLamps)
+    //                    Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
+    //                }
+    //            }
+
+
+            btnSaveLampName.setOnClickListener {
+                val newName = etEditLampName.text.toString()
+                editableNameLampId?.let { id ->
+                    localModeViewModel.editLampName(id, newName)
+                }
+                exitEditNameViews(it)
+            }
+
+            btnCancelSaveLampName.setOnClickListener {
+                exitEditNameViews(it)
+            }
+        }
+    }
+
+    private fun observeViewModel() {
         localModeViewModel.myLampsLD.observe(this) {
             if (it.isNotEmpty()) {
                 Log.d(
@@ -85,12 +156,7 @@ class MainActivity : AppCompatActivity() {
         localModeViewModel.myFiveLightListLD.observe(this) { list ->
             if (list.isNotEmpty()) {
                 Log.d("TEST_OF_SUBSCRIBE", "fiveLights: ${list[0].id} ${list[0].lampName}")
-                if (list[0].lampName != fiveLightsName) {
-                    fiveLightsName = list[0].lampName ?: ""
-                }
-                fiveLightsId = list[0].id
             }
-
         }
 
         localModeViewModel.selectedLampLD.observe(this) { lamp ->
@@ -101,73 +167,13 @@ class MainActivity : AppCompatActivity() {
                 } else if (it.lampType == LampType.FIVE_LIGHTS) {
                     setFiveLightsSeekbars(mapper.mapLampEntityToFiveLightsEntity(it))
                 }
-                selectedLamp = it
+                selectedLampId = it.id
             }
         }
 
         localModeViewModel.isBackGroundWork.observe(this) {
             Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
         }
-
-
-        with(binding) {
-            val toastRefresh = Toast.makeText(
-                this@MainActivity,
-                "This button doesn't work now..",
-                Toast.LENGTH_SHORT
-            )
-            val toastBackgroundWork = Toast.makeText(
-                this@MainActivity,
-                "This button doesn't work now..",
-                Toast.LENGTH_SHORT
-            )
-            btnRefreshList.setOnClickListener {
-
-//                toastBackgroundWork.cancel()
-                toastRefresh.show()
-            }
-
-            btnUnselect.setOnClickListener {
-                localModeViewModel.unselectLamp()
-            }
-
-            btnBackgroundWork.setOnClickListener {
-                localModeViewModel.workerStartStop()
-//                toastRefresh.cancel()
-//                toastBackgroundWork.show()
-            }
-
-//            btnSaveLamp.setOnClickListener {
-//                selectedLamp?.let {
-//                    localModeViewModel.saveLamp(it)
-//                    Toast.makeText(this@MainActivity, "@${it.lampType} colorSet have been saved", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//
-//            btnSaveLampList.setOnClickListener {
-//                if (currentLamps.isNotEmpty()) {
-//                    localModeViewModel.saveLampList(currentLamps)
-//                    Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-
-
-            btnSaveLampName.setOnClickListener {
-
-                val newName = etEditLampName.text.toString()
-                editableNameLampId?.let { id ->
-                    localModeViewModel.editLampName(id, newName)
-                }
-                exitEditNameViews(it)
-            }
-
-            btnCancelSaveLampName.setOnClickListener {
-
-                exitEditNameViews(it)
-            }
-        }
-
-        setupSeekbars()
     }
 
     private fun ActivityLocalModeBinding.setEditNameViews(oldLampName: String) {
@@ -249,15 +255,11 @@ class MainActivity : AppCompatActivity() {
                 localSeekBarFiveLights4,
                 localSeekBarFiveLights5
             )
-
         }
-//        Log.d("setupSeekbars", "seekBarList $seekBarList")
-//        Log.d("setupSeekbars", "seekBarFiveLightsList $seekBarFiveLightsList")
     }
 
     private fun onUpdateSeekBar(seekBar: SeekBar) {
         val progress = seekBar.progress
-        Log.d("onUpdateSeekBar", "selectedLamp = ${selectedLamp?.id} ${selectedLamp?.c}")
         Log.d("onUpdateSeekBar", "progress = $progress")
 
         var seekBarIndex = -1
@@ -268,8 +270,10 @@ class MainActivity : AppCompatActivity() {
             seekBarIndex = seekBarFiveLightsList.indexOf(seekBar)
             Log.d("onUpdateSeekBar", "seekBarFiveLightsIndex = $seekBarIndex")
         }
-        selectedLamp?.let {
-            localModeViewModel.changeLocalState(it.id, seekBarIndex, progress)
+        val id = currentLamps.find { lamp -> lamp.selected }?.id
+
+        id?.let {
+            localModeViewModel.changeLocalState(it, seekBarIndex, progress)
         }
     }
 
@@ -278,9 +282,7 @@ class MainActivity : AppCompatActivity() {
 
         dipolListAdapter = DipolListAdapter()
         binding.rvDipolItemList.adapter = dipolListAdapter
-        setupClickListener()
-        setupLongClickListener()
-    }
+     }
 
     private fun setupClickListener() {
         dipolListAdapter.onDipolItemClickListener = {
@@ -289,18 +291,19 @@ class MainActivity : AppCompatActivity() {
         }
         with(binding) {
             cardViewFiveLights.setOnClickListener {
-                selectLamp(fiveLightsId)
+                selectLamp(currentLamps.find { lamp -> lamp.lampType == LampType.FIVE_LIGHTS }?.id)
                 Log.d("cardViewFiveLights", ".setOnClickListener")
             }
             tvFiveLightsItem.setOnClickListener {
-                selectLamp(fiveLightsId)
+                selectLamp(currentLamps.find { lamp -> lamp.lampType == LampType.FIVE_LIGHTS }?.id)
                 Log.d("cardViewFiveLights", ".setOnClickListener")
             }
         }
     }
 
-    private fun selectLamp(lampId: String) {
-        localModeViewModel.selectLamp(lampId)
+
+    private fun selectLamp(lampId: String?) {
+        lampId?.let { localModeViewModel.selectLamp(lampId) }
     }
 
     private fun setupLongClickListener() {
@@ -313,9 +316,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.tvFiveLightsItem.setOnLongClickListener {
-            Log.d("flFiveLightsItem", ".setOnLongClickListener")
-            editableNameLampId = fiveLightsId
-            val oldLampName = fiveLightsName
+            Log.d("setupLongClickListener", "flFiveLightsItem.setOnLongClickListener")
+            val id = currentLamps.find { lamp -> lamp.lampType == LampType.FIVE_LIGHTS }?.id
+            editableNameLampId = id
+            val textView = it as TextView
+            val oldLampName = textView.text.toString()
 
             binding.setEditNameViews(oldLampName)
 
@@ -325,7 +330,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setDipolSeekbars(dipolDomainEntity: DipolDomainEntity?) {
-        Log.d("setDipolSeekbars", "Seekbars:$dipolDomainEntity")
+        Log.d("setDipolSeekbars", "dipolDomainEntity = $dipolDomainEntity")
         val dipol = dipolDomainEntity ?: DipolDomainEntity(
             "",
             "",
@@ -379,10 +384,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         Log.d("onStop", "here")
-        if (currentLamps.isNotEmpty()) {
-            localModeViewModel.saveLampList(currentLamps)
+            localModeViewModel.saveLampList()
             Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
-        }
         super.onStop()
     }
 }

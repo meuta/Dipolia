@@ -17,7 +17,7 @@ interface LampsRepository {
     fun changeLocalState(id: String, index: Int, value: Double)
 
     fun saveLampToDb(lampDomainEntity: LampDomainEntity)
-    fun saveLampListToDb(list: List<LampDomainEntity>)
+    fun saveLampListToDb()
 
     suspend fun sendColors()
 

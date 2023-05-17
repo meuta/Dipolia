@@ -157,9 +157,9 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-    fun saveLampList(list: List<LampDomainEntity>){
+    fun saveLampList(){
         scope.launch {
-            saveLampListUseCase(list)
+            saveLampListUseCase()
         }
     }
 
