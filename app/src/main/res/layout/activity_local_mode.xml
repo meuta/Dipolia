@@ -67,7 +67,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_five_lights"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/gray"
                 android:padding="@dimen/item_dipol_padding">
 
@@ -456,7 +456,9 @@
                 android:gravity="center"
                 android:inputType="text"
                 android:textSize="32sp"
-                />
+                tools:ignore="Autofill, LabelFor"/>
+
+
 
         </LinearLayout>
 
