@@ -36,9 +36,6 @@ class SendColorListWorker (
                         var stringToSend = ""
 
                         if (lamp.lampType == LampType.DIPOL) {
-//                        var r1 = BigDecimal(0)
-//                        val r1Part = lamp.c.colors[0]
-//                        r1Part?.let { r1 = (BigDecimal(r1Part).setScale(3, RoundingMode.HALF_DOWN)) }
                             val r1 =
                                 (BigDecimal(lamp.c.colors[0]).setScale(3, RoundingMode.HALF_DOWN))
                             val g1 =
