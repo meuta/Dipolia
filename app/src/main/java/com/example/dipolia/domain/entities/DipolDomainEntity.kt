@@ -22,6 +22,7 @@ data class DipolDomainEntity(
 
     val connected: Boolean
         get() = lastConnection > System.currentTimeMillis() / 1000 - 20
+//        get() = lastConnection > System.currentTimeMillis() / 1000 - 60
 
     val currentLampName = lampName ?: id
 }

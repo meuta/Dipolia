@@ -31,35 +31,50 @@ class SendColorListWorker (
                 Log.d("SendColorListWorker", "LampDomainEntityList = ${lamps.map { it.id to it.c }}")
 
                 for (lamp in lamps ) {
-                    val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
-                    var stringToSend = ""
+                    if (lamp.c.colors.isNotEmpty()) {
+                        val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
+                        var stringToSend = ""
 
-                    if (lamp.lampType == LampType.DIPOL) {
+                        if (lamp.lampType == LampType.DIPOL) {
+//                        var r1 = BigDecimal(0)
+//                        val r1Part = lamp.c.colors[0]
+//                        r1Part?.let { r1 = (BigDecimal(r1Part).setScale(3, RoundingMode.HALF_DOWN)) }
+                            val r1 =
+                                (BigDecimal(lamp.c.colors[0]).setScale(3, RoundingMode.HALF_DOWN))
+                            val g1 =
+                                (BigDecimal(lamp.c.colors[1]).setScale(3, RoundingMode.HALF_DOWN))
+                            val b1 =
+                                (BigDecimal(lamp.c.colors[2]).setScale(3, RoundingMode.HALF_DOWN))
+                            val r2 =
+                                (BigDecimal(lamp.c.colors[3]).setScale(3, RoundingMode.HALF_DOWN))
+                            val g2 =
+                                (BigDecimal(lamp.c.colors[4]).setScale(3, RoundingMode.HALF_DOWN))
+                            val b2 =
+                                (BigDecimal(lamp.c.colors[5]).setScale(3, RoundingMode.HALF_DOWN))
 
-                        val r1 = (BigDecimal(lamp.c.colors[0]).setScale(3, RoundingMode.HALF_DOWN))
-                        val g1 = (BigDecimal(lamp.c.colors[1]).setScale(3, RoundingMode.HALF_DOWN))
-                        val b1 = (BigDecimal(lamp.c.colors[2]).setScale(3, RoundingMode.HALF_DOWN))
-                        val r2 = (BigDecimal(lamp.c.colors[3]).setScale(3, RoundingMode.HALF_DOWN))
-                        val g2 = (BigDecimal(lamp.c.colors[4]).setScale(3, RoundingMode.HALF_DOWN))
-                        val b2 = (BigDecimal(lamp.c.colors[5]).setScale(3, RoundingMode.HALF_DOWN))
+                            stringToSend = "r1=$r1;g1=$g1;b1=$b1;r2=$r2;g2=$g2;b2=$b2;rcs=$rcs"
 
-                        stringToSend = "r1=$r1;g1=$g1;b1=$b1;r2=$r2;g2=$g2;b2=$b2;rcs=$rcs"
+                        } else if (lamp.lampType == LampType.FIVE_LIGHTS) {
 
-                    } else if (lamp.lampType == LampType.FIVE_LIGHTS) {
+                            val r =
+                                (BigDecimal(lamp.c.colors[0]).setScale(3, RoundingMode.HALF_DOWN))
+                            val g =
+                                (BigDecimal(lamp.c.colors[1]).setScale(3, RoundingMode.HALF_DOWN))
+                            val b =
+                                (BigDecimal(lamp.c.colors[2]).setScale(3, RoundingMode.HALF_DOWN))
+                            val w =
+                                (BigDecimal(lamp.c.colors[3]).setScale(3, RoundingMode.HALF_DOWN))
+                            val u =
+                                (BigDecimal(lamp.c.colors[4]).setScale(3, RoundingMode.HALF_DOWN))
 
-                        val r = (BigDecimal(lamp.c.colors[0]).setScale(3, RoundingMode.HALF_DOWN))
-                        val g = (BigDecimal(lamp.c.colors[1]).setScale(3, RoundingMode.HALF_DOWN))
-                        val b = (BigDecimal(lamp.c.colors[2]).setScale(3, RoundingMode.HALF_DOWN))
-                        val w = (BigDecimal(lamp.c.colors[3]).setScale(3, RoundingMode.HALF_DOWN))
-                        val u = (BigDecimal(lamp.c.colors[4]).setScale(3, RoundingMode.HALF_DOWN))
-
-                        stringToSend = "r=$r;g=$g;b=$b;w=$w;u=$u;rcs=$rcs"
-                    }
-                    val address = sender.getInetAddressByName(lamp.ip)
+                            stringToSend = "r=$r;g=$g;b=$b;w=$w;u=$u;rcs=$rcs"
+                        }
+                        val address = sender.getInetAddressByName(lamp.ip)
 //                Log.d("sendColors", "$stringToSend, $address")
-                    sender.sendUDPSuspend(stringToSend, address)
+                        sender.sendUDPSuspend(stringToSend, address)
+                    }
+                    delay(100)
                 }
-                delay(100)
             }
         }
     }
