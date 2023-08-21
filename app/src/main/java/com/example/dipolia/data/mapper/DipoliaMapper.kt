@@ -7,7 +7,9 @@ import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class DipoliaMapper @Inject constructor() {
 
     fun mapLampDtoToEntity(lampDto: LampDto): LampDomainEntity {

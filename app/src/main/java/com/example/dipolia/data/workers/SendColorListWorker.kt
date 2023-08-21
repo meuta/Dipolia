@@ -2,19 +2,22 @@ package com.example.dipolia.data.workers
 
 import android.content.Context
 import android.util.Log
+import androidx.hilt.work.HiltWorker
 import androidx.work.*
 import com.example.dipolia.data.network.UDPClient
 import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.domain.useCases.GetConnectedLampsUseCase
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.util.concurrent.TimeUnit
 
-class SendColorListWorker (
-    context: Context,
-    workerParameters: WorkerParameters,
+@HiltWorker
+class SendColorListWorker @AssistedInject constructor(
+    @Assisted context: Context,
+    @Assisted workerParameters: WorkerParameters,
     private val sender: UDPClient,
     private val getLampsUseCase: GetConnectedLampsUseCase
 ) : CoroutineWorker(context, workerParameters) {
@@ -27,10 +30,15 @@ class SendColorListWorker (
         while (true) {
             Log.d("SendColorListWorker", "while (true)")
 
-            getLampsUseCase().collectLatest { lamps ->
-                Log.d("SendColorListWorker", "LampDomainEntityList = ${lamps.map { it.id to it.c }}")
+//            getLampsUseCase().collectLatest { lamps ->
+            getLampsUseCase().collect { lamps ->
+//                Log.d("SendColorListWorker", "LampDomainEntityList = ${lamps.map { it.id to it.c }}")
 
                 for (lamp in lamps ) {
+                    Log.d("SendColorListWorker", "LampDomainEntityList = ${lamps.map { it.id to it.c }}")
+
+                    Log.d("SendColorListWorker", "Lamp = ${lamp.id to lamp.c }}")
+
                     if (lamp.c.colors.isNotEmpty()) {
                         val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
                         var stringToSend = ""

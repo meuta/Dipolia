@@ -1,29 +1,18 @@
 package com.example.dipolia
 
 import android.app.Application
+        import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.example.dipolia.data.network.UDPClient
-import com.example.dipolia.data.workers.SendColorListWorkerFactory
-import com.example.dipolia.di.DaggerApplicationComponent
+import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
+@HiltAndroidApp
 class DipoliaApplication: Application(), Configuration.Provider {
 
-    @Inject
-    lateinit var workerFactory: SendColorListWorkerFactory
+@Inject lateinit var workerFactory: HiltWorkerFactory
 
-    val component by lazy {
-        DaggerApplicationComponent.factory().create(this)
-    }
-
-    override fun onCreate() {
-        component.inject(this)
-        super.onCreate()
-    }
-
-    override fun getWorkManagerConfiguration(): Configuration {
+        override fun getWorkManagerConfiguration(): Configuration {
         return Configuration.Builder()
-
             .setWorkerFactory(workerFactory)
             .build()
     }

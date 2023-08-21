@@ -5,8 +5,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
+import javax.inject.Singleton
 
-
+@Singleton
 class LampsRemoteDataSource @Inject constructor(private val lampsApi: LampsApi) {
 
 

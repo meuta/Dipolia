@@ -8,9 +8,8 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
-import com.example.dipolia.DipoliaApplication
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.databinding.ActivityLocalModeBinding
 import com.example.dipolia.domain.entities.DipolDomainEntity
@@ -18,20 +17,16 @@ import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.presentation.adaptes.DipolListAdapter
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var localModeViewModel: LocalModeViewModel
+    private val localModeViewModel: LocalModeViewModel by viewModels()
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val component by lazy {
-        (application as DipoliaApplication).component
-    }
-
-    private var mapper = DipoliaMapper()
+    lateinit var mapper : DipoliaMapper
 
     private lateinit var binding: ActivityLocalModeBinding
 
@@ -47,15 +42,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        component.inject(this)
 
         super.onCreate(savedInstanceState)
         binding = ActivityLocalModeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
-        localModeViewModel =
-            ViewModelProvider(this, viewModelFactory)[LocalModeViewModel::class.java]
 
         binding.viewModel = localModeViewModel
         binding.lifecycleOwner = this

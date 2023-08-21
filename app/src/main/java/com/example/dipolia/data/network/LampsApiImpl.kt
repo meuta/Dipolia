@@ -3,7 +3,9 @@ package com.example.dipolia.data.network
 import android.util.Log
 import com.example.dipolia.domain.entities.LampType
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class LampsApiImpl @Inject constructor(private val receiver: UDPServer): LampsApi {
 
     private var fiveLightsCounter = 0

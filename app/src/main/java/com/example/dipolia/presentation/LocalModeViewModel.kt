@@ -11,12 +11,14 @@ import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.domain.useCases.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class LocalModeViewModel @Inject constructor(
     private val sendFollowMeUseCase: SendFollowMeUseCase,
     private val collectListUseCase: CollectListUseCase,
@@ -32,9 +34,7 @@ class LocalModeViewModel @Inject constructor(
 //    private val sendColorsUseCase: SendColorsUseCase
 ) : ViewModel() {
 
-
     private val scope = CoroutineScope(Dispatchers.IO)
-
 
     val isBackGroundWork = getIsSteaming()
     private fun getIsSteaming(): LiveData<Boolean?> {

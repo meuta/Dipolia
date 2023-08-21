@@ -17,7 +17,9 @@ import kotlinx.coroutines.flow.*
 import java.math.BigDecimal
 import java.math.RoundingMode
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class LampsRepositoryImpl @Inject constructor(
     private val dipolsDao: DipolsDao,
     private val mapper: DipoliaMapper,
