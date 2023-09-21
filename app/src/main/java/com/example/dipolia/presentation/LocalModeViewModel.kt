@@ -41,7 +41,7 @@ class LocalModeViewModel @Inject constructor(
 
         val infoLD = workManager.getWorkInfosForUniqueWorkLiveData(SendColorListWorker.WORK_NAME)
         Log.d("getIsSteaming", "infoLD = $infoLD")
-        return Transformations.map(infoLD) {
+        return infoLD.map {
             Log.d("getIsSteaming", "$it")
             it.isNotEmpty() && it[0].state.toString() == "RUNNING"
         }
@@ -51,21 +51,21 @@ class LocalModeViewModel @Inject constructor(
 
     var myLampsLD: LiveData<List<LampDomainEntity>> = myLampsSharedFlow.asLiveData()
 
-    val myDipolsListLD: LiveData<List<DipolDomainEntity>> = Transformations.map(myLampsLD) { list ->
+    val myDipolsListLD: LiveData<List<DipolDomainEntity>> = myLampsLD.map { list ->
         list
             .filter { it.lampType == LampType.DIPOL && it.connected }
             .map { lamp -> mapper.mapLampEntityToDipolEntity(lamp) }
     }
     val myFiveLightListLD: LiveData<List<FiveLightsDomainEntity>> =
-        Transformations.map(myLampsLD) { list ->
+        myLampsLD.map { list ->
             list
                 .filter { it.lampType == LampType.FIVE_LIGHTS && it.connected }
                 .map { lamp -> mapper.mapLampEntityToFiveLightsEntity(lamp) }
         }
-    val selectedLampLD: LiveData<LampDomainEntity> = Transformations.map(myLampsLD) { list ->
+    val selectedLampLD: LiveData<LampDomainEntity?> = myLampsLD.map() { list ->
         list.find { it.selected }
     }
-    val selectedDipolLD: LiveData<DipolDomainEntity?> = Transformations.map(selectedLampLD) { lamp ->
+    val selectedDipolLD: LiveData<DipolDomainEntity?> = selectedLampLD.map { lamp ->
         lamp?.let {
             if (lamp.lampType == LampType.DIPOL) {
                 mapper.mapLampEntityToDipolEntity(lamp)
