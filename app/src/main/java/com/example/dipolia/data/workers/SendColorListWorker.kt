@@ -26,21 +26,24 @@ class SendColorListWorker @AssistedInject constructor(
         val isLooping = inputData.getBoolean(KEY_IS_LOOPING_VALUE,false)
 
         var rabbitColorSpeed = 0.5
-        val pace = 100
+        val paceChange = 50
+        val paceStay = 300
         var count = 0
 
         while (true) {
 //            Log.d("SendColorListWorker", "while (true)")
 
-//            getLampsUseCase().collectLatest { lamps ->
             getLampsUseCase().collect { lamps ->
 //                Log.d("SendColorListWorker", "LampDomainEntityList = ${lamps.map { it.id to it.c }}")
                 Log.d("WO isLooping = ", "$isLooping")
                 count += 1
-                count %= 201
+                val modul = paceChange * 2 + paceStay * 2 + 1
+                count %= modul
                 val mult = when (count) {
-                    in 1 .. 100 -> count
-                    in 101 .. 200 -> 201 - count
+                    in 1 .. paceChange -> count
+                    in paceChange + 1 .. paceChange + paceStay -> paceChange
+                    in paceChange + paceStay + 1 .. (paceChange * 2 + paceStay) -> paceChange * 2 + paceStay + 1 - count
+                    in paceChange * 2 + paceStay + 1 .. (paceChange + paceStay) * 2 -> 0
                     else -> 0
                 }
 
@@ -60,9 +63,9 @@ class SendColorListWorker @AssistedInject constructor(
                             var r2Dif = 0.0
                             var r3Dif = 0.0
                             if (isLooping) {
-                                r1Dif = (lamp.c.colors[0] - lamp.c.colors[3]) / pace * mult
-                                r2Dif = (lamp.c.colors[1] - lamp.c.colors[4]) / pace * mult
-                                r3Dif = (lamp.c.colors[2] - lamp.c.colors[5]) / pace * mult
+                                r1Dif = (lamp.c.colors[0] - lamp.c.colors[3]) / paceChange * mult
+                                r2Dif = (lamp.c.colors[1] - lamp.c.colors[4]) / paceChange * mult
+                                r3Dif = (lamp.c.colors[2] - lamp.c.colors[5]) / paceChange * mult
                             }
 
                             val r1 = (BigDecimal(lamp.c.colors[0] - r1Dif).setScale(3, RoundingMode.HALF_DOWN))
@@ -73,7 +76,7 @@ class SendColorListWorker @AssistedInject constructor(
                             val b2 = (BigDecimal(lamp.c.colors[5] + r3Dif).setScale(3, RoundingMode.HALF_DOWN))
 
                             stringToSend = "r1=$r1;g1=$g1;b1=$b1;r2=$r2;g2=$g2;b2=$b2;rcs=$rcs"
-                            Log.d("SendColorListWorker", "Lamp = (${lamp.id}, string =  $stringToSend")
+                            Log.d("SendColorListWorker", "Lamp = (${lamp.id}, count = $count  string =  $stringToSend")
 
                         } else if (lamp.lampType == LampType.FIVE_LIGHTS) {
 
@@ -95,8 +98,10 @@ class SendColorListWorker @AssistedInject constructor(
 //                Log.d("sendColors variance", "string   =  $stringToSend, $address")
                         sender.sendUDPSuspend(stringToSend, address)
                     }
-                    delay(100)
+//                    delay(100)
                 }
+                delay(100)
+
             }
         }
     }
