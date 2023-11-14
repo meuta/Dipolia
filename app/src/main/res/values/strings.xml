@@ -11,4 +11,6 @@
     <string name="name_hint">name</string>
     <string name="save_lamp_name">SAVE NAME</string>
     <string name="cancel">CANCEL</string>
+    <string name="manual_mode">MANUAL MODE</string>
+    <string name="loop_mode">LOOP MODE</string>
 </resources>

@@ -95,7 +95,21 @@ class MainActivity : AppCompatActivity() {
     //                toastBackgroundWork.show()
             }
 
-    //            btnSaveLamp.setOnClickListener {
+            radioManual.setOnCheckedChangeListener { buttonView, isChecked ->
+                Log.d("RADIO", "MANUAL is checked: $isChecked")
+                localModeViewModel.changeLoop(!isChecked)
+                Log.d("MA isLooping = ", "${StreamingState().isLooping}")
+
+            }
+            radioLoop.setOnCheckedChangeListener { buttonView, isChecked ->
+                Log.d("RADIO", "LOOP is checked: $isChecked")
+                localModeViewModel.changeLoop(isChecked)
+                Log.d("MA isLooping = ", "${StreamingState().isLooping}")
+
+            }
+
+
+            //            btnSaveLamp.setOnClickListener {
     //                selectedLamp?.let {
     //                    localModeViewModel.saveLamp(it)
     //                    Toast.makeText(this@MainActivity, "@${it.lampType} colorSet have been saved", Toast.LENGTH_SHORT).show()

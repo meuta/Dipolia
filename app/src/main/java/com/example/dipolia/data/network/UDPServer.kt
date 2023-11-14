@@ -14,8 +14,8 @@ import kotlin.coroutines.suspendCoroutine
 
 class UDPServer @Inject constructor() {
 
-    private val buffer = ByteArray(2048)
-    private val port = 8002
+    private val buffer = ByteArray(2048)            //?
+    private val port = 8002                             //?
 
     private fun openDatagramSocket(port: Int, callback: (DatagramSocket) -> Unit) {
         Handler(Looper.getMainLooper()).post {           // .post or .postDelay
@@ -77,14 +77,14 @@ class UDPServer @Inject constructor() {
 
                 var string = String(packet.data)
 //                Log.d("UDPServer", "String $string ")
-                string = string.substring(0, packet.length)         //что делает эта строчка?
-//                Log.d("UDPServer", "message substring $string ")
+                string = string.substring(0, packet.length)
+                Log.d("UDPServer", "message substring $string ")
 
-                return Pair(string, packet.address)                 //will finally be executed??
+                return Pair(string, packet.address)
             }
 
         } catch (e: Exception) {
-            println("open fun receiveUDP catch exception." + e.toString())
+            println("open fun receiveUDP catch exception.$e")
             e.printStackTrace()
         } finally {
             socket?.close()

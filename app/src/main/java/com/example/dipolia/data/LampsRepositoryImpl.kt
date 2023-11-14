@@ -33,7 +33,18 @@ class LampsRepositoryImpl @Inject constructor(
         while (true) {
             val latestLampList = lampEntityList
 
-            Log.d("TEST", "latestLampList = ${latestLampList.map { listOf(it.id, it.lampName, it.lastConnection) }}")
+            Log.d(
+                "TEST",
+                "latestLampList = ${
+                    latestLampList.map {
+                        listOf(
+                            it.id,
+                            it.lampName,
+                            it.lastConnection
+                        )
+                    }
+                }"
+            )
             emit(latestLampList)
             delay(100)
         }
@@ -51,14 +62,12 @@ class LampsRepositoryImpl @Inject constructor(
             lampsRemoteDataSource.myLampDto.collect { lampDto ->
 
                 if (lampDto.id in lampEntityList.map { it.id }) {
-//                    Log.d("collectList","lampDto.id in lampEntityList ${lampDto.id}")
-                    val lampFromList = lampEntityList.find { lamp -> lamp.id == lampDto.id }
-                    val lampFromListIndex = lampEntityList.indexOf(lampFromList)
-                    lampFromList?.let {
-                        it.lastConnection = lampDto.lastConnection
-
-                        lampEntityList[lampFromListIndex] = it
-                        Log.d("collectList","delay test ${lampEntityList.map { lamp ->
+                    lampEntityList.withIndex().find { lamp -> lamp.value.id == lampDto.id }?.let {
+                        it.value.lastConnection = lampDto.lastConnection
+                        lampEntityList[it.index] = it.value
+                        Log.d(
+                            "collectList", "delay test ${
+                                lampEntityList.map { lamp ->
 //                                    listOf(lamp.id, lamp.selected, lamp.c, lamp.lastConnection)
                                     listOf(lamp.id, lamp.lastConnection)
                                 }
@@ -95,57 +104,41 @@ class LampsRepositoryImpl @Inject constructor(
     }
 
     override fun selectLamp(lampId: String) {
-//        Log.d("onItemClickListener", " lampId: $lampId")
-//        Log.d("onItemClickListener", "${lampEntityList.map { it.id }}")
-        val oldSelectedItem = lampEntityList.find { lamp -> lamp.selected }
-        val oldSelectedItemIndex = lampEntityList.indexOf(oldSelectedItem)
-//        Log.d("onItemClickListener", " oldSelectedItem: ${oldSelectedItem?.id}, ${oldSelectedItem?.selected}, ${oldSelectedItem?.c}")
-
-        val newSelectedItem = lampEntityList.find { lamp -> lamp.id == lampId }
-        val newSelectedItemIndex = lampEntityList.indexOf(newSelectedItem)
-//        Log.d("onItemClickListener", " newSelectedItem: ${newSelectedItem?.id}, ${newSelectedItem?.selected}, ${newSelectedItem?.c}")
-
-        newSelectedItem?.let {
-            if (oldSelectedItem?.id != it.id) {
-                val oldSelectedItemToUpdate = oldSelectedItem?.copy(selected = false)
-//                Log.d("onItemClickListener", " oldSelectedItemToUpdate: ${oldSelectedItemToUpdate?.id}, ${oldSelectedItemToUpdate?.selected}, ${oldSelectedItemToUpdate?.c}")
+        val oldSelectedItemWithIndex = lampEntityList.withIndex().find { lamp -> lamp.value.selected }
+        lampEntityList.withIndex().find { lamp -> lamp.value.id == lampId }?.let {
+            if (oldSelectedItemWithIndex?.value?.id != it.value.id) {
+                val oldSelectedItemToUpdate =
+                    oldSelectedItemWithIndex?.value?.copy(selected = false)
                 oldSelectedItemToUpdate?.let { item ->
-                    lampEntityList[oldSelectedItemIndex] = item
-//                    Log.d("onItemClickListener", " lampEntityList[oldSelectedItemIndex]: ${lampEntityList[oldSelectedItemIndex].id}, ${lampEntityList[oldSelectedItemIndex].selected}, ${lampEntityList[oldSelectedItemIndex].c}")
+                    lampEntityList[oldSelectedItemWithIndex.index] = item
                 }
-
-                val newSelectedItemToUpdate = it.copy(selected = true)
-                lampEntityList[newSelectedItemIndex] = newSelectedItemToUpdate
+                val newSelectedItemToUpdate = it.value.copy(selected = true)
+                lampEntityList[it.index] = newSelectedItemToUpdate
             }
         }
     }
 
     override fun unselectLamp() {
-        val selectedItem = lampEntityList.find { lamp -> lamp.selected }
-        selectedItem?.let {
-            val selectedItemIndex = lampEntityList.indexOf(it)
-            lampEntityList[selectedItemIndex].selected = false
+        lampEntityList.withIndex().find { lamp -> lamp.value.selected }?.index?.let {
+            lampEntityList[it].selected = false
         }
     }
 
     override fun changeLocalState(id: String, index: Int, value: Double) {
         Log.d("LampsRepositoryImpl", "changeLocalState $id $index $value")
-        val currentLamp = lampEntityList.find { it.id == id }
-        currentLamp?.let { lamp ->
-            val itemIndex = lampEntityList.indexOf(lamp)
 
-            var colorList = lamp.c.colors.toMutableList()
+        lampEntityList.withIndex().find { lamp -> lamp.value.id == id }?.let {
+            var colorList = it.value.c.colors.toMutableList()
             if (colorList.isEmpty()) {
-                colorList = when (lamp.lampType) {
+                colorList = when (it.value.lampType) {
                     LampType.DIPOL -> mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
                     LampType.FIVE_LIGHTS -> mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0)
                     else -> mutableListOf()
                 }
             }
             colorList[index] = value
-            val changedLamp = lamp.copy(c = ColorList(colorList))
-            lampEntityList[itemIndex] = changedLamp
-
+            val changedLamp = it.value.copy(c = ColorList(colorList))
+            lampEntityList[it.index] = changedLamp
         }
     }
 
@@ -201,12 +194,8 @@ class LampsRepositoryImpl @Inject constructor(
     }
 
     override fun editLampName(lampId: String, newName: String) {
-        Log.d("editLampName", "lampId = $lampId, newName = $newName")
-        val lampFromList = lampEntityList.find { lamp -> lamp.id == lampId }
-        val lampFromListIndex = lampEntityList.indexOf(lampFromList)
-        Log.d("editLampName", "lampFromList = ${lampFromList?.id}, Index = $lampFromListIndex")
-        lampEntityList[lampFromListIndex].lampName = newName
-        Log.d("editLampName", "lampEntityList[lampFromListIndex].lampName = ${lampEntityList[lampFromListIndex].lampName}")
-
+        lampEntityList.withIndex().find { lamp -> lamp.value.id == lampId }?.index?.let {
+            lampEntityList[it].lampName = newName
+        }
     }
 }

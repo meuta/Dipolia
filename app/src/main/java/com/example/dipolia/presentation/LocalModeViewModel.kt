@@ -2,10 +2,14 @@ package com.example.dipolia.presentation
 
 import android.util.Log
 import androidx.lifecycle.*
+import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.workers.SendColorListWorker
+import com.example.dipolia.data.workers.SendColorListWorker.Companion.KEY_IS_LOOPING_VALUE
+//import com.example.dipolia.data.workers.SendLoopColorWorker
+//import com.example.dipolia.data.workers.SendLoopColorWorker.Companion.KEY_IS_LOOPING_VALUE
 import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
@@ -34,14 +38,22 @@ class LocalModeViewModel @Inject constructor(
 //    private val sendColorsUseCase: SendColorsUseCase
 ) : ViewModel() {
 
+    private val _streamingState = MutableStateFlow(StreamingState(false))
+    // The UI collects from this StateFlow to get its state updates
+    var streamingState: StateFlow<StreamingState> = _streamingState
+
     private val scope = CoroutineScope(Dispatchers.IO)
 
     val isBackGroundWork = getIsSteaming()
+
     private fun getIsSteaming(): LiveData<Boolean?> {
 
-        val infoLD = workManager.getWorkInfosForUniqueWorkLiveData(SendColorListWorker.WORK_NAME)
-        Log.d("getIsSteaming", "infoLD = $infoLD")
-        return infoLD.map {
+        val infoLDManual = workManager.getWorkInfosForUniqueWorkLiveData(SendColorListWorker.WORK_NAME)
+//        val infoLDLoop = workManager.getWorkInfosForUniqueWorkLiveData(SendLoopColorWorker.WORK_NAME)
+//        Log.d("getIsSteaming", "infoLD = $infoLDLoop")
+
+//        return infoLDLoop.map {
+        return infoLDManual.map {
             Log.d("getIsSteaming", "$it")
             it.isNotEmpty() && it[0].state.toString() == "RUNNING"
         }
@@ -126,6 +138,7 @@ class LocalModeViewModel @Inject constructor(
     fun workerStartStop() {
 
         val workInfoLF = workManager.getWorkInfosForUniqueWork(SendColorListWorker.WORK_NAME)
+//        val workInfoLF = workManager.getWorkInfosForUniqueWork(SendLoopColorWorker.WORK_NAME)
 //        Log.d("onClick workerStartStop", "WORK_NAME ${SendColorListWorker.WORK_NAME}")
 
         val workInfo = workInfoLF.get()
@@ -141,12 +154,17 @@ class LocalModeViewModel @Inject constructor(
             Log.d("onClick workerStartStop", "NOT RUNNING")
 
             scope.launch {
-
-                workManager.enqueueUniqueWork(
+                _streamingState.collect{
+                    val data = Data.Builder().putBoolean(KEY_IS_LOOPING_VALUE, it.isLooping).build()
+                    workManager.enqueueUniqueWork(
                     SendColorListWorker.WORK_NAME,
+//                    SendLoopColorWorker.WORK_NAME,
                     ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
-                    SendColorListWorker.makeRequest()
-                )
+                    SendColorListWorker.makeRequest(data)
+//                        SendLoopColorWorker.makeRequest(data)
+                    )
+                }
+
             }
         }
     }
@@ -163,5 +181,7 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-
+    fun changeLoop(isLooping: Boolean){
+        _streamingState.update { StreamingState(isLooping) }
+    }
 }
