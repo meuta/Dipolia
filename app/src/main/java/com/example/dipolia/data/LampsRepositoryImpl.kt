@@ -10,6 +10,7 @@ import com.example.dipolia.data.network.UDPClient
 import com.example.dipolia.domain.LampsRepository
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
+import com.example.dipolia.presentation.StreamingState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -49,6 +50,8 @@ class LampsRepositoryImpl @Inject constructor(
             delay(100)
         }
     }.shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily)
+
+
 
     override suspend fun sendFollowMe() {
         while (true) {
@@ -102,6 +105,7 @@ class LampsRepositoryImpl @Inject constructor(
         Log.d("getLatestLampList", " lampListFlow: $lampListFlow")
         return lampListFlow
     }
+
 
     override fun selectLamp(lampId: String) {
         val oldSelectedItemWithIndex = lampEntityList.withIndex().find { lamp -> lamp.value.selected }
@@ -197,5 +201,16 @@ class LampsRepositoryImpl @Inject constructor(
         lampEntityList.withIndex().find { lamp -> lamp.value.id == lampId }?.index?.let {
             lampEntityList[it].lampName = newName
         }
+    }
+
+
+    private val streamingState = MutableStateFlow(StreamingState(false))
+
+    override fun getIsLoop(): StateFlow<StreamingState> {
+        return streamingState
+    }
+
+    override fun updateIsLoop(isLooping: Boolean) {
+        streamingState.update { StreamingState(isLooping).also { Log.d("UR isLooping = ", "${it.isLooping}") } }
     }
 }

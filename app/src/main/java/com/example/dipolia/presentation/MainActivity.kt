@@ -98,13 +98,11 @@ class MainActivity : AppCompatActivity() {
             radioManual.setOnCheckedChangeListener { buttonView, isChecked ->
                 Log.d("RADIO", "MANUAL is checked: $isChecked")
                 localModeViewModel.changeLoop(!isChecked)
-                Log.d("MA isLooping = ", "${StreamingState().isLooping}")
 
             }
             radioLoop.setOnCheckedChangeListener { buttonView, isChecked ->
                 Log.d("RADIO", "LOOP is checked: $isChecked")
                 localModeViewModel.changeLoop(isChecked)
-                Log.d("MA isLooping = ", "${StreamingState().isLooping}")
 
             }
 

@@ -2,14 +2,10 @@ package com.example.dipolia.presentation
 
 import android.util.Log
 import androidx.lifecycle.*
-import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.workers.SendColorListWorker
-import com.example.dipolia.data.workers.SendColorListWorker.Companion.KEY_IS_LOOPING_VALUE
-//import com.example.dipolia.data.workers.SendLoopColorWorker
-//import com.example.dipolia.data.workers.SendLoopColorWorker.Companion.KEY_IS_LOOPING_VALUE
 import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
@@ -35,12 +31,8 @@ class LocalModeViewModel @Inject constructor(
     private val editLampNameUseCase: EditLampNameUseCase,
     private val workManager: WorkManager,
     private val mapper: DipoliaMapper,
-//    private val sendColorsUseCase: SendColorsUseCase
+    private val updateLoopUseCase: UpdateLoopUseCase,
 ) : ViewModel() {
-
-    private val _streamingState = MutableStateFlow(StreamingState(false))
-    // The UI collects from this StateFlow to get its state updates
-    var streamingState: StateFlow<StreamingState> = _streamingState
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
@@ -48,11 +40,9 @@ class LocalModeViewModel @Inject constructor(
 
     private fun getIsSteaming(): LiveData<Boolean?> {
 
-        val infoLDManual = workManager.getWorkInfosForUniqueWorkLiveData(SendColorListWorker.WORK_NAME)
-//        val infoLDLoop = workManager.getWorkInfosForUniqueWorkLiveData(SendLoopColorWorker.WORK_NAME)
-//        Log.d("getIsSteaming", "infoLD = $infoLDLoop")
+        val infoLDManual =
+            workManager.getWorkInfosForUniqueWorkLiveData(SendColorListWorker.WORK_NAME)
 
-//        return infoLDLoop.map {
         return infoLDManual.map {
             Log.d("getIsSteaming", "$it")
             it.isNotEmpty() && it[0].state.toString() == "RUNNING"
@@ -103,9 +93,7 @@ class LocalModeViewModel @Inject constructor(
         scope.launch {
 //            sendColorsUseCase()
         }
-
     }
-
 
 
     fun selectLamp(itemId: String) {
@@ -114,7 +102,7 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-    fun editLampName(lampId: String, newName: String){
+    fun editLampName(lampId: String, newName: String) {
         editLampNameUseCase(lampId, newName)
     }
 
@@ -131,14 +119,13 @@ class LocalModeViewModel @Inject constructor(
     }
 
     fun changeLocalState(id: String, index: Int, value: Int) {
-            changeLocalStateUseCase(id, index, value / 100.0)
+        changeLocalStateUseCase(id, index, value / 100.0)
     }
 
 
     fun workerStartStop() {
 
         val workInfoLF = workManager.getWorkInfosForUniqueWork(SendColorListWorker.WORK_NAME)
-//        val workInfoLF = workManager.getWorkInfosForUniqueWork(SendLoopColorWorker.WORK_NAME)
 //        Log.d("onClick workerStartStop", "WORK_NAME ${SendColorListWorker.WORK_NAME}")
 
         val workInfo = workInfoLF.get()
@@ -154,34 +141,28 @@ class LocalModeViewModel @Inject constructor(
             Log.d("onClick workerStartStop", "NOT RUNNING")
 
             scope.launch {
-                _streamingState.collect{
-                    val data = Data.Builder().putBoolean(KEY_IS_LOOPING_VALUE, it.isLooping).build()
-                    workManager.enqueueUniqueWork(
+                workManager.enqueueUniqueWork(
                     SendColorListWorker.WORK_NAME,
-//                    SendLoopColorWorker.WORK_NAME,
                     ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
-                    SendColorListWorker.makeRequest(data)
-//                        SendLoopColorWorker.makeRequest(data)
-                    )
-                }
-
+                    SendColorListWorker.makeRequest()
+                )
             }
         }
     }
 
-    fun saveLamp(lampDomainEntity: LampDomainEntity){
+    fun saveLamp(lampDomainEntity: LampDomainEntity) {
         scope.launch {
             saveLampUseCase(lampDomainEntity)
         }
     }
 
-    fun saveLampList(){
+    fun saveLampList() {
         scope.launch {
             saveLampListUseCase()
         }
     }
 
-    fun changeLoop(isLooping: Boolean){
-        _streamingState.update { StreamingState(isLooping) }
+    fun changeLoop(isLooping: Boolean) {
+        updateLoopUseCase(isLooping)
     }
 }
