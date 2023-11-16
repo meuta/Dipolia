@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private val localModeViewModel: LocalModeViewModel by viewModels()
 
     @Inject
-    lateinit var mapper : DipoliaMapper
+    lateinit var mapper: DipoliaMapper
 
     private lateinit var binding: ActivityLocalModeBinding
 
@@ -64,7 +64,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     private fun setupButtons() {
         with(binding) {
 
@@ -80,10 +79,10 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             )
 
-            btnRefreshList.setOnClickListener {
-    //                toastBackgroundWork.cancel()
-                toastRefresh.show()
-            }
+//            btnRefreshList.setOnClickListener {
+//    //                toastBackgroundWork.cancel()
+//                toastRefresh.show()
+//            }
 
             btnUnselect.setOnClickListener {
                 localModeViewModel.unselectLamp()
@@ -91,35 +90,62 @@ class MainActivity : AppCompatActivity() {
 
             btnBackgroundWork.setOnClickListener {
                 localModeViewModel.workerStartStop()
-    //                toastRefresh.cancel()
-    //                toastBackgroundWork.show()
+                //                toastRefresh.cancel()
+                //                toastBackgroundWork.show()
+            }
+
+            btnLoopSettings.setOnClickListener {
+                if (llLoopSettings.visibility == View.VISIBLE) {
+                    llLoopSettings.visibility = View.INVISIBLE
+                } else if (llLoopSettings.visibility == View.INVISIBLE) {
+                    llLoopSettings.visibility = View.VISIBLE
+                }
+            }
+
+            btnSaveLoopSettings.setOnClickListener {
+                var newSecondsChange: Int? = null
+                etSecondsChange.text?.toString()?.let { if (it.isNotEmpty()) newSecondsChange = it.toInt() }
+                var newSecondsStay: Int? = null
+                etSecondsStay.text?.toString()?.let { if (it.isNotEmpty()) newSecondsStay = it.toInt() }
+                Log.d("btnSaveLoopSettings", "newSecondsChange = $newSecondsChange")
+                Log.d("btnSaveLoopSettings", "newSecondsStay = $newSecondsStay")
+                localModeViewModel.updateStreamingState(
+                    StreamingState(
+                        secondsChange = newSecondsChange,
+                        secondsStay = newSecondsStay
+                    )
+                )
+                llLoopSettings.visibility = View.INVISIBLE
+                val inputMethodManager =
+                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
             }
 
             radioManual.setOnCheckedChangeListener { buttonView, isChecked ->
                 Log.d("RADIO", "MANUAL is checked: $isChecked")
-                localModeViewModel.changeLoop(!isChecked)
+                localModeViewModel.updateStreamingState(StreamingState(isLooping = !isChecked))
 
             }
             radioLoop.setOnCheckedChangeListener { buttonView, isChecked ->
                 Log.d("RADIO", "LOOP is checked: $isChecked")
-                localModeViewModel.changeLoop(isChecked)
+                localModeViewModel.updateStreamingState(StreamingState(isLooping = isChecked))
 
             }
 
 
             //            btnSaveLamp.setOnClickListener {
-    //                selectedLamp?.let {
-    //                    localModeViewModel.saveLamp(it)
-    //                    Toast.makeText(this@MainActivity, "@${it.lampType} colorSet have been saved", Toast.LENGTH_SHORT).show()
-    //                }
-    //            }
-    //
-    //            btnSaveLampList.setOnClickListener {
-    //                if (currentLamps.isNotEmpty()) {
-    //                    localModeViewModel.saveLampList(currentLamps)
-    //                    Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
-    //                }
-    //            }
+            //                selectedLamp?.let {
+            //                    localModeViewModel.saveLamp(it)
+            //                    Toast.makeText(this@MainActivity, "@${it.lampType} colorSet have been saved", Toast.LENGTH_SHORT).show()
+            //                }
+            //            }
+            //
+            //            btnSaveLampList.setOnClickListener {
+            //                if (currentLamps.isNotEmpty()) {
+            //                    localModeViewModel.saveLampList(currentLamps)
+            //                    Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
+            //                }
+            //            }
 
 
             btnSaveLampName.setOnClickListener {
@@ -284,7 +310,7 @@ class MainActivity : AppCompatActivity() {
 
         dipolListAdapter = DipolListAdapter()
         binding.rvDipolItemList.adapter = dipolListAdapter
-     }
+    }
 
     private fun setupClickListener() {
         dipolListAdapter.onDipolItemClickListener = {
@@ -386,8 +412,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         Log.d("onStop", "here")
-            localModeViewModel.saveLampList()
-            Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
+        localModeViewModel.saveLampList()
+        Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
         super.onStop()
     }
 }

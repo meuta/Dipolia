@@ -458,10 +458,98 @@
                 android:textSize="32sp"
                 tools:ignore="Autofill, LabelFor"/>
 
-
-
         </LinearLayout>
 
+
+        <LinearLayout
+            android:id="@+id/ll_loop_settings"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="16dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="invisible"
+            android:background="@color/colorPrimaryDark"
+            tools:visibility="visible"
+
+            app:layout_constraintBottom_toTopOf="@id/view_buttons_divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/rv_dipol_item_list"
+            app:layout_constraintTop_toBottomOf="@+id/app_bar_layout"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:gravity="bottom"
+                >
+            <TextView
+                android:id="@+id/tv_seconds_change"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:background="@color/gray"
+                android:text="seconds to change :"
+                />
+
+            <EditText
+                android:id="@+id/et_seconds_change"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="8dp"
+                android:gravity="center"
+                android:inputType="number"
+                android:textSize="24sp"
+                android:background="@color/gray"/>
+        </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                android:gravity="top">
+                <TextView
+                    android:id="@+id/tv_seconds_stay"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:background="@color/gray"
+                    android:text="seconds to stay :"
+                    />
+
+                <EditText
+                    android:id="@+id/et_seconds_stay"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="8dp"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:textSize="24sp"
+                    android:background="@color/gray"
+                    tools:ignore="Autofill, LabelFor"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_save_loop_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/button_margin_horizontal"
+                android:background="@color/colorPrimary"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:padding ="@dimen/button_save_lamp_name_padding_vertical"
+                android:text="@string/save_loop_settings"
+                android:textColor="@color/colorHighlighted"
+                android:textSize="@dimen/button_save_lamp_name_text_size" />
+        </LinearLayout>
 
         <View
             android:id="@+id/view_buttons_divider"
@@ -532,19 +620,7 @@
             app:layout_constraintTop_toBottomOf="@id/view_buttons_divider"
             tools:visibility="visible">
 
-            <TextView
-                android:id="@+id/btn_refresh_list"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginHorizontal="@dimen/button_margin_horizontal"
-                android:background="@color/gray"
-                android:foreground="?android:attr/selectableItemBackgroundBorderless"
-                android:gravity="center"
-                android:paddingHorizontal="@dimen/button_padding_horizontal"
-                android:paddingVertical="@dimen/button_padding_vertical"
-                android:text="@string/refresh_list_btn"
-                android:textColor="@color/colorHighlighted"
-                android:textSize="@dimen/button_text_size" />
+
 
             <TextView
                 android:id="@+id/btn_unselect"
@@ -559,7 +635,6 @@
                 android:text="@string/unselect_lamp"
                 android:textColor="@color/colorHighlighted"
                 android:textSize="@dimen/button_text_size"
-
                 />
 
             <TextView
@@ -577,19 +652,40 @@
                 android:textSize="@dimen/button_text_size"
                 app:workerButtonText="@{viewModel.isBackGroundWork()}" />
 
+            <TextView
+                android:id="@+id/btn_loop_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/button_margin_horizontal"
+                android:background="@color/colorPrimary"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/button_padding_horizontal"
+                android:paddingVertical="@dimen/button_padding_vertical"
+                android:text="@string/loop_settings"
+                android:textColor="@color/colorHighlighted"
+                android:textSize="@dimen/button_text_size"
+                />
+
             <RadioGroup
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginHorizontal="@dimen/button_margin_horizontal"
+                android:padding="6dp"
+                android:background="@color/colorPrimary"
+                >
                 <RadioButton android:id="@+id/radio_manual"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:buttonTint="@color/colorHighlighted"
                     android:textColor="@color/colorHighlighted"
                     android:textSize="@dimen/button_text_size"
                     android:text="@string/manual_mode"/>
                 <RadioButton android:id="@+id/radio_loop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:buttonTint="@color/colorHighlighted"
                     android:textColor="@color/colorHighlighted"
                     android:textSize="@dimen/button_text_size"
                     android:text="@string/loop_mode"/>

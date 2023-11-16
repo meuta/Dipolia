@@ -7,7 +7,7 @@ import androidx.work.*
 import com.example.dipolia.data.network.UDPClient
 import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.domain.useCases.GetConnectedLampsUseCase
-import com.example.dipolia.domain.useCases.GetIsLoopUseCase
+import com.example.dipolia.domain.useCases.GetStreamingStateUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
@@ -23,25 +23,30 @@ class SendColorListWorker @AssistedInject constructor(
     @Assisted workerParameters: WorkerParameters,
     private val sender: UDPClient,
     private val getLampsUseCase: GetConnectedLampsUseCase,
-    private val getIsLoopUseCase: GetIsLoopUseCase
+    private val getStreamingStateUseCase: GetStreamingStateUseCase
 ) : CoroutineWorker(context, workerParameters) {
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
     override suspend fun doWork(): Result {
         var isLooping = false
+        var paceChange = 0
+        var paceStay = 0
 
         scope.launch {
-            getIsLoopUseCase().collect {
-                Log.d("UC isLooping = ", "${it.isLooping}")
-                isLooping = it.isLooping
-                delay(100)
+            getStreamingStateUseCase().collect {streamingState ->
+
+                Log.d("getStreamingStateUseCase ", "isLooping = ${streamingState.isLooping}")
+                Log.d("getStreamingStateUseCase ", "secondsChange = ${streamingState.secondsChange}")
+                Log.d("getStreamingStateUseCase ", "secondsStay = ${streamingState.secondsStay}")
+                streamingState.isLooping?.let { isLooping = it}
+                streamingState.secondsChange?.let { paceChange = it*10}
+                streamingState.secondsStay?.let { paceStay = it*10}
             }
         }
 
         var rabbitColorSpeed = 0.5
-        val paceChange = 50
-        val paceStay = 300
+
         var count = 0
 
         while (true) {
@@ -49,8 +54,12 @@ class SendColorListWorker @AssistedInject constructor(
 
             getLampsUseCase().collect { lamps ->
 //                Log.d("SendColorListWorker", "LampDomainEntityList = ${lamps.map { it.id to it.c }}")
-                Log.d("WO isLooping = ", "$isLooping")
-
+                Log.d("getLampsUseCase().collect ", "isLooping = $isLooping")
+                Log.d("getLampsUseCase().collect ", "secondsChange = $paceChange")
+                Log.d("getLampsUseCase().collect ", "secondsStay = $paceStay")
+                count += 1
+                val modul = paceChange * 2 + paceStay * 2 + 1
+                count %= modul
 
                 for (lamp in lamps) {
 //                    Log.d("SendColorListWorker", "LampDomainEntityList = ${lamps.map { it.id to it.c }}")
@@ -68,11 +77,12 @@ class SendColorListWorker @AssistedInject constructor(
                             var r1Dif = 0.0
                             var r2Dif = 0.0
                             var r3Dif = 0.0
-                            if (isLooping) {
 
-                                count += 1
-                                val modul = paceChange * 2 + paceStay * 2 + 1
-                                count %= modul
+                            if (isLooping && (paceChange > 0)) {
+                                Log.d("isLooping && (paceChange > 0) ", "isLooping = $isLooping")
+                                Log.d("isLooping && (paceChange > 0) ", "secondsChange = $paceChange")
+                                Log.d("isLooping && (paceChange > 0) ", "secondsStay = $paceStay")
+
 
                                 val mult = when (count) {
                                     in 1..paceChange -> count
@@ -142,6 +152,7 @@ class SendColorListWorker @AssistedInject constructor(
 
             }
         }
+
     }
 
 

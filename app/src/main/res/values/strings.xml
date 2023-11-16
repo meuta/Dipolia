@@ -13,4 +13,6 @@
     <string name="cancel">CANCEL</string>
     <string name="manual_mode">MANUAL MODE</string>
     <string name="loop_mode">LOOP MODE</string>
+    <string name="loop_settings">LOOP\n SETTINGS</string>
+    <string name="save_loop_settings">SAVE LOOP SETTINGS</string>
 </resources>

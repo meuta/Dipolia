@@ -29,9 +29,9 @@ class LocalModeViewModel @Inject constructor(
     private val saveLampUseCase: SaveLampUseCase,
     private val saveLampListUseCase: SaveLampListUseCase,
     private val editLampNameUseCase: EditLampNameUseCase,
+    private val updateStreamingStateUseCase: UpdateStreamingStateUseCase,
     private val workManager: WorkManager,
-    private val mapper: DipoliaMapper,
-    private val updateLoopUseCase: UpdateLoopUseCase,
+    private val mapper: DipoliaMapper
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -162,7 +162,7 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-    fun changeLoop(isLooping: Boolean) {
-        updateLoopUseCase(isLooping)
+    fun updateStreamingState(streamingState: StreamingState){
+        updateStreamingStateUseCase(streamingState)
     }
 }

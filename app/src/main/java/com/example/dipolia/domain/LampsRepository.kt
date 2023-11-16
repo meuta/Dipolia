@@ -25,6 +25,7 @@ interface LampsRepository {
 
     fun editLampName(lampId: String, newName: String)
 
-    fun getIsLoop(): StateFlow<StreamingState>
-    fun updateIsLoop(isLooping: Boolean)
+    fun getStreamingState(): StateFlow<StreamingState>
+
+    fun updateStreamingState(streamState: StreamingState)
 }

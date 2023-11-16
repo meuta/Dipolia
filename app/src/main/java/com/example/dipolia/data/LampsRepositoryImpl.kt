@@ -52,7 +52,6 @@ class LampsRepositoryImpl @Inject constructor(
     }.shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily)
 
 
-
     override suspend fun sendFollowMe() {
         while (true) {
             sender.sendUDPSuspend("Follow me")
@@ -108,7 +107,8 @@ class LampsRepositoryImpl @Inject constructor(
 
 
     override fun selectLamp(lampId: String) {
-        val oldSelectedItemWithIndex = lampEntityList.withIndex().find { lamp -> lamp.value.selected }
+        val oldSelectedItemWithIndex =
+            lampEntityList.withIndex().find { lamp -> lamp.value.selected }
         lampEntityList.withIndex().find { lamp -> lamp.value.id == lampId }?.let {
             if (oldSelectedItemWithIndex?.value?.id != it.value.id) {
                 val oldSelectedItemToUpdate =
@@ -203,14 +203,27 @@ class LampsRepositoryImpl @Inject constructor(
         }
     }
 
+    private val streamingStateFlow = MutableStateFlow(StreamingState())
 
-    private val streamingState = MutableStateFlow(StreamingState(false))
-
-    override fun getIsLoop(): StateFlow<StreamingState> {
-        return streamingState
+    override fun getStreamingState(): StateFlow<StreamingState> {
+        return streamingStateFlow
     }
 
-    override fun updateIsLoop(isLooping: Boolean) {
-        streamingState.update { StreamingState(isLooping).also { Log.d("UR isLooping = ", "${it.isLooping}") } }
+    override fun updateStreamingState(streamState: StreamingState) {
+        streamState.isLooping?.let {isLooping ->
+            Log.d("updateStreamingState ", "streamState.isLooping = $isLooping")
+            streamingStateFlow.update { streamingStateFlow.value.copy(isLooping = isLooping) }
+        }
+        Log.d("updateStreamingState ", "streamingStateFlow.value.isLooping = ${streamingStateFlow.value.isLooping}")
+        streamState.secondsChange?.let {secondsChange ->
+            Log.d("updateStreamingState ", "streamState.secondsChange = $secondsChange")
+            streamingStateFlow.update { streamingStateFlow.value.copy(secondsChange = secondsChange) }
+        }
+        Log.d("updateStreamingState ", "streamingStateFlow.value.secondsChange = ${streamingStateFlow.value.secondsChange}")
+        streamState.secondsStay?.let {secondsStay ->
+            Log.d("updateStreamingState ", "streamState.secondsStay = $secondsStay")
+            streamingStateFlow.update { streamingStateFlow.value.copy(secondsStay = secondsStay) }
+        }
+        Log.d("updateStreamingState ", "streamingStateFlow.value.secondsStay = ${streamingStateFlow.value.secondsStay}")
     }
 }
