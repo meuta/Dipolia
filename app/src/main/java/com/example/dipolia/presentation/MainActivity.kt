@@ -103,10 +103,20 @@ class MainActivity : AppCompatActivity() {
             }
 
             btnSaveLoopSettings.setOnClickListener {
-                var newSecondsChange: Int? = null
-                etSecondsChange.text?.toString()?.let { if (it.isNotEmpty()) newSecondsChange = it.toInt() }
-                var newSecondsStay: Int? = null
-                etSecondsStay.text?.toString()?.let { if (it.isNotEmpty()) newSecondsStay = it.toInt() }
+                var newSecondsChange: Double = 0.0
+                if (etSecondsChange.text?.toString().isNullOrEmpty()) etSecondsChange.setText("0")
+                newSecondsChange = etSecondsChange.text?.toString()?.toDouble() ?: 0.0
+                etSecondsChange.setText(newSecondsChange.toInt().toString())
+                if (etDecisecondsChange.text?.toString().isNullOrEmpty()) etDecisecondsChange.setText("0")
+                newSecondsChange += (etDecisecondsChange.text?.toString()?.toDouble()?: 0.0) / 10
+
+                var newSecondsStay: Double = 0.0
+                if (etSecondsStay.text?.toString().isNullOrEmpty()) etSecondsStay.setText("0")
+                newSecondsStay = etSecondsStay.text?.toString()?.toDouble() ?: 0.0
+                etSecondsStay.setText(newSecondsStay.toInt().toString())
+                if (etDecisecondsStay.text?.toString().isNullOrEmpty()) etDecisecondsStay.setText("0")
+                newSecondsStay += (etDecisecondsStay.text?.toString()?.toDouble()?: 0.0) / 10
+
                 Log.d("btnSaveLoopSettings", "newSecondsChange = $newSecondsChange")
                 Log.d("btnSaveLoopSettings", "newSecondsStay = $newSecondsStay")
                 localModeViewModel.updateStreamingState(

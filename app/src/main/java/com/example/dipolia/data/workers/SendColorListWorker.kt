@@ -30,8 +30,8 @@ class SendColorListWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         var isLooping = false
-        var paceChange = 0
-        var paceStay = 0
+        var secondsChange = 0
+        var secondsStay = 0
 
         scope.launch {
             getStreamingStateUseCase().collect {streamingState ->
@@ -40,8 +40,8 @@ class SendColorListWorker @AssistedInject constructor(
                 Log.d("getStreamingStateUseCase ", "secondsChange = ${streamingState.secondsChange}")
                 Log.d("getStreamingStateUseCase ", "secondsStay = ${streamingState.secondsStay}")
                 streamingState.isLooping?.let { isLooping = it}
-                streamingState.secondsChange?.let { paceChange = it*10}
-                streamingState.secondsStay?.let { paceStay = it*10}
+                streamingState.secondsChange?.let { secondsChange = (it*10).toInt()}
+                streamingState.secondsStay?.let { secondsStay = (it*10).toInt()}
             }
         }
 
@@ -55,15 +55,17 @@ class SendColorListWorker @AssistedInject constructor(
             getLampsUseCase().collect { lamps ->
 //                Log.d("SendColorListWorker", "LampDomainEntityList = ${lamps.map { it.id to it.c }}")
                 Log.d("getLampsUseCase().collect ", "isLooping = $isLooping")
-                Log.d("getLampsUseCase().collect ", "secondsChange = $paceChange")
-                Log.d("getLampsUseCase().collect ", "secondsStay = $paceStay")
-                count += 1
-                val modul = paceChange * 2 + paceStay * 2 + 1
-                count %= modul
+                Log.d("getLampsUseCase().collect ", "secondsChange = $secondsChange")
+                Log.d("getLampsUseCase().collect ", "secondsStay = $secondsStay")
+
+                if (isLooping && (secondsChange > 0)) {
+                    count += 1
+                    val period = (secondsChange + secondsStay) * 2
+                    count %= period
+                }
 
                 for (lamp in lamps) {
 //                    Log.d("SendColorListWorker", "LampDomainEntityList = ${lamps.map { it.id to it.c }}")
-
 //                    Log.d("SendColorListWorker", "Lamp = ${lamp.id to lamp.c }")
 
                     if (lamp.c.colors.isNotEmpty()) {
@@ -73,27 +75,25 @@ class SendColorListWorker @AssistedInject constructor(
                         if (lamp.lampType == LampType.DIPOL) {
                             Log.d("SendColorListWorker", "Lamp = ${lamp.id to lamp.c}")
 
-
                             var r1Dif = 0.0
                             var r2Dif = 0.0
                             var r3Dif = 0.0
 
-                            if (isLooping && (paceChange > 0)) {
+                            if (isLooping && (secondsChange > 0)) {
                                 Log.d("isLooping && (paceChange > 0) ", "isLooping = $isLooping")
-                                Log.d("isLooping && (paceChange > 0) ", "secondsChange = $paceChange")
-                                Log.d("isLooping && (paceChange > 0) ", "secondsStay = $paceStay")
+                                Log.d("isLooping && (paceChange > 0) ", "secondsChange = $secondsChange")
+                                Log.d("isLooping && (paceChange > 0) ", "secondsStay = $secondsStay")
 
-
-                                val mult = when (count) {
-                                    in 1..paceChange -> count
-                                    in paceChange + 1..paceChange + paceStay -> paceChange
-                                    in paceChange + paceStay + 1..(paceChange * 2 + paceStay) -> paceChange * 2 + paceStay + 1 - count
-                                    in paceChange * 2 + paceStay + 1..(paceChange + paceStay) * 2 -> 0
+                                val factor = when (count) {
+                                    in 1..secondsChange -> count
+                                    in secondsChange + 1..secondsChange + secondsStay -> secondsChange
+                                    in secondsChange + secondsStay + 1..(secondsChange * 2 + secondsStay) -> secondsChange * 2 + secondsStay + 1 - count
+                                    in secondsChange * 2 + secondsStay + 1..(secondsChange + secondsStay) * 2 -> 0
                                     else -> 0
                                 }
-                                r1Dif = (lamp.c.colors[0] - lamp.c.colors[3]) / paceChange * mult
-                                r2Dif = (lamp.c.colors[1] - lamp.c.colors[4]) / paceChange * mult
-                                r3Dif = (lamp.c.colors[2] - lamp.c.colors[5]) / paceChange * mult
+                                r1Dif = (lamp.c.colors[0] - lamp.c.colors[3]) / secondsChange * factor
+                                r2Dif = (lamp.c.colors[1] - lamp.c.colors[4]) / secondsChange * factor
+                                r3Dif = (lamp.c.colors[2] - lamp.c.colors[5]) / secondsChange * factor
                             }
 
                             val r1 = (BigDecimal(lamp.c.colors[0] - r1Dif).setScale(
