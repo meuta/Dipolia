@@ -53,4 +53,17 @@
     <dimen name="button_save_lamp_name_padding_vertical">20dp</dimen>
 
 
+    <dimen name="et_deciseconds_width">24</dimen>
+    <dimen name="ll_loop_settings_padding">16dp</dimen>
+    <dimen name="loop_settings_edit_line_height">60dp</dimen>
+    <dimen name="loop_settings_edit_line_padding">8dp</dimen>
+    <dimen name="loop_settings_et_margin">8dp</dimen>
+    <dimen name="loop_settings_et_pading_horizontal">6dp</dimen>
+    <dimen name="radio_group_streaming_mode_padding">6dp</dimen>
+
+    <dimen name="edit_lamp_name_text_size">32sp</dimen>
+    <dimen name="loop_settings_text_view_text_size">16sp</dimen>
+    <dimen name="loop_settings_et_text_size">24sp</dimen>
+
+
 </resources>

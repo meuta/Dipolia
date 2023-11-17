@@ -446,7 +446,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textIsSelectable="true"
-                android:textSize="32sp" />
+                android:textSize="@dimen/edit_lamp_name_text_size" />
 
             <EditText
                 android:id="@+id/et_edit_lamp_name"
@@ -454,7 +454,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:inputType="text"
-                android:textSize="32sp"
+                android:textSize="@dimen/edit_lamp_name_text_size"
                 tools:ignore="Autofill, LabelFor" />
 
         </LinearLayout>
@@ -467,7 +467,7 @@
             android:background="@color/colorPrimaryDark"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:padding="@dimen/ll_loop_settings_padding"
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@id/view_buttons_divider"
 
@@ -478,10 +478,10 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="@dimen/loop_settings_edit_line_height"
                 android:gravity="bottom"
                 android:orientation="horizontal"
-                android:padding="8dp">
+                android:padding="@dimen/loop_settings_edit_line_padding">
 
                 <TextView
                     android:id="@+id/tv_seconds_change"
@@ -491,50 +491,53 @@
                     android:background="@color/gray"
                     android:gravity="center"
                     android:textIsSelectable="true"
-                    android:text="seconds to change :"
-                    android:textSize="16sp" />
+                    android:text="@string/seconds_to_change"
+                    android:textSize="@dimen/loop_settings_text_view_text_size" />
 
                 <EditText
                     android:id="@+id/et_seconds_change"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="@dimen/loop_settings_et_margin"
                     android:layout_weight="1"
                     android:background="@color/gray"
                     android:gravity="center_vertical|end"
                     android:inputType="number"
-                    android:paddingHorizontal="6dp"
-                    android:text="0"
+                    android:paddingHorizontal="@dimen/loop_settings_et_pading_horizontal"
+                    android:text="@string/_0"
                     android:textColor="@color/colorHighlighted"
-                    android:textSize="24sp" />
+                    android:textSize="@dimen/loop_settings_et_text_size"
+                    tools:ignore="Autofill, LabelFor"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="."
-                    android:textSize="24sp" />
+                    android:text="@string/_."
+                    android:textSize="@dimen/loop_settings_et_text_size"
+                    />
 
                 <EditText
                     android:id="@+id/et_deciseconds_change"
-                    android:layout_width="30dp"
+                    android:layout_width="@dimen/et_deciseconds_width"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="@dimen/loop_settings_et_margin"
                     android:background="@color/gray"
                     android:gravity="center"
                     android:inputType="number"
                     android:maxLength="1"
-                    android:text="0"
+                    android:text="@string/_0"
                     android:textColor="@color/colorHighlighted"
-                    android:textSize="24sp" />
+                    android:textSize="@dimen/loop_settings_et_text_size"
+                    tools:ignore="Autofill, LabelFor"/>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="@dimen/loop_settings_edit_line_height"
                 android:gravity="top"
                 android:orientation="horizontal"
-                android:padding="8dp">
+                android:padding="@dimen/loop_settings_edit_line_padding">
 
                 <TextView
                     android:id="@+id/tv_seconds_stay"
@@ -544,22 +547,22 @@
                     android:background="@color/gray"
                     android:gravity="center"
                     android:textIsSelectable="true"
-                    android:text="seconds to stay :"
-                    android:textSize="16sp" />
+                    android:text="@string/seconds_to_stay"
+                    android:textSize="@dimen/loop_settings_text_view_text_size" />
 
                 <EditText
                     android:id="@+id/et_seconds_stay"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="@dimen/loop_settings_et_margin"
                     android:layout_weight="1"
                     android:background="@color/gray"
                     android:gravity="center_vertical|end"
                     android:inputType="number"
-                    android:paddingHorizontal="6dp"
-                    android:text="0"
+                    android:paddingHorizontal="@dimen/loop_settings_et_pading_horizontal"
+                    android:text="@string/_0"
                     android:textColor="@color/colorHighlighted"
-                    android:textSize="24sp"
+                    android:textSize="@dimen/loop_settings_et_text_size"
                     tools:ignore="Autofill, LabelFor" />
 
 
@@ -567,21 +570,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="."
-                    android:textSize="24sp" />
+                    android:text="@string/_."
+                    android:textSize="@dimen/loop_settings_et_text_size"
+                    />
 
                 <EditText
                     android:id="@+id/et_deciseconds_stay"
-                    android:layout_width="30dp"
+                    android:layout_width="23dp"
                     android:layout_height="match_parent"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="@dimen/loop_settings_et_margin"
                     android:background="@color/gray"
                     android:gravity="center"
                     android:inputType="number"
                     android:maxLength="1"
-                    android:text="0"
+                    android:text="@string/_0"
                     android:textColor="@color/colorHighlighted"
-                    android:textSize="24sp" />
+                    android:textSize="@dimen/loop_settings_et_text_size"
+                    tools:ignore="Autofill, LabelFor" />
             </LinearLayout>
 
             <TextView
@@ -717,7 +722,7 @@
                 android:layout_marginHorizontal="@dimen/button_margin_horizontal"
                 android:background="@color/colorPrimary"
                 android:orientation="vertical"
-                android:padding="6dp">
+                android:padding="@dimen/radio_group_streaming_mode_padding">
 
                 <RadioButton
                     android:id="@+id/radio_manual"
