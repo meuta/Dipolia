@@ -130,13 +130,13 @@ class MainActivity : AppCompatActivity() {
                     inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
                     etSecondsChange.setText(localModeViewModel.secondsChange.toString())
                     etSecondsStay.setText(localModeViewModel.secondsStay.toString())
-                    btnLoopSettings.text = it.context.getString(R.string.loop_settings)
+                    btnLoopSettings.text = getString(R.string.loop_settings)
                 } else if (llLoopSettings.visibility == View.INVISIBLE) {
                     llLoopSettings.visibility = View.VISIBLE
                     etSecondsChange.requestFocus()
                     etSecondsChange.setSelection(etSecondsChange.text.length)
                     inputMethodManager.showSoftInput(etSecondsChange, 0)
-                    btnLoopSettings.text = it.context.getString(R.string.cancel_loop_settings)
+                    btnLoopSettings.text = getString(R.string.cancel_loop_settings)
                 }
             }
 
@@ -157,7 +157,7 @@ class MainActivity : AppCompatActivity() {
                 val inputMethodManager =
                     getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
-                btnLoopSettings.text = btnLoopSettings.context.getString(R.string.loop_settings)
+                btnLoopSettings.text = getString(R.string.loop_settings)
 
             }
 
@@ -238,7 +238,7 @@ class MainActivity : AppCompatActivity() {
         llLoopSettings.visibility = View.INVISIBLE
         etSecondsChange.setText(localModeViewModel.secondsChange.toString())
         etSecondsStay.setText(localModeViewModel.secondsStay.toString())
-        btnLoopSettings.text = btnLoopSettings.context.getString(R.string.loop_settings)
+        btnLoopSettings.text = getString(R.string.loop_settings)
 
         llEditLampName.visibility = View.VISIBLE
         currentLampLayout.visibility = View.INVISIBLE
