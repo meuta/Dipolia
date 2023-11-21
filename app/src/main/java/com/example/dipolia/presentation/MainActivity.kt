@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.example.dipolia.R
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.databinding.ActivityLocalModeBinding
 import com.example.dipolia.domain.entities.DipolDomainEntity
@@ -68,43 +69,43 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupLoopSection() {
-        with(binding){
+        with(binding) {
 
             etSecondsChange.addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
 
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    }
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                }
 
-                    override fun afterTextChanged(s: Editable?) {
-                        val string = s.toString()
-                        val length = string.length
-                        val symbol = string.elementAtOrNull(length-3)
-                        if (symbol == '.'){
-                            etSecondsChange.setText(s?.dropLast(1))
-                            etSecondsChange.setSelection(etSecondsChange.text.length)
-                        }
+                override fun afterTextChanged(s: Editable?) {
+                    val string = s.toString()
+                    val length = string.length
+                    val symbol = string.elementAtOrNull(length - 3)
+                    if (symbol == '.') {
+                        etSecondsChange.setText(s?.dropLast(1))
+                        etSecondsChange.setSelection(etSecondsChange.text.length)
                     }
-                })
+                }
+            })
 
             etSecondsStay.addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
 
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    }
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                }
 
-                    override fun afterTextChanged(s: Editable?) {
-                        val string = s.toString()
-                        val length = string.length
-                        val symbol = string.elementAtOrNull(length-3)
-                        if (symbol == '.'){
-                            etSecondsStay.setText(s?.dropLast(1))
-                            etSecondsStay.setSelection(etSecondsStay.text.length)
-                        }
+                override fun afterTextChanged(s: Editable?) {
+                    val string = s.toString()
+                    val length = string.length
+                    val symbol = string.elementAtOrNull(length - 3)
+                    if (symbol == '.') {
+                        etSecondsStay.setText(s?.dropLast(1))
+                        etSecondsStay.setSelection(etSecondsStay.text.length)
                     }
-                })
+                }
+            })
         }
     }
 
@@ -121,45 +122,43 @@ class MainActivity : AppCompatActivity() {
             }
 
             btnLoopSettings.setOnClickListener {
+                val inputMethodManager =
+                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+
                 if (llLoopSettings.visibility == View.VISIBLE) {
                     llLoopSettings.visibility = View.INVISIBLE
+                    inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
+                    etSecondsChange.setText(localModeViewModel.secondsChange.toString())
+                    etSecondsStay.setText(localModeViewModel.secondsStay.toString())
+                    btnLoopSettings.text = it.context.getString(R.string.loop_settings)
                 } else if (llLoopSettings.visibility == View.INVISIBLE) {
                     llLoopSettings.visibility = View.VISIBLE
+                    etSecondsChange.requestFocus()
+                    etSecondsChange.setSelection(etSecondsChange.text.length)
+                    inputMethodManager.showSoftInput(etSecondsChange, 0)
+                    btnLoopSettings.text = it.context.getString(R.string.cancel_loop_settings)
                 }
-                etSecondsChange.requestFocus()
-                etSecondsChange.setSelection(etSecondsChange.text.length)
-
-                val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                inputMethodManager.showSoftInput(etSecondsChange, 0)
             }
 
             btnSaveLoopSettings.setOnClickListener {
-                val newSecondsChange = etSecondsChange.text?.toString()?.toDoubleOrNull()
-                if (newSecondsChange == null) {
-                    etSecondsChange.setText("0.0")
-                } else {
-                    etSecondsChange.setText(newSecondsChange.toDouble().toString())
-                }
+                localModeViewModel.secondsChange = etSecondsChange.text?.toString()?.toDoubleOrNull() ?: 0.0
+                etSecondsChange.setText(localModeViewModel.secondsChange.toString())
 
-                val newSecondsStay: Double? = etSecondsStay.text?.toString()?.toDoubleOrNull()
-                if (newSecondsStay == null) {
-                    etSecondsStay.setText("0.0")
-                } else {
-                    etSecondsStay.setText(newSecondsStay.toDouble().toString())
-                }
+                localModeViewModel.secondsStay = etSecondsStay.text?.toString()?.toDoubleOrNull() ?: 0.0
+                etSecondsStay.setText(localModeViewModel.secondsStay.toString())
 
-                Log.d("btnSaveLoopSettings", "newSecondsChange = $newSecondsChange")
-                Log.d("btnSaveLoopSettings", "newSecondsStay = $newSecondsStay")
                 localModeViewModel.updateStreamingState(
                     StreamingState(
-                        secondsChange = newSecondsChange,
-                        secondsStay = newSecondsStay
+                        secondsChange = localModeViewModel.secondsChange,
+                        secondsStay = localModeViewModel.secondsStay
                     )
                 )
                 llLoopSettings.visibility = View.INVISIBLE
                 val inputMethodManager =
                     getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
+                btnLoopSettings.text = btnLoopSettings.context.getString(R.string.loop_settings)
+
             }
 
             radioManual.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -235,6 +234,12 @@ class MainActivity : AppCompatActivity() {
         val inputMethodManager =
             getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.showSoftInput(etEditLampName, 0)
+
+        llLoopSettings.visibility = View.INVISIBLE
+        etSecondsChange.setText(localModeViewModel.secondsChange.toString())
+        etSecondsStay.setText(localModeViewModel.secondsStay.toString())
+        btnLoopSettings.text = btnLoopSettings.context.getString(R.string.loop_settings)
+
         llEditLampName.visibility = View.VISIBLE
         currentLampLayout.visibility = View.INVISIBLE
         llButtons.visibility = View.INVISIBLE

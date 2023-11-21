@@ -26,7 +26,6 @@ class LocalModeViewModel @Inject constructor(
     private val selectItemUseCase: SelectLampUseCase,
     private val unselectLampUseCase: UnselectLampUseCase,
     private val changeLocalStateUseCase: ChangeLocalStateUseCase,
-    private val saveLampUseCase: SaveLampUseCase,
     private val saveLampListUseCase: SaveLampListUseCase,
     private val editLampNameUseCase: EditLampNameUseCase,
     private val updateStreamingStateUseCase: UpdateStreamingStateUseCase,
@@ -37,6 +36,9 @@ class LocalModeViewModel @Inject constructor(
     private val scope = CoroutineScope(Dispatchers.IO)
 
     val isBackGroundWork = getIsSteaming()
+
+    var secondsChange = 0.0
+    var secondsStay = 0.0
 
     private fun getIsSteaming(): LiveData<Boolean?> {
 
@@ -77,21 +79,12 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-    init {  //This code will be executes every time automatically with creating of this object
+    init {
         scope.launch {
             sendFollowMeUseCase()
         }
         scope.launch {
             collectListUseCase()
-        }
-//        scope.launch {
-//            repository.getLatestLampList().collectLatest { lamps ->
-//                Log.d("TEST_ViewModel", "LampDomainEntityList = ${lamps.map { it.id to it.lastConnection }}")
-//            }
-//        }
-
-        scope.launch {
-//            sendColorsUseCase()
         }
     }
 
@@ -112,12 +105,6 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-    fun refreshConnectedList() {
-        scope.launch {
-//            refreshConnectedListUseCase()
-        }
-    }
-
     fun changeLocalState(id: String, index: Int, value: Int) {
         changeLocalStateUseCase(id, index, value / 100.0)
     }
@@ -133,7 +120,7 @@ class LocalModeViewModel @Inject constructor(
             val workState = workInfo[0].state.toString()
             Log.d("onClick workerStartStop", "workerState = $workState")
         }
-//
+
         if (workInfo.isNotEmpty() && workInfo[0].state.toString() == "RUNNING") {
             Log.d("onClick workerStartStop", "RUNNING")
             workManager.cancelAllWork()
@@ -150,11 +137,6 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-    fun saveLamp(lampDomainEntity: LampDomainEntity) {
-        scope.launch {
-            saveLampUseCase(lampDomainEntity)
-        }
-    }
 
     fun saveLampList() {
         scope.launch {

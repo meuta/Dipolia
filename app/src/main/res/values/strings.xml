@@ -14,6 +14,7 @@
     <string name="manual_mode">MANUAL MODE</string>
     <string name="loop_mode">LOOP MODE</string>
     <string name="loop_settings">LOOP\n SETTINGS</string>
+    <string name="cancel_loop_settings">CANCEL\n LOOP\n SETTINGS</string>
     <string name="save_loop_settings">SAVE LOOP SETTINGS</string>
     <string name="_.">.</string>
     <string name="_0.0">0.0</string>
