@@ -502,34 +502,14 @@
                     android:layout_weight="1"
                     android:background="@color/gray"
                     android:gravity="center_vertical|end"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:paddingHorizontal="@dimen/loop_settings_et_pading_horizontal"
-                    android:text="@string/_0"
+                    android:text="@string/_0.0"
                     android:textColor="@color/colorHighlighted"
                     android:textSize="@dimen/loop_settings_et_text_size"
                     tools:ignore="Autofill, LabelFor"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/_."
-                    android:textSize="@dimen/loop_settings_et_text_size"
-                    />
 
-                <EditText
-                    android:id="@+id/et_deciseconds_change"
-                    android:layout_width="@dimen/et_deciseconds_width"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="@dimen/loop_settings_et_margin"
-                    android:background="@color/gray"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:maxLength="1"
-                    android:text="@string/_0"
-                    android:textColor="@color/colorHighlighted"
-                    android:textSize="@dimen/loop_settings_et_text_size"
-                    tools:ignore="Autofill, LabelFor"/>
             </LinearLayout>
 
             <LinearLayout
@@ -558,35 +538,13 @@
                     android:layout_weight="1"
                     android:background="@color/gray"
                     android:gravity="center_vertical|end"
-                    android:inputType="number"
+                    android:inputType="numberDecimal"
                     android:paddingHorizontal="@dimen/loop_settings_et_pading_horizontal"
-                    android:text="@string/_0"
+                    android:text="@string/_0.0"
                     android:textColor="@color/colorHighlighted"
                     android:textSize="@dimen/loop_settings_et_text_size"
                     tools:ignore="Autofill, LabelFor" />
 
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/_."
-                    android:textSize="@dimen/loop_settings_et_text_size"
-                    />
-
-                <EditText
-                    android:id="@+id/et_deciseconds_stay"
-                    android:layout_width="23dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="@dimen/loop_settings_et_margin"
-                    android:background="@color/gray"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:maxLength="1"
-                    android:text="@string/_0"
-                    android:textColor="@color/colorHighlighted"
-                    android:textSize="@dimen/loop_settings_et_text_size"
-                    tools:ignore="Autofill, LabelFor" />
             </LinearLayout>
 
             <TextView

@@ -16,7 +16,7 @@
     <string name="loop_settings">LOOP\n SETTINGS</string>
     <string name="save_loop_settings">SAVE LOOP SETTINGS</string>
     <string name="_.">.</string>
-    <string name="_0">0</string>
+    <string name="_0.0">0.0</string>
     <string name="seconds_to_stay">seconds to stay :</string>
     <string name="seconds_to_change">seconds to change :</string>
 </resources>

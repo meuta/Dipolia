@@ -1,6 +1,8 @@
 package com.example.dipolia.presentation
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -59,30 +61,56 @@ class MainActivity : AppCompatActivity() {
 
         setupButtons()
 
+        setupLoopSection()
+
         observeViewModel()
 
+    }
+
+    private fun setupLoopSection() {
+        with(binding){
+
+            etSecondsChange.addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    }
+
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    }
+
+                    override fun afterTextChanged(s: Editable?) {
+                        val string = s.toString()
+                        val length = string.length
+                        val symbol = string.elementAtOrNull(length-3)
+                        if (symbol == '.'){
+                            etSecondsChange.setText(s?.dropLast(1))
+                            etSecondsChange.setSelection(etSecondsChange.text.length)
+                        }
+                    }
+                })
+
+            etSecondsStay.addTextChangedListener(object : TextWatcher {
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    }
+
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    }
+
+                    override fun afterTextChanged(s: Editable?) {
+                        val string = s.toString()
+                        val length = string.length
+                        val symbol = string.elementAtOrNull(length-3)
+                        if (symbol == '.'){
+                            etSecondsStay.setText(s?.dropLast(1))
+                            etSecondsStay.setSelection(etSecondsStay.text.length)
+                        }
+                    }
+                })
+        }
     }
 
 
     private fun setupButtons() {
         with(binding) {
-
-            val toastRefresh = Toast.makeText(
-                this@MainActivity,
-                "This button doesn't work now..",
-                Toast.LENGTH_SHORT
-            )
-
-            val toastBackgroundWork = Toast.makeText(
-                this@MainActivity,
-                "This button doesn't work now..",
-                Toast.LENGTH_SHORT
-            )
-
-//            btnRefreshList.setOnClickListener {
-//    //                toastBackgroundWork.cancel()
-//                toastRefresh.show()
-//            }
 
             btnUnselect.setOnClickListener {
                 localModeViewModel.unselectLamp()
@@ -90,8 +118,6 @@ class MainActivity : AppCompatActivity() {
 
             btnBackgroundWork.setOnClickListener {
                 localModeViewModel.workerStartStop()
-                //                toastRefresh.cancel()
-                //                toastBackgroundWork.show()
             }
 
             btnLoopSettings.setOnClickListener {
@@ -100,22 +126,27 @@ class MainActivity : AppCompatActivity() {
                 } else if (llLoopSettings.visibility == View.INVISIBLE) {
                     llLoopSettings.visibility = View.VISIBLE
                 }
+                etSecondsChange.requestFocus()
+                etSecondsChange.setSelection(etSecondsChange.text.length)
+
+                val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.showSoftInput(etSecondsChange, 0)
             }
 
             btnSaveLoopSettings.setOnClickListener {
-                var newSecondsChange: Double = 0.0
-                if (etSecondsChange.text?.toString().isNullOrEmpty()) etSecondsChange.setText("0")
-                newSecondsChange = etSecondsChange.text?.toString()?.toDouble() ?: 0.0
-                etSecondsChange.setText(newSecondsChange.toInt().toString())
-                if (etDecisecondsChange.text?.toString().isNullOrEmpty()) etDecisecondsChange.setText("0")
-                newSecondsChange += (etDecisecondsChange.text?.toString()?.toDouble()?: 0.0) / 10
+                val newSecondsChange = etSecondsChange.text?.toString()?.toDoubleOrNull()
+                if (newSecondsChange == null) {
+                    etSecondsChange.setText("0.0")
+                } else {
+                    etSecondsChange.setText(newSecondsChange.toDouble().toString())
+                }
 
-                var newSecondsStay: Double = 0.0
-                if (etSecondsStay.text?.toString().isNullOrEmpty()) etSecondsStay.setText("0")
-                newSecondsStay = etSecondsStay.text?.toString()?.toDouble() ?: 0.0
-                etSecondsStay.setText(newSecondsStay.toInt().toString())
-                if (etDecisecondsStay.text?.toString().isNullOrEmpty()) etDecisecondsStay.setText("0")
-                newSecondsStay += (etDecisecondsStay.text?.toString()?.toDouble()?: 0.0) / 10
+                val newSecondsStay: Double? = etSecondsStay.text?.toString()?.toDoubleOrNull()
+                if (newSecondsStay == null) {
+                    etSecondsStay.setText("0.0")
+                } else {
+                    etSecondsStay.setText(newSecondsStay.toDouble().toString())
+                }
 
                 Log.d("btnSaveLoopSettings", "newSecondsChange = $newSecondsChange")
                 Log.d("btnSaveLoopSettings", "newSecondsStay = $newSecondsStay")
@@ -139,24 +170,7 @@ class MainActivity : AppCompatActivity() {
             radioLoop.setOnCheckedChangeListener { buttonView, isChecked ->
                 Log.d("RADIO", "LOOP is checked: $isChecked")
                 localModeViewModel.updateStreamingState(StreamingState(isLooping = isChecked))
-
             }
-
-
-            //            btnSaveLamp.setOnClickListener {
-            //                selectedLamp?.let {
-            //                    localModeViewModel.saveLamp(it)
-            //                    Toast.makeText(this@MainActivity, "@${it.lampType} colorSet have been saved", Toast.LENGTH_SHORT).show()
-            //                }
-            //            }
-            //
-            //            btnSaveLampList.setOnClickListener {
-            //                if (currentLamps.isNotEmpty()) {
-            //                    localModeViewModel.saveLampList(currentLamps)
-            //                    Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
-            //                }
-            //            }
-
 
             btnSaveLampName.setOnClickListener {
                 val newName = etEditLampName.text.toString()
@@ -416,9 +430,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun refreshConnectedList() {
-//        localModeViewModel.refreshConnectedList()
-    }
 
     override fun onStop() {
         Log.d("onStop", "here")
