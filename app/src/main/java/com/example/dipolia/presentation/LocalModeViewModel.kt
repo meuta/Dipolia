@@ -37,6 +37,8 @@ class LocalModeViewModel @Inject constructor(
 
     val isBackGroundWork = getIsSteaming()
 
+    val uiStateFlow = MutableStateFlow(UiState())
+
     var secondsChange = 0.0
     var secondsStay = 0.0
 
@@ -146,5 +148,11 @@ class LocalModeViewModel @Inject constructor(
 
     fun updateStreamingState(streamingState: StreamingState){
         updateStreamingStateUseCase(streamingState)
+    }
+
+    fun updateUiState(uiState: UiState){
+        uiState.isLlLoopSettingsVisible?.let {isLlLoopSettingsVisible ->
+            uiStateFlow.update { uiStateFlow.value.copy(isLlLoopSettingsVisible = isLlLoopSettingsVisible) }
+        }
     }
 }

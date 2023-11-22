@@ -11,19 +11,18 @@ import com.example.dipolia.R
 import com.example.dipolia.domain.entities.LampType
 
 
-
 @BindingAdapter("dipolLabelColor")
 fun bindDipolLabelColor(view: View, colorList: List<Double>?) {
 //    Log.d("View", "colorlist $colorList $view ")
     val list = colorList ?: listOf(0.0, 0.0, 0.0)
-     view.setBackgroundColor(Color.parseColor(colorToUI(list)))
+    view.setBackgroundColor(Color.parseColor(colorToUI(list)))
 }
 
 @BindingAdapter("fiveLightsLabelColor")
 fun bindFiveLightsLabelColor(view: View, colorList: List<Double>?) {
 //    Log.d("View", "colorlist $colorList $view ")
     val list = colorList ?: listOf(0.0, 0.0, 0.0, 0.0, 0.0)
-     view.setBackgroundColor(Color.parseColor(colorFiveLightsToUI(list)))
+    view.setBackgroundColor(Color.parseColor(colorFiveLightsToUI(list)))
 }
 
 private fun colorFiveLightsToUI(colorList: List<Double>): String {
@@ -51,7 +50,7 @@ private fun colorToUI(colorList: List<Double>): String {
 }
 
 @BindingAdapter("fiveLightsItemVisibility")
-fun setFiveLightsItemVisibility(view: View, isConnected: Boolean){
+fun setFiveLightsItemVisibility(view: View, isConnected: Boolean) {
     if (isConnected) {
         view.visibility = VISIBLE
     } else {
@@ -60,17 +59,22 @@ fun setFiveLightsItemVisibility(view: View, isConnected: Boolean){
 }
 
 @BindingAdapter("selectedBackground")
-fun setSelectedBackground(textView: TextView, isSelected: Boolean){
+fun setSelectedBackground(textView: TextView, isSelected: Boolean) {
 //    Log.d("setSelectedBackground", "$isSelected")
     if (isSelected) {
         textView.setBackgroundColor(ContextCompat.getColor(textView.context, R.color.colorSelect))
     } else {
-        textView.setBackgroundColor(ContextCompat.getColor(textView.context, R.color.colorPrimaryDark))
+        textView.setBackgroundColor(
+            ContextCompat.getColor(
+                textView.context,
+                R.color.colorPrimaryDark
+            )
+        )
     }
 }
 
 @BindingAdapter("selectedVisibility")
-fun setSelectedVisibility(view: View, isSelected: Boolean){
+fun setSelectedVisibility(view: View, isSelected: Boolean) {
     if (isSelected) {
         view.visibility = VISIBLE
     } else {
@@ -89,7 +93,7 @@ fun setSelectedVisibility(view: View, isSelected: Boolean){
 //    }
 //}
 @BindingAdapter("viewPleaseSelectText")
-fun setViewPleaseSelectText(textView: TextView, notEmpty: Boolean){
+fun setViewPleaseSelectText(textView: TextView, notEmpty: Boolean) {
     Log.d("setLampControlLayoutVisibility", "$notEmpty")
     if (notEmpty) {
         textView.text = String.format(
@@ -102,7 +106,7 @@ fun setViewPleaseSelectText(textView: TextView, notEmpty: Boolean){
 
 
 @BindingAdapter("pleaseSelectTextViewVisibility")
-fun setPleaseSelectTextViewVisibility(view: View, lampType: LampType?){
+fun setPleaseSelectTextViewVisibility(view: View, lampType: LampType?) {
 //    Log.d("setSelectedPleaseSelectTextViewVisibility", "$lampType")
     if (lampType == LampType.DIPOL || lampType == LampType.FIVE_LIGHTS) {
         view.visibility = INVISIBLE
@@ -112,7 +116,7 @@ fun setPleaseSelectTextViewVisibility(view: View, lampType: LampType?){
 }
 
 @BindingAdapter("dipolControlLayoutVisibility")
-fun setDipolControlLayoutVisibility(view: View, lampType: LampType?){
+fun setDipolControlLayoutVisibility(view: View, lampType: LampType?) {
 //    Log.d("setDipolControlLayoutVisibility", "$lampType")
     if (lampType == LampType.DIPOL) {
         view.visibility = VISIBLE
@@ -122,7 +126,7 @@ fun setDipolControlLayoutVisibility(view: View, lampType: LampType?){
 }
 
 @BindingAdapter("fiveLightsControlLayoutVisibility")
-fun setFiveLightsControlLayoutVisibility(view: View, lampType: LampType?){
+fun setFiveLightsControlLayoutVisibility(view: View, lampType: LampType?) {
 //    Log.d("setFiveLightsControlLayoutVisibility", "$lampType")
     if (lampType == LampType.FIVE_LIGHTS) {
         view.visibility = VISIBLE
@@ -143,7 +147,7 @@ fun setFiveLightsControlLayoutVisibility(view: View, lampType: LampType?){
 
 
 @BindingAdapter("workerButtonText")
-fun setWorkerButtonText(textView: TextView, isRunning: Boolean){
+fun setWorkerButtonText(textView: TextView, isRunning: Boolean) {
     if (isRunning) {
         textView.text = textView.context.getString(R.string.background_work_stop)
     } else {
