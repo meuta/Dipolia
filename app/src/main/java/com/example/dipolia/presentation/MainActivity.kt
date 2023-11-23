@@ -42,6 +42,10 @@ class MainActivity : AppCompatActivity() {
     private var selectedLampId: String? = null
     private var editableNameLampId: String? = null
 
+    private var secondsChange: Double? = null
+    private var secondsStay: Double? = null
+    private var isLooping: Boolean? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -128,8 +132,8 @@ class MainActivity : AppCompatActivity() {
                 if (isVisible == true){
                     localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
                     inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
-                    etSecondsChange.setText(localModeViewModel.secondsChange.toString())
-                    etSecondsStay.setText(localModeViewModel.secondsStay.toString())
+                    etSecondsChange.setText(secondsChange.toString())
+                    etSecondsStay.setText(secondsStay.toString())
                 } else {
                     localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = true))
                     etSecondsChange.requestFocus()
@@ -138,18 +142,12 @@ class MainActivity : AppCompatActivity() {
             }
 
             btnSaveLoopSettings.setOnClickListener {
-                localModeViewModel.secondsChange = etSecondsChange.text?.toString()?.toDoubleOrNull() ?: 0.0
-                etSecondsChange.setText(localModeViewModel.secondsChange.toString())
 
-                localModeViewModel.secondsStay = etSecondsStay.text?.toString()?.toDoubleOrNull() ?: 0.0
-                etSecondsStay.setText(localModeViewModel.secondsStay.toString())
-
-                localModeViewModel.updateStreamingState(
-                    StreamingState(
-                        secondsChange = localModeViewModel.secondsChange,
-                        secondsStay = localModeViewModel.secondsStay
+                localModeViewModel.setLoopSeconds(
+                    etSecondsChange.text?.toString()?.toDoubleOrNull() ?: 0.0,
+                    etSecondsStay.text?.toString()?.toDoubleOrNull() ?: 0.0
                     )
-                )
+
                 localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
                 val inputMethodManager =
                     getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
@@ -159,12 +157,12 @@ class MainActivity : AppCompatActivity() {
 
             radioManual.setOnCheckedChangeListener { buttonView, isChecked ->
                 Log.d("RADIO", "MANUAL is checked: $isChecked")
-                localModeViewModel.updateStreamingState(StreamingState(isLooping = !isChecked))
-
+                localModeViewModel.setIsLooping(isLooping = !isChecked)
             }
+
             radioLoop.setOnCheckedChangeListener { buttonView, isChecked ->
                 Log.d("RADIO", "LOOP is checked: $isChecked")
-                localModeViewModel.updateStreamingState(StreamingState(isLooping = isChecked))
+                localModeViewModel.setIsLooping(isLooping = isChecked)
             }
 
             btnSaveLampName.setOnClickListener {
@@ -221,6 +219,20 @@ class MainActivity : AppCompatActivity() {
         localModeViewModel.isBackGroundWork.observe(this) {
             Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
         }
+
+        localModeViewModel.loopPreferencesLD.observe(this) {
+            if (it != null) {
+                Log.d("TEST_OF_SUBSCRIBE", "loopPreferencesLD: $it")
+                secondsChange = it.secondsChange
+                secondsStay = it.secondsStay
+                isLooping = it.isLooping
+                isLooping?.let {isLooping ->
+                    binding.radioManual.isChecked = !isLooping
+                    binding.radioLoop.isChecked = isLooping
+                }
+
+            }
+        }
     }
 
     private fun ActivityLocalModeBinding.setEditNameViews(oldLampName: String) {
@@ -231,8 +243,8 @@ class MainActivity : AppCompatActivity() {
         inputMethodManager.showSoftInput(etEditLampName, 0)
 
         if (llLoopSettings.visibility == View.VISIBLE) {
-            etSecondsChange.setText(localModeViewModel.secondsChange.toString())
-            etSecondsStay.setText(localModeViewModel.secondsStay.toString())
+            etSecondsChange.setText(secondsChange.toString())
+            etSecondsStay.setText(secondsStay.toString())
             localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
         }
 
@@ -438,4 +450,5 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
         super.onStop()
     }
+
 }

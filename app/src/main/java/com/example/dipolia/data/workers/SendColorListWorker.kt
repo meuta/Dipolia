@@ -7,7 +7,7 @@ import androidx.work.*
 import com.example.dipolia.data.network.UDPClient
 import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.domain.useCases.GetConnectedLampsUseCase
-import com.example.dipolia.domain.useCases.GetStreamingStateUseCase
+import com.example.dipolia.domain.useCases.GetLoopPreferencesUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +23,7 @@ class SendColorListWorker @AssistedInject constructor(
     @Assisted workerParameters: WorkerParameters,
     private val sender: UDPClient,
     private val getLampsUseCase: GetConnectedLampsUseCase,
-    private val getStreamingStateUseCase: GetStreamingStateUseCase
+    private val getLoopPreferencesUseCase: GetLoopPreferencesUseCase
 ) : CoroutineWorker(context, workerParameters) {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -34,11 +34,11 @@ class SendColorListWorker @AssistedInject constructor(
         var secondsStay = 0
 
         scope.launch {
-            getStreamingStateUseCase().collect {streamingState ->
+            getLoopPreferencesUseCase().collect {streamingState ->
 
-                Log.d("getStreamingStateUseCase ", "isLooping = ${streamingState.isLooping}")
-                Log.d("getStreamingStateUseCase ", "secondsChange = ${streamingState.secondsChange}")
-                Log.d("getStreamingStateUseCase ", "secondsStay = ${streamingState.secondsStay}")
+                Log.d("getLoopPreferencesUseCase ", "isLooping = ${streamingState.isLooping}")
+                Log.d("getLoopPreferencesUseCase ", "secondsChange = ${streamingState.secondsChange}")
+                Log.d("getLoopPreferencesUseCase ", "secondsStay = ${streamingState.secondsStay}")
                 streamingState.isLooping?.let { isLooping = it}
                 streamingState.secondsChange?.let { secondsChange = (it*10).toInt()}
                 streamingState.secondsStay?.let { secondsStay = (it*10).toInt()}

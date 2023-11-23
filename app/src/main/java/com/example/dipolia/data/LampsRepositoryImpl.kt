@@ -1,20 +1,26 @@
 package com.example.dipolia.data
 
 import android.util.Log
-
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.doublePreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import com.example.dipolia.data.database.ColorList
 import com.example.dipolia.data.database.DipolsDao
+import com.example.dipolia.data.datastore.StreamingPreferences
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.network.LampsRemoteDataSource
 import com.example.dipolia.data.network.UDPClient
 import com.example.dipolia.domain.LampsRepository
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
-import com.example.dipolia.presentation.StreamingState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
 import javax.inject.Inject
@@ -25,8 +31,10 @@ class LampsRepositoryImpl @Inject constructor(
     private val dipolsDao: DipolsDao,
     private val mapper: DipoliaMapper,
     private val lampsRemoteDataSource: LampsRemoteDataSource,
-    private val sender: UDPClient
+    private val sender: UDPClient,
+    private val streamingPreferences: DataStore<Preferences>
 ) : LampsRepository {
+
 
     private val lampEntityList = mutableListOf<LampDomainEntity>()
 
@@ -203,27 +211,81 @@ class LampsRepositoryImpl @Inject constructor(
         }
     }
 
-    private val streamingStateFlow = MutableStateFlow(StreamingState())
+//    private val streamingStateFlow = MutableStateFlow(StreamingState())
 
-    override fun getStreamingState(): StateFlow<StreamingState> {
-        return streamingStateFlow
+    override fun getStreamingState(): Flow<StreamingPreferences> {
+        return streamingPreferencesFlow
     }
 
-    override fun updateStreamingState(streamState: StreamingState) {
-        streamState.isLooping?.let {isLooping ->
-            Log.d("updateStreamingState ", "streamState.isLooping = $isLooping")
-            streamingStateFlow.update { streamingStateFlow.value.copy(isLooping = isLooping) }
+//    override fun updateStreamingState(streamState: StreamingPreferences) {
+//        streamState.isLooping?.let {isLooping ->
+//            Log.d("updateStreamingState ", "streamState.isLooping = $isLooping")
+//            streamingStateFlow.update { streamingStateFlow.value.copy(isLooping = isLooping) }
+//        }
+//        Log.d("updateStreamingState ", "streamingStateFlow.value.isLooping = ${streamingStateFlow.value.isLooping}")
+//        streamState.secondsChange?.let {secondsChange ->
+//            Log.d("updateStreamingState ", "streamState.secondsChange = $secondsChange")
+//            streamingStateFlow.update { streamingStateFlow.value.copy(secondsChange = secondsChange) }
+//        }
+//        Log.d("updateStreamingState ", "streamingStateFlow.value.secondsChange = ${streamingStateFlow.value.secondsChange}")
+//        streamState.secondsStay?.let {secondsStay ->
+//            Log.d("updateStreamingState ", "streamState.secondsStay = $secondsStay")
+//            streamingStateFlow.update { streamingStateFlow.value.copy(secondsStay = secondsStay) }
+//        }
+//        Log.d("updateStreamingState ", "streamingStateFlow.value.secondsStay = ${streamingStateFlow.value.secondsStay}")
+//    }
+
+
+    val streamingPreferencesFlow: Flow<StreamingPreferences> = streamingPreferences.data
+        .catch { exception ->
+            /*
+                 * dataStore.data throws an IOException when an error
+                 * is encountered when reading data
+                 */
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }.map { preferences ->
+            // Get our name value, defaulting to "" if not set
+            mapLoopPreferences(preferences)
         }
-        Log.d("updateStreamingState ", "streamingStateFlow.value.isLooping = ${streamingStateFlow.value.isLooping}")
-        streamState.secondsChange?.let {secondsChange ->
-            Log.d("updateStreamingState ", "streamState.secondsChange = $secondsChange")
-            streamingStateFlow.update { streamingStateFlow.value.copy(secondsChange = secondsChange) }
+
+    override suspend fun setLoopSeconds(secondsChange: Double, secondsStay: Double){
+        streamingPreferences.edit { preferences ->
+            preferences[KEY_SECONDS_CHANGE] = secondsChange
+            preferences[KEY_SECONDS_STAY] = secondsStay
         }
-        Log.d("updateStreamingState ", "streamingStateFlow.value.secondsChange = ${streamingStateFlow.value.secondsChange}")
-        streamState.secondsStay?.let {secondsStay ->
-            Log.d("updateStreamingState ", "streamState.secondsStay = $secondsStay")
-            streamingStateFlow.update { streamingStateFlow.value.copy(secondsStay = secondsStay) }
+    }
+
+    override suspend fun setIsLooping(isLooping: Boolean){
+        streamingPreferences.edit { preferences ->
+            preferences[KEY_IS_LOOPING] = isLooping
         }
-        Log.d("updateStreamingState ", "streamingStateFlow.value.secondsStay = ${streamingStateFlow.value.secondsStay}")
+    }
+
+    override fun getLoopPreferences(): Flow<StreamingPreferences> {
+
+        return streamingPreferencesFlow
+    }
+
+    suspend fun fetchInitialPreferences() =
+        mapLoopPreferences(streamingPreferences.data.first().toPreferences())
+
+    private fun mapLoopPreferences(preferences: Preferences): StreamingPreferences {
+        val secondsChange = preferences[KEY_SECONDS_CHANGE] ?: 0.0
+        val secondsStay = preferences[KEY_SECONDS_STAY] ?: 0.0
+        val isLooping = preferences[KEY_IS_LOOPING] ?: false
+//        val isLooping = preferences[KEY_IS_LOOPING] ?: true
+        return StreamingPreferences(secondsChange, secondsStay, isLooping)
+    }
+
+    private companion object {
+
+        val KEY_SECONDS_CHANGE = doublePreferencesKey(name = "secondsChange")
+        val KEY_SECONDS_STAY = doublePreferencesKey(name = "secondsStay")
+        val KEY_IS_LOOPING = booleanPreferencesKey(name = "isLooping")
+
     }
 }

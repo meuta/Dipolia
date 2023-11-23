@@ -1,6 +1,9 @@
 package com.example.dipolia.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.work.WorkManager
 import com.example.dipolia.data.LampsRepositoryImpl
 import com.example.dipolia.data.database.AppDatabase
@@ -14,6 +17,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
+
+private const val STREAMING_PREFERENCES_NAME = "streaming_preferences"
+
+val Context.streamingDataStore: DataStore<Preferences> by preferencesDataStore(
+    name = STREAMING_PREFERENCES_NAME
+)
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -55,14 +64,23 @@ object AppModule {
         return UDPClient()
     }
 
+    @Provides
+    @Singleton
+    fun provideUserDataStorePreferences(
+        @ApplicationContext applicationContext: Context
+    ): DataStore<Preferences> {
+        return applicationContext.streamingDataStore
+    }
+
     @Singleton
     @Provides
     fun provideRepository(dao: DipolsDao,
                           mapper: DipoliaMapper,
                           lampsRemoteDataSource: LampsRemoteDataSource,
-                          sender: UDPClient
+                          sender: UDPClient,
+                          dataStore: DataStore<Preferences>
     ): LampsRepository {
-        return LampsRepositoryImpl(dao, mapper, lampsRemoteDataSource, sender)
+        return LampsRepositoryImpl(dao, mapper, lampsRemoteDataSource, sender, dataStore)
     }
 
 

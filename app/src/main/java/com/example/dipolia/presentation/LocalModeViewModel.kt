@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
+import com.example.dipolia.data.datastore.StreamingPreferences
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.workers.SendColorListWorker
 import com.example.dipolia.domain.entities.DipolDomainEntity
@@ -28,20 +29,17 @@ class LocalModeViewModel @Inject constructor(
     private val changeLocalStateUseCase: ChangeLocalStateUseCase,
     private val saveLampListUseCase: SaveLampListUseCase,
     private val editLampNameUseCase: EditLampNameUseCase,
-    private val updateStreamingStateUseCase: UpdateStreamingStateUseCase,
     private val workManager: WorkManager,
-    private val mapper: DipoliaMapper
+    private val mapper: DipoliaMapper,
+    private val setLoopSecondsUseCase: SetLoopSecondsUseCase,
+    private val setIsLoopingUseCase: SetIsLoopingUseCase,
+    private val getLoopPreferencesUseCase: GetLoopPreferencesUseCase,
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
     val isBackGroundWork = getIsSteaming()
-
-    val uiStateFlow = MutableStateFlow(UiState())
-
-    var secondsChange = 0.0
-    var secondsStay = 0.0
-
+    
     private fun getIsSteaming(): LiveData<Boolean?> {
 
         val infoLDManual =
@@ -52,7 +50,10 @@ class LocalModeViewModel @Inject constructor(
             it.isNotEmpty() && it[0].state.toString() == "RUNNING"
         }
     }
-
+    
+    val uiStateFlow = MutableStateFlow(UiState())
+    
+    
     var myLampsSharedFlow: SharedFlow<List<LampDomainEntity>> = getLampsUseCase()
 
     var myLampsLD: LiveData<List<LampDomainEntity>> = myLampsSharedFlow.asLiveData()
@@ -80,6 +81,9 @@ class LocalModeViewModel @Inject constructor(
             }
         }
     }
+
+    val loopPreferencesFlow: Flow<StreamingPreferences> = getLoopPreferencesUseCase()
+    val loopPreferencesLD: LiveData<StreamingPreferences> = loopPreferencesFlow.asLiveData()
 
     init {
         scope.launch {
@@ -146,13 +150,23 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-    fun updateStreamingState(streamingState: StreamingState){
-        updateStreamingStateUseCase(streamingState)
-    }
 
-    fun updateUiState(uiState: UiState){
-        uiState.isLlLoopSettingsVisible?.let {isLlLoopSettingsVisible ->
+    fun updateUiState(uiState: UiState) {
+        uiState.isLlLoopSettingsVisible?.let { isLlLoopSettingsVisible ->
             uiStateFlow.update { uiStateFlow.value.copy(isLlLoopSettingsVisible = isLlLoopSettingsVisible) }
         }
     }
+
+    fun setLoopSeconds(secondsChange: Double, secondsStay: Double) {
+        scope.launch {
+            setLoopSecondsUseCase(secondsChange, secondsStay)
+        }
+    }
+    
+    fun setIsLooping(isLooping: Boolean) {
+        scope.launch {
+            setIsLoopingUseCase(isLooping)
+        }
+    }
+
 }

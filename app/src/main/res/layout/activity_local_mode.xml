@@ -505,7 +505,8 @@
                     android:gravity="center_vertical|end"
                     android:inputType="numberDecimal"
                     android:paddingHorizontal="@dimen/loop_settings_et_pading_horizontal"
-                    android:text="@string/_0.0"
+                    app:etLoopSecondsText="@{viewModel.loopPreferencesLD.secondsChange}"
+                    tools:text="@string/_0.0"
                     android:textColor="@color/colorHighlighted"
                     android:textSize="@dimen/loop_settings_et_text_size"
                     tools:ignore="Autofill, LabelFor" />
@@ -541,7 +542,8 @@
                     android:gravity="center_vertical|end"
                     android:inputType="numberDecimal"
                     android:paddingHorizontal="@dimen/loop_settings_et_pading_horizontal"
-                    android:text="@string/_0.0"
+                    app:etLoopSecondsText="@{viewModel.loopPreferencesLD.secondsStay}"
+                    tools:text="@string/_0.0"
                     android:textColor="@color/colorHighlighted"
                     android:textSize="@dimen/loop_settings_et_text_size"
                     tools:ignore="Autofill, LabelFor" />
@@ -694,7 +696,8 @@
                     android:buttonTint="@color/colorHighlighted"
                     android:text="@string/manual_mode"
                     android:textColor="@color/colorHighlighted"
-                    android:textSize="@dimen/button_text_size" />
+                    android:textSize="@dimen/button_text_size"
+                    />
 
                 <RadioButton
                     android:id="@+id/radio_loop"
@@ -704,7 +707,8 @@
                     android:buttonTint="@color/colorHighlighted"
                     android:text="@string/loop_mode"
                     android:textColor="@color/colorHighlighted"
-                    android:textSize="@dimen/button_text_size" />
+                    android:textSize="@dimen/button_text_size"
+                    />
             </RadioGroup>
 
         </LinearLayout>

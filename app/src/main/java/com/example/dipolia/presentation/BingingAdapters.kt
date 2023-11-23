@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.util.Log
 import android.view.View
 import android.view.View.*
+import android.widget.EditText
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
@@ -83,15 +84,6 @@ fun setSelectedVisibility(view: View, isSelected: Boolean) {
 }
 
 
-//@BindingAdapter("lampControlLayoutVisibility")
-//fun setLampControlLayoutVisibility(view: View, notEmpty: Boolean){
-//    Log.d("setLampControlLayoutVisibility", "$notEmpty")
-//    if (notEmpty) {
-//        view.visibility = VISIBLE
-//    } else {
-//        view.visibility = INVISIBLE
-//    }
-//}
 @BindingAdapter("viewPleaseSelectText")
 fun setViewPleaseSelectText(textView: TextView, notEmpty: Boolean) {
     Log.d("setLampControlLayoutVisibility", "$notEmpty")
@@ -136,16 +128,6 @@ fun setFiveLightsControlLayoutVisibility(view: View, lampType: LampType?) {
 }
 
 
-//@BindingAdapter("selectedButtonRemoveVisibility")
-//fun setSelectedButtonRemoveVisibility(textView: TextView, list: List<DipolDomainEntity>?){
-//    if (list != null && list.isNotEmpty()) {
-//        textView.visibility = VISIBLE
-//    } else {
-//        textView.visibility = INVISIBLE
-//    }
-//}
-
-
 @BindingAdapter("workerButtonText")
 fun setWorkerButtonText(textView: TextView, isRunning: Boolean) {
     if (isRunning) {
@@ -153,4 +135,11 @@ fun setWorkerButtonText(textView: TextView, isRunning: Boolean) {
     } else {
         textView.text = textView.context.getString(R.string.background_work_start)
     }
+}
+
+
+@BindingAdapter("etLoopSecondsText")
+fun setEtLoopSecondsText(editText: EditText, seconds: Double) {
+    editText.setText(seconds.toString())
+
 }
