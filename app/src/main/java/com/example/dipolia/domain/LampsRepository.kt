@@ -6,9 +6,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface LampsRepository {
 
-    suspend fun sendFollowMe()
-    suspend fun collectList()
-
+    fun collectList()
     fun getLatestLampList(): SharedFlow<List<LampDomainEntity>>
 
     fun selectLamp(lampId: String)
@@ -30,5 +28,6 @@ interface LampsRepository {
 
     fun getIsLooping(): StateFlow<Boolean>
     fun getLoopSeconds(): StateFlow<Pair<Double, Double>>
+
 
 }

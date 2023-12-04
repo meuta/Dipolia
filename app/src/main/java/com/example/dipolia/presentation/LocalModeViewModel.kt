@@ -20,7 +20,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocalModeViewModel @Inject constructor(
-    private val sendFollowMeUseCase: SendFollowMeUseCase,
     private val collectListUseCase: CollectListUseCase,
     private val getLampsUseCase: GetConnectedLampsUseCase,
     private val selectItemUseCase: SelectLampUseCase,
@@ -39,7 +38,7 @@ class LocalModeViewModel @Inject constructor(
     private val scope = CoroutineScope(Dispatchers.IO)
 
     val isBackGroundWork = getIsSteaming()
-    
+
     private fun getIsSteaming(): LiveData<Boolean?> {
 
         val infoLDManual =
@@ -50,10 +49,10 @@ class LocalModeViewModel @Inject constructor(
             it.isNotEmpty() && it[0].state.toString() == "RUNNING"
         }
     }
-    
+
     val uiStateFlow = MutableStateFlow(UiState())
-    
-    
+
+
     var myLampsSharedFlow: SharedFlow<List<LampDomainEntity>> = getLampsUseCase()
 
     var myLampsLD: LiveData<List<LampDomainEntity>> = myLampsSharedFlow.asLiveData()
@@ -89,12 +88,7 @@ class LocalModeViewModel @Inject constructor(
     val loopSecondsLD: LiveData<Pair<Double?, Double?>> = loopSecondsFlow.asLiveData()
 
     init {
-        scope.launch {
-            sendFollowMeUseCase()
-        }
-        scope.launch {
-            collectListUseCase()
-        }
+        collectListUseCase()
     }
 
 
@@ -165,7 +159,7 @@ class LocalModeViewModel @Inject constructor(
             setLoopSecondsUseCase(secondsChange, secondsStay)
         }
     }
-    
+
     fun setIsLooping(isLooping: Boolean) {
         scope.launch {
             setIsLoopingUseCase(isLooping)

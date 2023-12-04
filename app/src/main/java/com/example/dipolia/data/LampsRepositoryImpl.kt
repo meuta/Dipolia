@@ -20,6 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -59,51 +60,54 @@ class LampsRepositoryImpl @Inject constructor(
         }
     }.shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily)
 
+    private val scope = CoroutineScope(Dispatchers.IO)
 
-    override suspend fun sendFollowMe() {
-        while (true) {
-            sender.sendUDPSuspend("Follow me")
-            delay(1000)
+    override fun collectList() {
+        scope.launch {
+            while (true) {
+                sender.sendUDPSuspend("Follow me")
+                Log.d("LampsRepositoryImpl", "sendUDPSuspend(Follow me)")
+                delay(1000)
+            }
         }
-    }
+        scope.launch {
+            while (true) {
+                lampsRemoteDataSource.myLampDto.collect { lampDto ->
 
-    override suspend fun collectList() {
-        while (true) {
-            lampsRemoteDataSource.myLampDto.collect { lampDto ->
-
-                if (lampDto.id in lampEntityList.map { it.id }) {
-                    lampEntityList.withIndex().find { lamp -> lamp.value.id == lampDto.id }?.let {
-                        it.value.lastConnection = lampDto.lastConnection
-                        lampEntityList[it.index] = it.value
-                        Log.d(
-                            "collectList", "delay test ${
-                                lampEntityList.map { lamp ->
+                    if (lampDto.id in lampEntityList.map { it.id }) {
+                        lampEntityList.withIndex().find { lamp -> lamp.value.id == lampDto.id }?.let {
+                            it.value.lastConnection = lampDto.lastConnection
+                            lampEntityList[it.index] = it.value
+                            Log.d(
+                                "collectList", "delay test ${
+                                    lampEntityList.map { lamp ->
 //                                    listOf(lamp.id, lamp.selected, lamp.c, lamp.lastConnection)
-                                    listOf(lamp.id, lamp.lastConnection)
-                                }
-                            }"
-                        )
-                    }
+                                        listOf(lamp.id, lamp.lastConnection)
+                                    }
+                                }"
+                            )
+                        }
 
-                } else {
-                    val lampDomainEntity = mapper.mapLampDtoToEntity(lampDto)
-
-                    val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
-                    Log.d("collectList", "itemFromDb = $itemFromDb")
-                    if (itemFromDb == null) {
-                        val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
-                        dipolsDao.addLampItem(itemToAdd)
                     } else {
-                        lampDomainEntity.c = itemFromDb.colorList
-                        lampDomainEntity.lampName = itemFromDb.lampName
-                    }
-                    lampEntityList.add(lampDomainEntity)
+                        val lampDomainEntity = mapper.mapLampDtoToEntity(lampDto)
 
+                        val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
+                        Log.d("collectList", "itemFromDb = $itemFromDb")
+                        if (itemFromDb == null) {
+                            val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
+                            dipolsDao.addLampItem(itemToAdd)
+                        } else {
+                            lampDomainEntity.c = itemFromDb.colorList
+                            lampDomainEntity.lampName = itemFromDb.lampName
+                        }
+                        lampEntityList.add(lampDomainEntity)
+
+                    }
+                    Log.d(
+                        "TEST",
+                        " = ${lampEntityList.map { it.id to it.lastConnection }}"
+                    )
                 }
-                Log.d(
-                    "TEST",
-                    " = ${lampEntityList.map { it.id to it.lastConnection }}"
-                )
             }
         }
     }
