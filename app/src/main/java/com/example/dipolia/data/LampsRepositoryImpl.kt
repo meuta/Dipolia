@@ -211,32 +211,8 @@ class LampsRepositoryImpl @Inject constructor(
         }
     }
 
-//    private val streamingStateFlow = MutableStateFlow(StreamingState())
 
-    override fun getStreamingState(): Flow<StreamingPreferences> {
-        return streamingPreferencesFlow
-    }
-
-//    override fun updateStreamingState(streamState: StreamingPreferences) {
-//        streamState.isLooping?.let {isLooping ->
-//            Log.d("updateStreamingState ", "streamState.isLooping = $isLooping")
-//            streamingStateFlow.update { streamingStateFlow.value.copy(isLooping = isLooping) }
-//        }
-//        Log.d("updateStreamingState ", "streamingStateFlow.value.isLooping = ${streamingStateFlow.value.isLooping}")
-//        streamState.secondsChange?.let {secondsChange ->
-//            Log.d("updateStreamingState ", "streamState.secondsChange = $secondsChange")
-//            streamingStateFlow.update { streamingStateFlow.value.copy(secondsChange = secondsChange) }
-//        }
-//        Log.d("updateStreamingState ", "streamingStateFlow.value.secondsChange = ${streamingStateFlow.value.secondsChange}")
-//        streamState.secondsStay?.let {secondsStay ->
-//            Log.d("updateStreamingState ", "streamState.secondsStay = $secondsStay")
-//            streamingStateFlow.update { streamingStateFlow.value.copy(secondsStay = secondsStay) }
-//        }
-//        Log.d("updateStreamingState ", "streamingStateFlow.value.secondsStay = ${streamingStateFlow.value.secondsStay}")
-//    }
-
-
-    val streamingPreferencesFlow: Flow<StreamingPreferences> = streamingPreferences.data
+    private val isLoopingFlow: StateFlow<Boolean> = streamingPreferences.data
         .catch { exception ->
             /*
                  * dataStore.data throws an IOException when an error
@@ -249,8 +225,24 @@ class LampsRepositoryImpl @Inject constructor(
             }
         }.map { preferences ->
             // Get our name value, defaulting to "" if not set
-            mapLoopPreferences(preferences)
-        }
+            preferences[KEY_IS_LOOPING] ?: false
+        }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily, false)
+
+    private val loopSecondsFlow: StateFlow<Pair<Double, Double>> = streamingPreferences.data
+        .catch { exception ->
+            /*
+                 * dataStore.data throws an IOException when an error
+                 * is encountered when reading data
+                 */
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }.map { preferences ->
+            // Get our name value, defaulting to "" if not set
+            (preferences[KEY_SECONDS_CHANGE] ?: 0.0) to (preferences[KEY_SECONDS_STAY] ?: 0.0)
+        }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily, 0.0 to 0.0)
 
     override suspend fun setLoopSeconds(secondsChange: Double, secondsStay: Double){
         streamingPreferences.edit { preferences ->
@@ -265,10 +257,15 @@ class LampsRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getLoopPreferences(): Flow<StreamingPreferences> {
 
-        return streamingPreferencesFlow
+    override fun getIsLooping(): StateFlow<Boolean> {
+        return isLoopingFlow
     }
+
+    override fun getLoopSeconds(): StateFlow<Pair<Double, Double>> {
+        return loopSecondsFlow
+    }
+
 
     suspend fun fetchInitialPreferences() =
         mapLoopPreferences(streamingPreferences.data.first().toPreferences())
@@ -277,7 +274,6 @@ class LampsRepositoryImpl @Inject constructor(
         val secondsChange = preferences[KEY_SECONDS_CHANGE] ?: 0.0
         val secondsStay = preferences[KEY_SECONDS_STAY] ?: 0.0
         val isLooping = preferences[KEY_IS_LOOPING] ?: false
-//        val isLooping = preferences[KEY_IS_LOOPING] ?: true
         return StreamingPreferences(secondsChange, secondsStay, isLooping)
     }
 

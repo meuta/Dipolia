@@ -138,6 +138,7 @@ class MainActivity : AppCompatActivity() {
                     localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = true))
                     etSecondsChange.requestFocus()
                     etSecondsChange.setSelection(etSecondsChange.text.length)
+                    etSecondsStay.setSelection(etSecondsChange.text.length)
                     inputMethodManager.showSoftInput(etSecondsChange, 0)}
             }
 
@@ -220,17 +221,26 @@ class MainActivity : AppCompatActivity() {
             Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
         }
 
-        localModeViewModel.loopPreferencesLD.observe(this) {
-            if (it != null) {
-                Log.d("TEST_OF_SUBSCRIBE", "loopPreferencesLD: $it")
-                secondsChange = it.secondsChange
-                secondsStay = it.secondsStay
-                isLooping = it.isLooping
+        localModeViewModel.isLoopingLD.observe(this) {
+            it?.let {
+                Log.d("TEST_OF_SUBSCRIBE", "loopPreferencesLD.isLoopingLD: $it")
+
+                isLooping = it
                 isLooping?.let {isLooping ->
                     binding.radioManual.isChecked = !isLooping
                     binding.radioLoop.isChecked = isLooping
                 }
+            }
+        }
 
+        localModeViewModel.loopSecondsLD.observe(this) {
+            it.first?.let {
+                Log.d("TEST_OF_SUBSCRIBE", "loopPreferencesLD.loopSecondsLD.first: $it")
+                secondsChange = it
+            }
+            it.second?.let {
+                Log.d("TEST_OF_SUBSCRIBE", "loopPreferencesLD.loopSecondsLD.second: $it")
+                secondsStay = it
             }
         }
     }

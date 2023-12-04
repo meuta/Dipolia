@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.*
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
-import com.example.dipolia.data.datastore.StreamingPreferences
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.data.workers.SendColorListWorker
 import com.example.dipolia.domain.entities.DipolDomainEntity
@@ -33,7 +32,8 @@ class LocalModeViewModel @Inject constructor(
     private val mapper: DipoliaMapper,
     private val setLoopSecondsUseCase: SetLoopSecondsUseCase,
     private val setIsLoopingUseCase: SetIsLoopingUseCase,
-    private val getLoopPreferencesUseCase: GetLoopPreferencesUseCase,
+    private val getIsLoopingUseCase: GetIsLoopingUseCase,
+    private val getLoopSecondsUseCase: GetLoopSecondsUseCase,
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -82,8 +82,11 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-    val loopPreferencesFlow: Flow<StreamingPreferences> = getLoopPreferencesUseCase()
-    val loopPreferencesLD: LiveData<StreamingPreferences> = loopPreferencesFlow.asLiveData()
+    val isLoopingFlow: StateFlow<Boolean> = getIsLoopingUseCase()
+    val loopSecondsFlow: StateFlow<Pair<Double, Double>> = getLoopSecondsUseCase()
+
+    val isLoopingLD: LiveData<Boolean?> = isLoopingFlow.asLiveData()
+    val loopSecondsLD: LiveData<Pair<Double?, Double?>> = loopSecondsFlow.asLiveData()
 
     init {
         scope.launch {

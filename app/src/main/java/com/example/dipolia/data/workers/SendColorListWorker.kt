@@ -7,7 +7,8 @@ import androidx.work.*
 import com.example.dipolia.data.network.UDPClient
 import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.domain.useCases.GetConnectedLampsUseCase
-import com.example.dipolia.domain.useCases.GetLoopPreferencesUseCase
+import com.example.dipolia.domain.useCases.GetIsLoopingUseCase
+import com.example.dipolia.domain.useCases.GetLoopSecondsUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +24,8 @@ class SendColorListWorker @AssistedInject constructor(
     @Assisted workerParameters: WorkerParameters,
     private val sender: UDPClient,
     private val getLampsUseCase: GetConnectedLampsUseCase,
-    private val getLoopPreferencesUseCase: GetLoopPreferencesUseCase
+    private val getIsLoopingUseCase: GetIsLoopingUseCase,
+    private val getLoopSecondsUseCase: GetLoopSecondsUseCase,
 ) : CoroutineWorker(context, workerParameters) {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -34,14 +36,20 @@ class SendColorListWorker @AssistedInject constructor(
         var secondsStay = 0
 
         scope.launch {
-            getLoopPreferencesUseCase().collect {streamingState ->
+            getIsLoopingUseCase().collect {
 
-                Log.d("getLoopPreferencesUseCase ", "isLooping = ${streamingState.isLooping}")
-                Log.d("getLoopPreferencesUseCase ", "secondsChange = ${streamingState.secondsChange}")
-                Log.d("getLoopPreferencesUseCase ", "secondsStay = ${streamingState.secondsStay}")
-                streamingState.isLooping?.let { isLooping = it}
-                streamingState.secondsChange?.let { secondsChange = (it*10).toInt()}
-                streamingState.secondsStay?.let { secondsStay = (it*10).toInt()}
+                Log.d("getIsLoopingUseCase ", "isLooping = $it")
+                isLooping = it
+            }
+        }
+
+        scope.launch {
+            getLoopSecondsUseCase().collect {
+
+                Log.d("getLoopSecondsUseCase ", "secondsChange = ${it.first}")
+                Log.d("getLoopSecondsUseCase ", "secondsStay = ${it.second}")
+                secondsChange = (it.first*10).toInt()
+                secondsStay = (it.second*10).toInt()
             }
         }
 

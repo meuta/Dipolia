@@ -1,9 +1,8 @@
 package com.example.dipolia.domain
 
-import com.example.dipolia.data.datastore.StreamingPreferences
 import com.example.dipolia.domain.entities.LampDomainEntity
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 
 interface LampsRepository {
 
@@ -25,11 +24,11 @@ interface LampsRepository {
 
     fun editLampName(lampId: String, newName: String)
 
-    fun getStreamingState(): Flow<StreamingPreferences>
 
     suspend fun setLoopSeconds(secondsChange: Double, secondsStay: Double)
     suspend fun setIsLooping(isLooping: Boolean)
 
-    fun getLoopPreferences(): Flow<StreamingPreferences>
+    fun getIsLooping(): StateFlow<Boolean>
+    fun getLoopSeconds(): StateFlow<Pair<Double, Double>>
 
 }
