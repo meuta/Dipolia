@@ -180,26 +180,16 @@ class LampsRepositoryImpl @Inject constructor(
                 val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
                 var stringToSend = ""
 
+                val tints = lamp.c.colors.map { BigDecimal(it).setScale(3, RoundingMode.HALF_DOWN) }
+
                 if (lamp.lampType == LampType.DIPOL) {
 
-                    val r1 = (BigDecimal(lamp.c.colors[0]).setScale(3, RoundingMode.HALF_DOWN))
-                    val g1 = (BigDecimal(lamp.c.colors[1]).setScale(3, RoundingMode.HALF_DOWN))
-                    val b1 = (BigDecimal(lamp.c.colors[2]).setScale(3, RoundingMode.HALF_DOWN))
-                    val r2 = (BigDecimal(lamp.c.colors[3]).setScale(3, RoundingMode.HALF_DOWN))
-                    val g2 = (BigDecimal(lamp.c.colors[4]).setScale(3, RoundingMode.HALF_DOWN))
-                    val b2 = (BigDecimal(lamp.c.colors[5]).setScale(3, RoundingMode.HALF_DOWN))
-
-                    stringToSend = "r1=$r1;g1=$g1;b1=$b1;r2=$r2;g2=$g2;b2=$b2;rcs=$rcs"
+                    stringToSend = "r1=${tints[0]};g1=${tints[1]};b1=${tints[2]};r2=${tints[3]};g2=${tints[4]};b2=${tints[5]};rcs=$rcs"
 
                 } else if (lamp.lampType == LampType.FIVE_LIGHTS) {
 
-                    val r = (BigDecimal(lamp.c.colors[0]).setScale(3, RoundingMode.HALF_DOWN))
-                    val g = (BigDecimal(lamp.c.colors[1]).setScale(3, RoundingMode.HALF_DOWN))
-                    val b = (BigDecimal(lamp.c.colors[2]).setScale(3, RoundingMode.HALF_DOWN))
-                    val w = (BigDecimal(lamp.c.colors[3]).setScale(3, RoundingMode.HALF_DOWN))
-                    val u = (BigDecimal(lamp.c.colors[4]).setScale(3, RoundingMode.HALF_DOWN))
+                    stringToSend = "r=${tints[0]};g=${tints[1]};b=${tints[2]};w=${tints[3]};u=${tints[4]}};rcs=$rcs"
 
-                    stringToSend = "r=$r;g=$g;b=$b;w=$w;u=$u;rcs=$rcs"
                 }
                 val address = sender.getInetAddressByName(lamp.ip)
 //                Log.d("sendColors", "$stringToSend, $address")
@@ -230,7 +220,7 @@ class LampsRepositoryImpl @Inject constructor(
         }.map { preferences ->
             // Get our name value, defaulting to "" if not set
             preferences[KEY_IS_LOOPING] ?: false
-        }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily, false)
+        }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, false)
 
     private val loopSecondsFlow: StateFlow<Pair<Double, Double>> = streamingPreferences.data
         .catch { exception ->
@@ -246,7 +236,7 @@ class LampsRepositoryImpl @Inject constructor(
         }.map { preferences ->
             // Get our name value, defaulting to "" if not set
             (preferences[KEY_SECONDS_CHANGE] ?: 0.0) to (preferences[KEY_SECONDS_STAY] ?: 0.0)
-        }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily, 0.0 to 0.0)
+        }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, 0.0 to 0.0)
 
     override suspend fun setLoopSeconds(secondsChange: Double, secondsStay: Double){
         streamingPreferences.edit { preferences ->

@@ -84,7 +84,6 @@ class LocalModeViewModel @Inject constructor(
     val isLoopingFlow: StateFlow<Boolean> = getIsLoopingUseCase()
     val loopSecondsFlow: StateFlow<Pair<Double, Double>> = getLoopSecondsUseCase()
 
-    val isLoopingLD: LiveData<Boolean?> = isLoopingFlow.asLiveData()
     val loopSecondsLD: LiveData<Pair<Double?, Double?>> = loopSecondsFlow.asLiveData()
 
     init {
@@ -126,7 +125,7 @@ class LocalModeViewModel @Inject constructor(
 
         if (workInfo.isNotEmpty() && workInfo[0].state.toString() == "RUNNING") {
             Log.d("onClick workerStartStop", "RUNNING")
-            workManager.cancelAllWork()
+            workManager.cancelUniqueWork(SendColorListWorker.WORK_NAME)
         } else {
             Log.d("onClick workerStartStop", "NOT RUNNING")
 

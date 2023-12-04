@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity() {
 
     private var secondsChange: Double? = null
     private var secondsStay: Double? = null
-    private var isLooping: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -138,7 +137,7 @@ class MainActivity : AppCompatActivity() {
                     localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = true))
                     etSecondsChange.requestFocus()
                     etSecondsChange.setSelection(etSecondsChange.text.length)
-                    etSecondsStay.setSelection(etSecondsChange.text.length)
+                    etSecondsStay.setSelection(etSecondsStay.text.length)
                     inputMethodManager.showSoftInput(etSecondsChange, 0)}
             }
 
@@ -221,17 +220,6 @@ class MainActivity : AppCompatActivity() {
             Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
         }
 
-        localModeViewModel.isLoopingLD.observe(this) {
-            it?.let {
-                Log.d("TEST_OF_SUBSCRIBE", "loopPreferencesLD.isLoopingLD: $it")
-
-                isLooping = it
-                isLooping?.let {isLooping ->
-                    binding.radioManual.isChecked = !isLooping
-                    binding.radioLoop.isChecked = isLooping
-                }
-            }
-        }
 
         localModeViewModel.loopSecondsLD.observe(this) {
             it.first?.let {
