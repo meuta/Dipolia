@@ -92,9 +92,7 @@ class LocalModeViewModel @Inject constructor(
 
 
     fun selectLamp(itemId: String) {
-        scope.launch {
-            selectItemUseCase(itemId)
-        }
+        selectItemUseCase(itemId)
     }
 
     fun editLampName(lampId: String, newName: String) {
@@ -102,9 +100,7 @@ class LocalModeViewModel @Inject constructor(
     }
 
     fun unselectLamp() {
-        scope.launch {
-            unselectLampUseCase()
-        }
+        unselectLampUseCase()
     }
 
     fun changeLocalState(id: String, index: Int, value: Int) {
@@ -128,14 +124,11 @@ class LocalModeViewModel @Inject constructor(
             workManager.cancelUniqueWork(SendColorListWorker.WORK_NAME)
         } else {
             Log.d("onClick workerStartStop", "NOT RUNNING")
-
-            scope.launch {
-                workManager.enqueueUniqueWork(
-                    SendColorListWorker.WORK_NAME,
-                    ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
-                    SendColorListWorker.makeRequest()
-                )
-            }
+            workManager.enqueueUniqueWork(
+                SendColorListWorker.WORK_NAME,
+                ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
+                SendColorListWorker.makeRequest()
+            )
         }
     }
 

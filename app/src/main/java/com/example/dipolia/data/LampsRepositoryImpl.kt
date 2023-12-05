@@ -36,7 +36,7 @@ class LampsRepositoryImpl @Inject constructor(
     private val streamingPreferences: DataStore<Preferences>
 ) : LampsRepository {
 
-
+    private val scope = CoroutineScope(Dispatchers.IO)
     private val lampEntityList = mutableListOf<LampDomainEntity>()
 
     private val lampListFlow: SharedFlow<List<LampDomainEntity>> = flow {
@@ -58,9 +58,9 @@ class LampsRepositoryImpl @Inject constructor(
             emit(latestLampList)
             delay(100)
         }
-    }.shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily)
+    }.shareIn(scope, SharingStarted.Lazily)
 
-    private val scope = CoroutineScope(Dispatchers.IO)
+
 
     override fun collectList() {
         scope.launch {
@@ -220,7 +220,7 @@ class LampsRepositoryImpl @Inject constructor(
         }.map { preferences ->
             // Get our name value, defaulting to "" if not set
             preferences[KEY_IS_LOOPING] ?: false
-        }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, false)
+        }.stateIn(scope, SharingStarted.Eagerly, false)
 
     private val loopSecondsFlow: StateFlow<Pair<Double, Double>> = streamingPreferences.data
         .catch { exception ->
@@ -236,7 +236,7 @@ class LampsRepositoryImpl @Inject constructor(
         }.map { preferences ->
             // Get our name value, defaulting to "" if not set
             (preferences[KEY_SECONDS_CHANGE] ?: 0.0) to (preferences[KEY_SECONDS_STAY] ?: 0.0)
-        }.stateIn(CoroutineScope(Dispatchers.IO), SharingStarted.Eagerly, 0.0 to 0.0)
+        }.stateIn(scope, SharingStarted.Eagerly, 0.0 to 0.0)
 
     override suspend fun setLoopSeconds(secondsChange: Double, secondsStay: Double){
         streamingPreferences.edit { preferences ->
