@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
@@ -71,44 +72,40 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupLoopSection() {
-        with(binding) {
 
-            etSecondsChange.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                }
+        val doubleAdaptor = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
 
-                override fun afterTextChanged(s: Editable?) {
-                    val string = s.toString()
-                    val length = string.length
-                    val symbol = string.elementAtOrNull(length - 3)
-                    if (symbol == '.') {
-                        etSecondsChange.setText(s?.dropLast(1))
-                        etSecondsChange.setSelection(etSecondsChange.text.length)
+            override fun afterTextChanged(s: Editable?) {
+                val string = s.toString()
+                val length = string.length
+                val index = string.indexOf('.')
+                if (index > -1 && index < length - 2) {
+                    with(binding) {
+                        if (etSecondsChange.text.hashCode() == s.hashCode()) {
+                            dropLastSymbols(etSecondsChange, string)
+                        } else if (etSecondsStay.text.hashCode() == s.hashCode()) {
+                            dropLastSymbols(etSecondsStay, string)
+                        }
                     }
                 }
-            })
-
-            etSecondsStay.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                    val string = s.toString()
-                    val length = string.length
-                    val symbol = string.elementAtOrNull(length - 3)
-                    if (symbol == '.') {
-                        etSecondsStay.setText(s?.dropLast(1))
-                        etSecondsStay.setSelection(etSecondsStay.text.length)
-                    }
-                }
-            })
+            }
         }
+
+        with(binding) {
+            etSecondsChange.addTextChangedListener(doubleAdaptor)
+            etSecondsStay.addTextChangedListener(doubleAdaptor)
+        }
+    }
+
+    private fun dropLastSymbols(et: EditText, string: String) {
+
+        et.setText(string.dropLast(string.length - 2 - string.indexOf('.')))
+        et.setSelection(et.text.length)
     }
 
 
@@ -126,27 +123,29 @@ class MainActivity : AppCompatActivity() {
             btnLoopSettings.setOnClickListener {
                 val inputMethodManager =
                     getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-
                 val isVisible = localModeViewModel.uiStateFlow.value.isLlLoopSettingsVisible
-                if (isVisible == true){
+                if (isVisible == true) {
                     localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
+                etSecondsChange.setText(secondsChange.toString())
+                etSecondsStay.setText(secondsStay.toString())
                     inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
-                    etSecondsChange.setText(secondsChange.toString())
-                    etSecondsStay.setText(secondsStay.toString())
+                    Log.d("btnLoopSettings", "$secondsChange")
                 } else {
                     localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = true))
                     etSecondsChange.requestFocus()
                     etSecondsChange.setSelection(etSecondsChange.text.length)
                     etSecondsStay.setSelection(etSecondsStay.text.length)
-                    inputMethodManager.showSoftInput(etSecondsChange, 0)}
+                    inputMethodManager.showSoftInput(etSecondsChange, 0)
+                }
             }
 
             btnSaveLoopSettings.setOnClickListener {
-
+                val secondsChange = etSecondsChange.text?.toString()?.toDoubleOrNull() ?: 0.0
+                val secondsStay = etSecondsStay.text?.toString()?.toDoubleOrNull() ?: 0.0
                 localModeViewModel.setLoopSeconds(
-                    etSecondsChange.text?.toString()?.toDoubleOrNull() ?: 0.0,
-                    etSecondsStay.text?.toString()?.toDoubleOrNull() ?: 0.0
-                    )
+                    secondsChange.also { etSecondsChange.setText(it.toString()) },
+                    secondsStay.also { etSecondsStay.setText(it.toString()) }
+                )
 
                 localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
                 val inputMethodManager =
@@ -221,15 +220,16 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        localModeViewModel.loopSecondsLD.observe(this) {
-            it.first?.let {
-                Log.d("TEST_OF_SUBSCRIBE", "loopPreferencesLD.loopSecondsLD.first: $it")
-                secondsChange = it
-            }
-            it.second?.let {
-                Log.d("TEST_OF_SUBSCRIBE", "loopPreferencesLD.loopSecondsLD.second: $it")
-                secondsStay = it
-            }
+        localModeViewModel.loopSecondsLD.observe(this) { pair ->
+            Log.d("TEST_OF_SUBSCRIBE_LoopSettings", "Pair: $pair")
+            Log.d("TEST_OF_SUBSCRIBE_LoopSettings", "change1 $secondsChange")
+            Log.d("TEST_OF_SUBSCRIBE_LoopSettings", "stay1 $secondsStay")
+//            secondsChange = pair.first ?: 0.0
+            secondsChange = (pair.first ?: 0.0).also { binding.etSecondsChange.setText(it.toString()) }
+            Log.d("TEST_OF_SUBSCRIBE_LoopSettings", "change2 $secondsChange")
+//            secondsStay = pair.second ?: 0.0
+            secondsStay = (pair.second ?: 0.0).also { binding.etSecondsStay.setText(it.toString()) }
+            Log.d("TEST_OF_SUBSCRIBE_LoopSettings", "stay2 $secondsStay")
         }
     }
 
