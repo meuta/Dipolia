@@ -42,11 +42,8 @@ class LampsRepositoryImpl @Inject constructor(
     private val lampListFlow: SharedFlow<List<LampDomainEntity>> = flow {
         while (true) {
             val latestLampList = lampEntityList
-
             Log.d("TEST", "latestLampList = ${
-                    latestLampList.map {
-                        listOf(it.id, it.lampName, it.lastConnection)
-                    }
+                    latestLampList.map { listOf(it.id, it.lampName, it.lastConnection) }
                 }")
             emit(latestLampList)
             delay(100)
@@ -70,7 +67,7 @@ class LampsRepositoryImpl @Inject constructor(
                     if (lampDto.id in lampEntityList.map { it.id }) {
                         lampEntityList.find { lamp -> lamp.id == lampDto.id }?.let {
                             it.lastConnection = lampDto.lastConnection
-                            Log.d("collectList", "delay test ${
+                            Log.d("collectList", "collect ${
                                     lampEntityList.map { lamp -> listOf(lamp.id, lamp.lastConnection) }
                                 }"
                             )
@@ -104,19 +101,17 @@ class LampsRepositoryImpl @Inject constructor(
 
 
     override fun selectLamp(lampId: String) {
-        val oldSelectedWithIndex = lampEntityList.withIndex().find { lamp -> lamp.value.selected }
-        lampEntityList.withIndex().find { lamp -> lamp.value.id == lampId }?.let { new ->
-            if (oldSelectedWithIndex?.value?.id != new.value.id) {
-                oldSelectedWithIndex?.let { old -> old.value.selected = false }
-                new.value.selected = true
+        val oldSelected = lampEntityList.find { lamp -> lamp.selected }
+        lampEntityList.find { lamp -> lamp.id == lampId }?.let { new ->
+            if (oldSelected?.id != new.id) {
+                oldSelected?.let { old -> old.selected = false }
+                new.selected = true
             }
         }
     }
 
     override fun unselectLamp() {
-        lampEntityList.withIndex().find { lamp -> lamp.value.selected }?.index?.let {
-            lampEntityList[it].selected = false
-        }
+        lampEntityList.find { lamp -> lamp.selected }?.let { it.selected = false }
     }
 
     override fun changeLocalState(id: String, index: Int, value: Double) {
@@ -178,9 +173,7 @@ class LampsRepositoryImpl @Inject constructor(
     }
 
     override fun editLampName(lampId: String, newName: String) {
-        lampEntityList.withIndex().find { lamp -> lamp.value.id == lampId }?.index?.let {
-            lampEntityList[it].lampName = newName
-        }
+        lampEntityList.find { lamp -> lamp.id == lampId }?.let { it.lampName = newName }
     }
 
 
