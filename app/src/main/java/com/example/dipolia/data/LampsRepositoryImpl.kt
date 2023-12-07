@@ -43,18 +43,11 @@ class LampsRepositoryImpl @Inject constructor(
         while (true) {
             val latestLampList = lampEntityList
 
-            Log.d(
-                "TEST",
-                "latestLampList = ${
+            Log.d("TEST", "latestLampList = ${
                     latestLampList.map {
-                        listOf(
-                            it.id,
-                            it.lampName,
-                            it.lastConnection
-                        )
+                        listOf(it.id, it.lampName, it.lastConnection)
                     }
-                }"
-            )
+                }")
             emit(latestLampList)
             delay(100)
         }
@@ -75,15 +68,10 @@ class LampsRepositoryImpl @Inject constructor(
                 lampsRemoteDataSource.myLampDto.collect { lampDto ->
 
                     if (lampDto.id in lampEntityList.map { it.id }) {
-                        lampEntityList.withIndex().find { lamp -> lamp.value.id == lampDto.id }?.let {
-                            it.value.lastConnection = lampDto.lastConnection
-                            lampEntityList[it.index] = it.value
-                            Log.d(
-                                "collectList", "delay test ${
-                                    lampEntityList.map { lamp ->
-//                                    listOf(lamp.id, lamp.selected, lamp.c, lamp.lastConnection)
-                                        listOf(lamp.id, lamp.lastConnection)
-                                    }
+                        lampEntityList.find { lamp -> lamp.id == lampDto.id }?.let {
+                            it.lastConnection = lampDto.lastConnection
+                            Log.d("collectList", "delay test ${
+                                    lampEntityList.map { lamp -> listOf(lamp.id, lamp.lastConnection) }
                                 }"
                             )
                         }
@@ -103,10 +91,7 @@ class LampsRepositoryImpl @Inject constructor(
                         lampEntityList.add(lampDomainEntity)
 
                     }
-                    Log.d(
-                        "TEST",
-                        " = ${lampEntityList.map { it.id to it.lastConnection }}"
-                    )
+                    Log.d("TEST", " = ${lampEntityList.map { it.id to it.lastConnection }}")
                 }
             }
         }
@@ -119,17 +104,11 @@ class LampsRepositoryImpl @Inject constructor(
 
 
     override fun selectLamp(lampId: String) {
-        val oldSelectedItemWithIndex =
-            lampEntityList.withIndex().find { lamp -> lamp.value.selected }
-        lampEntityList.withIndex().find { lamp -> lamp.value.id == lampId }?.let {
-            if (oldSelectedItemWithIndex?.value?.id != it.value.id) {
-                val oldSelectedItemToUpdate =
-                    oldSelectedItemWithIndex?.value?.copy(selected = false)
-                oldSelectedItemToUpdate?.let { item ->
-                    lampEntityList[oldSelectedItemWithIndex.index] = item
-                }
-                val newSelectedItemToUpdate = it.value.copy(selected = true)
-                lampEntityList[it.index] = newSelectedItemToUpdate
+        val oldSelectedWithIndex = lampEntityList.withIndex().find { lamp -> lamp.value.selected }
+        lampEntityList.withIndex().find { lamp -> lamp.value.id == lampId }?.let { new ->
+            if (oldSelectedWithIndex?.value?.id != new.value.id) {
+                oldSelectedWithIndex?.let { old -> old.value.selected = false }
+                new.value.selected = true
             }
         }
     }
@@ -143,18 +122,17 @@ class LampsRepositoryImpl @Inject constructor(
     override fun changeLocalState(id: String, index: Int, value: Double) {
         Log.d("LampsRepositoryImpl", "changeLocalState $id $index $value")
 
-        lampEntityList.withIndex().find { lamp -> lamp.value.id == id }?.let {
-            var colorList = it.value.c.colors.toMutableList()
+        lampEntityList.find { lamp -> lamp.id == id }?.let {
+            var colorList = it.c.colors.toMutableList()
             if (colorList.isEmpty()) {
-                colorList = when (it.value.lampType) {
+                colorList = when (it.lampType) {
                     LampType.DIPOL -> mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
                     LampType.FIVE_LIGHTS -> mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0)
                     else -> mutableListOf()
                 }
             }
             colorList[index] = value
-            val changedLamp = it.value.copy(c = ColorList(colorList))
-            lampEntityList[it.index] = changedLamp
+            it.c = ColorList(colorList)
         }
     }
 
