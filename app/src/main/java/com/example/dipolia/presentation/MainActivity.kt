@@ -267,25 +267,28 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setupSeekbars() {
+        var seekBarIndex: Int
         val seekAdapter = object :
             OnSeekBarChangeListener {
+
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
                 // write custom code for progress is changed
-                if (fromUser) {
-                    onUpdateSeekBar(seek)
-                }
+                seekBarIndex = setSeekBarIndex(seek)
+                if (fromUser) { onUpdateSeekBar(seek, seekBarIndex) }
                 Log.d("seekAdapter", "onProgressChanged ${seek.id} fromUser = $fromUser")
             }
 
             override fun onStartTrackingTouch(seek: SeekBar) {
                 // write custom code for progress is started
-                onUpdateSeekBar(seek)
+                seekBarIndex = setSeekBarIndex(seek)
+                onUpdateSeekBar(seek, seekBarIndex)
                 Log.d("seekAdapter", "onStartTrackingTouch ${seek.id}.")
             }
 
             override fun onStopTrackingTouch(seek: SeekBar) {
                 // write custom code for progress is stopped
-                onUpdateSeekBar(seek)
+                seekBarIndex = setSeekBarIndex(seek)
+                onUpdateSeekBar(seek, seekBarIndex)
                 Log.d("seekAdapter", "onStopTrackingTouch ${seek.id}")
             }
         }
@@ -321,22 +324,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun onUpdateSeekBar(seekBar: SeekBar) {
-        val progress = seekBar.progress
-        Log.d("onUpdateSeekBar", "progress = $progress")
 
-        var seekBarIndex = -1
-        if (seekBar in seekBarDipolList) {
-            seekBarIndex = seekBarDipolList.indexOf(seekBar)
-            Log.d("onUpdateSeekBar", "seekBarIndex = $seekBarIndex")
-        } else if (seekBar in seekBarFiveLightsList) {
-            seekBarIndex = seekBarFiveLightsList.indexOf(seekBar)
-            Log.d("onUpdateSeekBar", "seekBarFiveLightsIndex = $seekBarIndex")
+    private fun setSeekBarIndex(seek: SeekBar): Int {
+        return when (seek) {
+            in seekBarDipolList -> { seekBarDipolList.indexOf(seek) }
+            in seekBarFiveLightsList -> { seekBarFiveLightsList.indexOf(seek) }
+            else -> { -1 }
         }
-        val id = currentLamps.find { lamp -> lamp.selected }?.id
+    }
 
-        id?.let {
-            localModeViewModel.changeLocalState(it, seekBarIndex, progress)
+    private fun onUpdateSeekBar(seekBar: SeekBar, seekBarIndex: Int) {
+        selectedLampId?.let {
+            localModeViewModel.changeLocalState(it, seekBarIndex, seekBar.progress)
         }
     }
 
@@ -419,7 +418,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setFiveLightsSeekbars(fiveLightsDomainEntity: FiveLightsDomainEntity?) {
-//        Log.d("onDipolItemClickListener", "setFiveLightsSeekbars")
+        Log.d("onDipolItemClickListener", "setFiveLightsSeekbars")
         val fiveLights = fiveLightsDomainEntity ?: FiveLightsDomainEntity(
             "",
             "",

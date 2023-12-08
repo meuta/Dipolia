@@ -10,10 +10,10 @@ import javax.inject.Singleton
 @Singleton
 class LampsRemoteDataSource @Inject constructor(private val lampsApi: LampsApi) {
 
-
+    private var latestLamp : LampDto? = null
     val myLampDto: Flow<LampDto> = flow {
         while (true) {
-            val latestLamp = lampsApi.fetchLampDto()
+            latestLamp = lampsApi.fetchLampDto()
             Log.d("TEST", "latestLamp = ${latestLamp?.id}")
             latestLamp?.let {
                 emit(it) // Emits the result of the request to the flow

@@ -58,15 +58,17 @@ class LocalModeViewModel @Inject constructor(
     var myLampsLD: LiveData<List<LampDomainEntity>> = myLampsSharedFlow.asLiveData()
 
     val myDipolsListLD: LiveData<List<DipolDomainEntity>> = myLampsLD.map { list ->
-        list
+        list.asSequence()
             .filter { it.lampType == LampType.DIPOL && it.connected }
             .map { lamp -> mapper.mapLampEntityToDipolEntity(lamp) }
+            .toList()
     }
     val myFiveLightListLD: LiveData<List<FiveLightsDomainEntity>> =
         myLampsLD.map { list ->
-            list
+            list.asSequence()
                 .filter { it.lampType == LampType.FIVE_LIGHTS && it.connected }
                 .map { lamp -> mapper.mapLampEntityToFiveLightsEntity(lamp) }
+                .toList()
         }
     val selectedLampLD: LiveData<LampDomainEntity?> = myLampsLD.map() { list ->
         list.find { it.selected }

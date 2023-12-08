@@ -41,11 +41,7 @@ class LampsRepositoryImpl @Inject constructor(
 
     private val lampListFlow: SharedFlow<List<LampDomainEntity>> = flow {
         while (true) {
-            val latestLampList = lampEntityList
-            Log.d("TEST", "latestLampList = ${
-                    latestLampList.map { listOf(it.id, it.lampName, it.lastConnection) }
-                }")
-            emit(latestLampList)
+            emit(lampEntityList)
             delay(100)
         }
     }.shareIn(scope, SharingStarted.Lazily)
@@ -56,12 +52,10 @@ class LampsRepositoryImpl @Inject constructor(
         scope.launch {
             while (true) {
                 sender.sendUDPSuspend("Follow me")
-                Log.d("LampsRepositoryImpl", "sendUDPSuspend(Follow me)")
                 delay(1000)
             }
         }
         scope.launch {
-            while (true) {
                 lampsRemoteDataSource.myLampDto.collect { lampDto ->
 
                     if (lampDto.id in lampEntityList.map { it.id }) {
@@ -90,7 +84,6 @@ class LampsRepositoryImpl @Inject constructor(
                     }
                     Log.d("TEST", " = ${lampEntityList.map { it.id to it.lastConnection }}")
                 }
-            }
         }
     }
 
@@ -146,14 +139,15 @@ class LampsRepositoryImpl @Inject constructor(
 
     override suspend fun sendColors() {
         var rabbitColorSpeed = 0.5
+        var stringToSend = ""
+        val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
+        var tints: List<BigDecimal>
         while (true) {
 //            Log.d("sendColors", "${lampEntityList.map { it.id to it.c }}")
 
             for (lamp in lampEntityList) {
-                val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
-                var stringToSend = ""
 
-                val tints = lamp.c.colors.map { BigDecimal(it).setScale(3, RoundingMode.HALF_DOWN) }
+                tints = lamp.c.colors.map { BigDecimal(it).setScale(3, RoundingMode.HALF_DOWN) }
 
                 if (lamp.lampType == LampType.DIPOL) {
 

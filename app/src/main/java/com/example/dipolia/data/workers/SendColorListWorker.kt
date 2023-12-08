@@ -29,14 +29,21 @@ class SendColorListWorker @AssistedInject constructor(
 
 
     private var isLooping = false
-    private var secondsChange = 0
-    private var secondsStay = 0
+    private var secChange = 0
+    private var secStay = 0
 
     override suspend fun doWork(): Result = coroutineScope {
 
         var rabbitColorSpeed = 0.5
+        val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
+        var stringToSend = ""
 
         var count = 0
+        var period = 0
+        var factor: Int
+        val dipolDif = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        var tints: List<BigDecimal>
+
         this.launch {
             getIsLoopingUseCase().collectLatest { isL ->
                 Log.d("getIsLoopingUseCase ", "isLooping = $isL")
@@ -48,8 +55,9 @@ class SendColorListWorker @AssistedInject constructor(
             getLoopSecondsUseCase().collectLatest { pair ->
                 Log.d("getLoopSecondsUseCase ", "secondsChange = ${pair.first}")
                 Log.d("getLoopSecondsUseCase ", "secondsStay = ${pair.second}")
-                secondsChange = (pair.first * 10).toInt()
-                secondsStay = (pair.second * 10).toInt()
+                secChange = (pair.first * 10).toInt()
+                secStay = (pair.second * 10).toInt()
+                period = (secChange + secStay) * 2
             }
         }
 
@@ -60,9 +68,8 @@ class SendColorListWorker @AssistedInject constructor(
 //                Log.d("getLampsUseCase().collect ", "secondsChange = $secondsChange")
 //                Log.d("getLampsUseCase().collect ", "secondsStay = $secondsStay")
 
-                if (isLooping && (secondsChange > 0)) {
+                if (isLooping && (secChange > 0)) {
                     count += 1
-                    val period = (secondsChange + secondsStay) * 2
                     count %= period
                 }
 
@@ -71,46 +78,41 @@ class SendColorListWorker @AssistedInject constructor(
 //                    Log.d("SendColorListWorker", "Lamp = ${lamp.id to lamp.c }")
 
                     if (lamp.c.colors.isNotEmpty()) {
-                        val rcs = (BigDecimal(rabbitColorSpeed).setScale(
-                            3,
-                            RoundingMode.HALF_DOWN
-                        ))
-                        var stringToSend = ""
+
 
                         if (lamp.lampType == LampType.DIPOL) {
                             Log.d("SendColorListWorker", "Lamp = ${lamp.id to lamp.c}")
 
-                            val rDif = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
-                            if (isLooping && (secondsChange > 0)) {
+                            if (isLooping && (secChange > 0)) {
                                 Log.d(
                                     "isLooping && (paceChange > 0) ",
                                     "isLooping = $isLooping"
                                 )
                                 Log.d(
                                     "isLooping && (paceChange > 0) ",
-                                    "secondsChange = $secondsChange"
+                                    "secondsChange = $secChange"
                                 )
                                 Log.d(
                                     "isLooping && (paceChange > 0) ",
-                                    "secondsStay = $secondsStay"
+                                    "secondsStay = $secStay"
                                 )
 
-                                val factor = when (count) {
-                                    in 1..secondsChange -> count
-                                    in secondsChange + 1..secondsChange + secondsStay -> secondsChange
-                                    in secondsChange + secondsStay + 1..(secondsChange * 2 + secondsStay) -> secondsChange * 2 + secondsStay + 1 - count
-                                    in secondsChange * 2 + secondsStay + 1..(secondsChange + secondsStay) * 2 -> 0
+                                factor = when (count) {
+                                    in 1..secChange -> count
+                                    in secChange + 1..secChange + secStay -> secChange
+                                    in secChange + secStay + 1..(secChange * 2 + secStay) -> secChange * 2 + secStay + 1 - count
+                                    in secChange * 2 + secStay + 1..(secChange + secStay) * 2 -> 0
                                     else -> 0
                                 }
 
-                                for (i in rDif.indices) {
-                                    rDif[i] =
-                                        (lamp.c.colors[i] - lamp.c.colors[(i + 3) % 6]) / secondsChange * factor
+                                for (i in dipolDif.indices) {
+                                    dipolDif[i] =
+                                        (lamp.c.colors[i] - lamp.c.colors[(i + 3) % 6]) / secChange * factor
                                 }
                             }
-                            val tints = lamp.c.colors.withIndex().map {
-                                BigDecimal(it.value - rDif[it.index]).setScale(
+                            tints = lamp.c.colors.withIndex().map {
+                                BigDecimal(it.value - dipolDif[it.index]).setScale(
                                     3,
                                     RoundingMode.HALF_DOWN
                                 )
@@ -124,7 +126,7 @@ class SendColorListWorker @AssistedInject constructor(
                             )
 
                         } else if (lamp.lampType == LampType.FIVE_LIGHTS) {
-                            val tints = lamp.c.colors.map {
+                            tints = lamp.c.colors.map {
                                 BigDecimal(it).setScale(
                                     3,
                                     RoundingMode.HALF_DOWN
@@ -135,8 +137,8 @@ class SendColorListWorker @AssistedInject constructor(
 
                             Log.d("sendColors", "string   =  $stringToSend")
                         }
-                        val address = sender.getInetAddressByName(lamp.ip)
-                        sender.sendUDPSuspend(stringToSend, address)
+
+                        sender.sendUDPSuspend(stringToSend, sender.getInetAddressByName(lamp.ip))
                     }
                 }
             }
