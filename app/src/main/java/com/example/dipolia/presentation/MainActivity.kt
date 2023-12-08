@@ -267,8 +267,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setupSeekbars() {
-        val seekAdapter = object :
-            OnSeekBarChangeListener {
+        val seekAdapter = object : OnSeekBarChangeListener {
 
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
                 // write custom code for progress is changed
@@ -297,9 +296,7 @@ class MainActivity : AppCompatActivity() {
                 localSeekBarDipol4,
                 localSeekBarDipol5,
                 localSeekBarDipol6
-            )
-            seekBarDipolList.map { it.apply { setOnSeekBarChangeListener(seekAdapter) } }
-
+            ).map { it.apply { setOnSeekBarChangeListener(seekAdapter) } }
 
             seekBarFiveLightsList = listOf(
                 localSeekBarFiveLights1,
@@ -307,14 +304,18 @@ class MainActivity : AppCompatActivity() {
                 localSeekBarFiveLights3,
                 localSeekBarFiveLights4,
                 localSeekBarFiveLights5
-            )
-            seekBarFiveLightsList.map { it.apply { setOnSeekBarChangeListener(seekAdapter) } }
+            ).map { it.apply { setOnSeekBarChangeListener(seekAdapter) } }
         }
     }
 
     private fun onUpdateSeekBar(seek: SeekBar) {
+        var index: Int
         selectedLampId?.let {
-            val index = seekBarDipolList.indexOf(seek) * seekBarFiveLightsList.indexOf(seek) * (-1)
+            index = when (seek) {
+                in seekBarDipolList -> seekBarDipolList.indexOf(seek)
+                in seekBarFiveLightsList -> seekBarFiveLightsList.indexOf(seek)
+                else -> -1
+            }
             localModeViewModel.changeLocalState(it, index, seek.progress)
         }
     }
