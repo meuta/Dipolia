@@ -20,7 +20,6 @@ import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.presentation.adaptes.DipolListAdapter
-import com.example.dipolia.presentation.utils.SeekbarWithIndex
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -36,8 +35,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var dipolListAdapter: DipolListAdapter
 
-    private lateinit var seekBarDipolList: List<SeekbarWithIndex>
-    private lateinit var seekBarFiveLightsList: List<SeekbarWithIndex>
+    private lateinit var seekBarDipolList: List<SeekBar>
+    private lateinit var seekBarFiveLightsList: List<SeekBar>
 
     private var currentLamps: List<LampDomainEntity> = emptyList()
 
@@ -299,7 +298,6 @@ class MainActivity : AppCompatActivity() {
                 localSeekBarDipol5,
                 localSeekBarDipol6
             )
-            seekBarDipolList.map { it.apply { index = seekBarDipolList.indexOf(it) }}
             seekBarDipolList.map { it.apply { setOnSeekBarChangeListener(seekAdapter) } }
 
 
@@ -310,14 +308,14 @@ class MainActivity : AppCompatActivity() {
                 localSeekBarFiveLights4,
                 localSeekBarFiveLights5
             )
-            seekBarFiveLightsList.map { it.apply { index = seekBarFiveLightsList.indexOf(it) }}
             seekBarFiveLightsList.map { it.apply { setOnSeekBarChangeListener(seekAdapter) } }
         }
     }
 
     private fun onUpdateSeekBar(seek: SeekBar) {
         selectedLampId?.let {
-            localModeViewModel.changeLocalState(it, (seek as SeekbarWithIndex).index, seek.progress)
+            val index = seekBarDipolList.indexOf(seek) * seekBarFiveLightsList.indexOf(seek) * (-1)
+            localModeViewModel.changeLocalState(it, index, seek.progress)
         }
     }
 
@@ -382,8 +380,8 @@ class MainActivity : AppCompatActivity() {
             listOf(0.0, 0.0, 0.0)
         )
         dipol.let {lamp ->
-            seekBarDipolList.take(3).map { it.progress =  (lamp.c1[it.index] * 100).toInt() }
-            seekBarDipolList.takeLast(3).map { it.progress =  (lamp.c2[it.index-3] * 100).toInt() }
+            seekBarDipolList.take(3).mapIndexed { index, seek -> seek.progress =  (lamp.c1[index] * 100).toInt() }
+            seekBarDipolList.takeLast(3).mapIndexed { index, seek -> seek.progress =  (lamp.c2[index] * 100).toInt() }
         }
     }
 
@@ -395,7 +393,7 @@ class MainActivity : AppCompatActivity() {
             listOf(0.0, 0.0, 0.0, 0.0, 0.0)
         )
         fiveLights.let { lamp ->
-            seekBarFiveLightsList.map { it.progress = (lamp.c[it.index] * 100).toInt() }
+            seekBarFiveLightsList.mapIndexed { index, seek -> seek.progress = (lamp.c[index] * 100).toInt() }
         }
     }
 
