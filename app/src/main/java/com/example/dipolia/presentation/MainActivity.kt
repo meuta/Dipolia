@@ -208,9 +208,9 @@ class MainActivity : AppCompatActivity() {
             lamp?.let {
                 Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: ${lamp.id}, ${lamp.c} ")
                 if (it.lampType == LampType.DIPOL) {
-                    setDipolSeekbars(mapper.mapLampEntityToDipolEntity(it))
+                    setDipolSeekbarsProgress(mapper.mapLampEntityToDipolEntity(it))
                 } else if (it.lampType == LampType.FIVE_LIGHTS) {
-                    setFiveLightsSeekbars(mapper.mapLampEntityToFiveLightsEntity(it))
+                    setFiveLightsSeekbarsProgress(mapper.mapLampEntityToFiveLightsEntity(it))
                 }
                 selectedLampId = it.id
             }
@@ -373,7 +373,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun setDipolSeekbars(dipolDomainEntity: DipolDomainEntity?) {
+    private fun setDipolSeekbarsProgress(dipolDomainEntity: DipolDomainEntity?) {
         Log.d("setDipolSeekbars", "dipolDomainEntity = $dipolDomainEntity")
         val dipol = dipolDomainEntity ?: DipolDomainEntity(
             "",
@@ -381,44 +381,21 @@ class MainActivity : AppCompatActivity() {
             listOf(0.0, 0.0, 0.0),
             listOf(0.0, 0.0, 0.0)
         )
-        dipol.let {
-            val progress1 = (it.c1[0] * 100).toInt()
-            val progress2 = (it.c1[1] * 100).toInt()
-            val progress3 = (it.c1[2] * 100).toInt()
-            val progress4 = (it.c2[0] * 100).toInt()
-            val progress5 = (it.c2[1] * 100).toInt()
-            val progress6 = (it.c2[2] * 100).toInt()
-            with(binding) {
-                localSeekBarDipol1.progress = progress1
-                localSeekBarDipol2.progress = progress2
-                localSeekBarDipol3.progress = progress3
-                localSeekBarDipol4.progress = progress4
-                localSeekBarDipol5.progress = progress5
-                localSeekBarDipol6.progress = progress6
-            }
+        dipol.let {lamp ->
+            seekBarDipolList.take(3).map { it.progress =  (lamp.c1[it.index] * 100).toInt() }
+            seekBarDipolList.takeLast(3).map { it.progress =  (lamp.c2[it.index-3] * 100).toInt() }
         }
     }
 
-    private fun setFiveLightsSeekbars(fiveLightsDomainEntity: FiveLightsDomainEntity?) {
+    private fun setFiveLightsSeekbarsProgress(fiveLightsDomainEntity: FiveLightsDomainEntity?) {
         Log.d("onDipolItemClickListener", "setFiveLightsSeekbars")
         val fiveLights = fiveLightsDomainEntity ?: FiveLightsDomainEntity(
             "",
             "",
             listOf(0.0, 0.0, 0.0, 0.0, 0.0)
         )
-        fiveLights.let {
-            val progress1 = (it.c[0] * 100).toInt()
-            val progress2 = (it.c[1] * 100).toInt()
-            val progress3 = (it.c[2] * 100).toInt()
-            val progress4 = (it.c[3] * 100).toInt()
-            val progress5 = (it.c[4] * 100).toInt()
-            with(binding) {
-                localSeekBarFiveLights1.progress = progress1
-                localSeekBarFiveLights2.progress = progress2
-                localSeekBarFiveLights3.progress = progress3
-                localSeekBarFiveLights4.progress = progress4
-                localSeekBarFiveLights5.progress = progress5
-            }
+        fiveLights.let { lamp ->
+            seekBarFiveLightsList.map { it.progress = (lamp.c[it.index] * 100).toInt() }
         }
     }
 
