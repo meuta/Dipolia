@@ -177,7 +177,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/seekbar_margin">
 
-                        <SeekBar
+                        <com.example.dipolia.presentation.utils.SeekbarWithIndex
                             android:id="@+id/local_seek_bar_dipol_1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -192,7 +192,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/seekbar_margin">
 
-                        <SeekBar
+                        <com.example.dipolia.presentation.utils.SeekbarWithIndex
                             android:id="@+id/local_seek_bar_dipol_2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -207,7 +207,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/seekbar_margin">
 
-                        <SeekBar
+                        <com.example.dipolia.presentation.utils.SeekbarWithIndex
                             android:id="@+id/local_seek_bar_dipol_3"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -253,7 +253,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/seekbar_margin">
 
-                        <SeekBar
+                        <com.example.dipolia.presentation.utils.SeekbarWithIndex
                             android:id="@+id/local_seek_bar_dipol_4"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -268,7 +268,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/seekbar_margin">
 
-                        <SeekBar
+                        <com.example.dipolia.presentation.utils.SeekbarWithIndex
                             android:id="@+id/local_seek_bar_dipol_5"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -283,7 +283,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/seekbar_margin">
 
-                        <SeekBar
+                        <com.example.dipolia.presentation.utils.SeekbarWithIndex
                             android:id="@+id/local_seek_bar_dipol_6"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -336,7 +336,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/seekbar_margin">
 
-                        <SeekBar
+                        <com.example.dipolia.presentation.utils.SeekbarWithIndex
                             android:id="@+id/local_seek_bar_five_lights_1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -351,7 +351,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/seekbar_margin">
 
-                        <SeekBar
+                        <com.example.dipolia.presentation.utils.SeekbarWithIndex
                             android:id="@+id/local_seek_bar_five_lights_2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -366,7 +366,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/seekbar_margin">
 
-                        <SeekBar
+                        <com.example.dipolia.presentation.utils.SeekbarWithIndex
                             android:id="@+id/local_seek_bar_five_lights_3"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -382,7 +382,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/seekbar_margin">
 
-                        <SeekBar
+                        <com.example.dipolia.presentation.utils.SeekbarWithIndex
                             android:id="@+id/local_seek_bar_five_lights_4"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -397,7 +397,7 @@
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/seekbar_margin">
 
-                        <SeekBar
+                        <com.example.dipolia.presentation.utils.SeekbarWithIndex
                             android:id="@+id/local_seek_bar_five_lights_5"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
