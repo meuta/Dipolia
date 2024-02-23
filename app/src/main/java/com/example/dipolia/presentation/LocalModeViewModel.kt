@@ -1,7 +1,10 @@
 package com.example.dipolia.presentation
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.map
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.example.dipolia.data.mapper.DipoliaMapper
@@ -10,18 +13,31 @@ import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
-import com.example.dipolia.domain.useCases.*
+import com.example.dipolia.domain.useCases.ChangeLocalStateUseCase
+import com.example.dipolia.domain.useCases.CollectListUseCase
+import com.example.dipolia.domain.useCases.EditLampNameUseCase
+import com.example.dipolia.domain.useCases.GetConnectedLampsUseCase
+import com.example.dipolia.domain.useCases.GetIsLoopingUseCase
+import com.example.dipolia.domain.useCases.GetLoopSecondsUseCase
+import com.example.dipolia.domain.useCases.SaveLampListUseCase
+import com.example.dipolia.domain.useCases.SelectLampUseCase
+import com.example.dipolia.domain.useCases.SetIsLoopingUseCase
+import com.example.dipolia.domain.useCases.SetLoopSecondsUseCase
+import com.example.dipolia.domain.useCases.UnselectLampUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LocalModeViewModel @Inject constructor(
-    private val collectListUseCase: CollectListUseCase,
-    private val getLampsUseCase: GetConnectedLampsUseCase,
+    collectListUseCase: CollectListUseCase,
+    getLampsUseCase: GetConnectedLampsUseCase,
     private val selectItemUseCase: SelectLampUseCase,
     private val unselectLampUseCase: UnselectLampUseCase,
     private val changeLocalStateUseCase: ChangeLocalStateUseCase,
@@ -31,8 +47,8 @@ class LocalModeViewModel @Inject constructor(
     private val mapper: DipoliaMapper,
     private val setLoopSecondsUseCase: SetLoopSecondsUseCase,
     private val setIsLoopingUseCase: SetIsLoopingUseCase,
-    private val getIsLoopingUseCase: GetIsLoopingUseCase,
-    private val getLoopSecondsUseCase: GetLoopSecondsUseCase,
+    getIsLoopingUseCase: GetIsLoopingUseCase,
+    getLoopSecondsUseCase: GetLoopSecondsUseCase,
 ) : ViewModel() {
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -77,6 +93,16 @@ class LocalModeViewModel @Inject constructor(
         lamp?.let {
             if (lamp.lampType == LampType.DIPOL) {
                 mapper.mapLampEntityToDipolEntity(lamp)
+            } else {
+                null
+            }
+        }
+    }
+
+    val selectedFiveLightsLD: LiveData<FiveLightsDomainEntity?> = selectedLampLD.map { lamp ->
+        lamp?.let {
+            if (lamp.lampType == LampType.FIVE_LIGHTS) {
+                mapper.mapLampEntityToFiveLightsEntity(lamp)
             } else {
                 null
             }

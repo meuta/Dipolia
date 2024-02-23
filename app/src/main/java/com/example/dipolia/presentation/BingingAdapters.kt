@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.example.dipolia.R
+import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
 
 
@@ -48,15 +49,6 @@ private fun colorToUI(colorList: List<Double>): String {
     )
 //    Log.d("bindLabelColor", "colorToUI $string")
     return string
-}
-
-@BindingAdapter("fiveLightsItemVisibility")
-fun setFiveLightsItemVisibility(view: View, isConnected: Boolean) {
-    if (isConnected) {
-        view.visibility = VISIBLE
-    } else {
-        view.visibility = INVISIBLE
-    }
 }
 
 @BindingAdapter("selectedBackground")
@@ -142,4 +134,10 @@ fun setWorkerButtonText(textView: TextView, isRunning: Boolean) {
 fun setEtLoopSecondsText(editText: EditText, seconds: Double) {
     editText.setText(seconds.toString())
 
+}
+
+
+@BindingAdapter("recyclerViewsDividerVisibility")
+fun setRecyclerViewsDividerVisibility(view: View, list: List<LampDomainEntity>?) {
+    view.visibility = if (list?.filter { it.connected }.isNullOrEmpty()) INVISIBLE else VISIBLE
 }

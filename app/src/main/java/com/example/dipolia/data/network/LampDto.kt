@@ -11,6 +11,6 @@ data class LampDto(
     var lastConnection: Long
 ) {
     val connected: Boolean
-        get() = lastConnection > System.currentTimeMillis() / 1000 - 20
-//        get() = lastConnection > System.currentTimeMillis() / 1000 - 60
+//        get() = lastConnection > System.currentTimeMillis() / 1000 - 20
+        get() = lastConnection > System.currentTimeMillis() / 1000 - 50
 }

@@ -43,88 +43,40 @@
             android:layout_width="@dimen/recycler_view_dipols_width"
             android:layout_height="0dp"
             android:layout_margin="@dimen/recycler_view_dipols_margin"
+            app:layout_constraintVertical_weight="1"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@+id/card_view_five_lights"
+            app:layout_constraintBottom_toTopOf="@+id/recycler_views_divider"
             app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/app_bar_layout"
             app:layout_constraintVertical_chainStyle="spread_inside"
             tools:listitem="@layout/item_dipol" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/card_view_five_lights"
+        <View
+            android:id="@+id/recycler_views_divider"
             android:layout_width="@dimen/recycler_view_dipols_width"
-            android:layout_height="@dimen/item_five_lights_height"
+            android:layout_height="@dimen/view_buttons_divider_height"
+            android:background="@color/colorSeekbarProgressWhite"
+            app:recyclerViewsDividerVisibility="@{viewModel.myLampsLD}"
+            app:layout_constraintBottom_toTopOf="@id/rv_five_lights_item_list"
+            app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_dipol_item_list" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_five_lights_item_list"
+            android:layout_width="@dimen/recycler_view_dipols_width"
+            android:layout_height="0dp"
+            app:layout_constraintVertical_weight="1"
             android:layout_margin="@dimen/recycler_view_dipols_margin"
-            android:background="@color/gray"
-            android:elevation="@dimen/item_card_view_elevation"
-            app:fiveLightsItemVisibility="@{viewModel.myFiveLightListLD[0].connected}"
-            app:layout_constraintBottom_toTopOf="@id/view_buttons_divider"
-            app:layout_constraintEnd_toEndOf="@+id/rv_dipol_item_list"
-            app:layout_constraintStart_toStartOf="@+id/rv_dipol_item_list"
-            app:layout_constraintTop_toBottomOf="@+id/rv_dipol_item_list">
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/view_buttons_divider"
+            app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recycler_views_divider"
+            app:layout_constraintVertical_chainStyle="spread_inside"
+            tools:listitem="@layout/item_dipol" />
 
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_five_lights"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/gray"
-                android:padding="@dimen/item_dipol_padding">
-
-
-                <FrameLayout
-                    android:id="@+id/fl_five_lights_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/gray"
-                    android:paddingBottom="@dimen/item_dipol_padding"
-                    app:layout_constraintBottom_toTopOf="@+id/view_local_color_label_five_lights_item"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/tv_five_lights_item"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/item_five_lights_text_view_height"
-                        android:gravity="center"
-                        android:padding="@dimen/item_lamp_text_padding"
-                        android:text="@{viewModel.myFiveLightListLD[0].currentLampName}"
-                        android:textColor="@color/colorHighlighted"
-                        android:textSize="@dimen/item_lamp_text_size"
-                        app:selectedBackground="@{viewModel.myFiveLightListLD[0].selected}"
-                        tools:text="Item" />
-
-                    <View
-                        android:id="@+id/view_selected_item"
-                        android:layout_width="@dimen/item_five_lights_selected_width"
-                        android:layout_height="@dimen/item_five_lights_selected_height"
-                        android:layout_gravity="center"
-                        android:layout_margin="@dimen/item_lamp_selected_margin"
-                        android:background="@drawable/item_selected_background"
-                        android:visibility="gone"
-                        app:selectedVisibility="@{viewModel.myFiveLightListLD[0].selected}"
-                        tools:visibility="visible" />
-
-                </FrameLayout>
-
-                <View
-                    android:id="@+id/view_local_color_label_five_lights_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/item_lamp_color_label_height"
-                    android:layout_gravity="center"
-                    android:background="@color/gray"
-                    app:fiveLightsLabelColor="@{viewModel.myFiveLightListLD[0].c}"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/fl_five_lights_item" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-        </androidx.cardview.widget.CardView>
 
         <FrameLayout
             android:id="@+id/current_lamp_layout"
@@ -416,7 +368,7 @@
                     android:layout_width="@dimen/color_label_five_lights_width"
                     android:layout_height="@dimen/color_label_height"
                     android:layout_margin="@dimen/color_label_margin"
-                    app:fiveLightsLabelColor="@{viewModel.myFiveLightListLD[0].c}"
+                    app:fiveLightsLabelColor="@{viewModel.selectedFiveLightsLD.c}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -570,7 +522,7 @@
             app:layout_constraintBottom_toTopOf="@id/ll_buttons"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/card_view_five_lights" />
+            app:layout_constraintTop_toBottomOf="@id/rv_five_lights_item_list" />
 
         <LinearLayout
             android:id="@+id/ll_edit_lamp_name_buttons"

@@ -9,7 +9,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +19,7 @@ import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.presentation.adaptes.DipolListAdapter
+import com.example.dipolia.presentation.adaptes.FiveLightsListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLocalModeBinding
 
     private lateinit var dipolListAdapter: DipolListAdapter
+    private lateinit var fiveLightsListAdapter: FiveLightsListAdapter
 
     private lateinit var seekBarDipolList: List<SeekBar>
     private lateinit var seekBarFiveLightsList: List<SeekBar>
@@ -189,18 +190,20 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        localModeViewModel.myDipolsListLD.observe(this) {
+        localModeViewModel.myDipolsListLD.observe(this) {list ->
             Log.d(
                 "TEST_OF_SUBSCRIBE",
-                "dipolList: ${it.map { item -> "${item.id}, ${item.selected}, ${item.c1}, ${item.c2}" }}"
+                "dipolList: ${list.map { item -> "${item.id}, ${item.selected}, ${item.c1}, ${item.c2}" }}"
             )
-            dipolListAdapter.submitList(it)
+            dipolListAdapter.submitList(list)
         }
 
         localModeViewModel.myFiveLightListLD.observe(this) { list ->
-            if (list.isNotEmpty()) {
-                Log.d("TEST_OF_SUBSCRIBE", "fiveLights: ${list[0].id} ${list[0].lampName}")
-            }
+                Log.d(
+                    "TEST_OF_SUBSCRIBE",
+                    "fiveLightsList: ${list.map { item -> "${item.id}, ${item.selected}, ${item.c}" }}"
+                )
+                fiveLightsListAdapter.submitList(list)
         }
 
         localModeViewModel.selectedLampLD.observe(this) { lamp ->
@@ -324,7 +327,9 @@ class MainActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
 
         dipolListAdapter = DipolListAdapter()
+        fiveLightsListAdapter = FiveLightsListAdapter()
         binding.rvDipolItemList.adapter = dipolListAdapter
+        binding.rvFiveLightsItemList.adapter = fiveLightsListAdapter
     }
 
     private fun setupClickListener() {
@@ -332,15 +337,9 @@ class MainActivity : AppCompatActivity() {
             selectLamp(it.id)
             Log.d("onDipolItemClickListener", "$it")
         }
-        with(binding) {
-            cardViewFiveLights.setOnClickListener {
-                selectLamp(currentLamps.find { lamp -> lamp.lampType == LampType.FIVE_LIGHTS }?.id)
-                Log.d("cardViewFiveLights", ".setOnClickListener")
-            }
-            tvFiveLightsItem.setOnClickListener {
-                selectLamp(currentLamps.find { lamp -> lamp.lampType == LampType.FIVE_LIGHTS }?.id)
-                Log.d("cardViewFiveLights", ".setOnClickListener")
-            }
+        fiveLightsListAdapter.onFiveLightsItemClickListener = {
+            selectLamp(it.id)
+            Log.d("onFiveLightsItemClickListener", "$it")
         }
     }
 
@@ -358,16 +357,12 @@ class MainActivity : AppCompatActivity() {
             binding.setEditNameViews(oldLampName)
         }
 
-        binding.tvFiveLightsItem.setOnLongClickListener {
-            Log.d("setupLongClickListener", "flFiveLightsItem.setOnLongClickListener")
-            val id = currentLamps.find { lamp -> lamp.lampType == LampType.FIVE_LIGHTS }?.id
-            editableNameLampId = id
-            val textView = it as TextView
-            val oldLampName = textView.text.toString()
+        fiveLightsListAdapter.onFiveLightsItemLongClickListener = {
+            Log.d("setupLongClickListener", "fiveLightsListAdapter.setOnLongClickListener")
+            editableNameLampId = it.id
+            val oldLampName = it.currentLampName
 
             binding.setEditNameViews(oldLampName)
-
-            true
         }
     }
 
