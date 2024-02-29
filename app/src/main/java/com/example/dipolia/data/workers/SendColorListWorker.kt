@@ -120,10 +120,7 @@ class SendColorListWorker @AssistedInject constructor(
                             stringToSend =
                                 "r1=${tints[0]};g1=${tints[1]};b1=${tints[2]};r2=${tints[3]};g2=${tints[4]};b2=${tints[5]};rcs=$rcs"
 
-                            Log.d(
-                                "SendColorListWorker",
-                                "Lamp = (${lamp.id}, count = $count  string =  $stringToSend"
-                            )
+                            Log.d(TAG, "doWork: Lamp = ${lamp.id}, ip = ${lamp.ip}, count = $count  string =  $stringToSend")
 
                         } else if (lamp.lampType == LampType.FIVE_LIGHTS) {
                             tints = lamp.c.colors.map {
@@ -135,7 +132,7 @@ class SendColorListWorker @AssistedInject constructor(
                             stringToSend =
                                 "r=${tints[0]};g=${tints[1]};b=${tints[2]};w=${tints[3]};u=${tints[4]}};rcs=$rcs"
 
-                            Log.d("sendColors", "string   =  $stringToSend")
+                            Log.d(TAG, "doWork: Lamp = ${lamp.id}, ip = ${lamp.ip}, string =  $stringToSend")
                         }
 
                         sender.sendUDPSuspend(stringToSend, sender.getInetAddressByName(lamp.ip))
@@ -150,6 +147,7 @@ class SendColorListWorker @AssistedInject constructor(
 
     companion object {
 
+        const val TAG = "SendColorListWorker"
         const val WORK_NAME = "SendColorListWorker"
 
         fun makeRequest(): OneTimeWorkRequest {

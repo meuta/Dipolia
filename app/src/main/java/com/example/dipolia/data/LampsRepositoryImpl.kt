@@ -18,12 +18,23 @@ import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.domain.entities.LampType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.util.Timer
+import java.util.TimerTask
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -39,22 +50,35 @@ class LampsRepositoryImpl @Inject constructor(
     private val scope = CoroutineScope(Dispatchers.IO)
     private val lampEntityList = mutableListOf<LampDomainEntity>()
 
-    private val lampListFlow: SharedFlow<List<LampDomainEntity>> = flow {
-        while (true) {
-            emit(lampEntityList)
-            delay(100)
-        }
+    private val lampListFlow: SharedFlow<List<LampDomainEntity>> = channelFlow<List<LampDomainEntity>> {
+
+        val timer = Timer()
+        timer.scheduleAtFixedRate(object: TimerTask() {
+            override fun run() {
+                launch {
+                        send(lampEntityList)
+                        Log.d(TAG, "run: emit(lampEntityList)")
+                }
+            }
+        }, 0, 1000)
+
+    awaitClose()
     }.shareIn(scope, SharingStarted.Lazily)
 
 
 
     override fun collectList() {
-        scope.launch {
-            while (true) {
-                sender.sendUDPSuspend("Follow me")
-                delay(1000)
+
+        val timer = Timer()
+        timer.scheduleAtFixedRate(object: TimerTask() {
+            override fun run() {
+                scope.launch {
+                    sender.sendUDPSuspend("Follow me")
+                    Log.d(TAG, "run: Follow me")
+                }
             }
-        }
+        }, 0, 1000)
+
         scope.launch {
                 lampsRemoteDataSource.myLampDto.collect { lampDto ->
 
@@ -242,5 +266,6 @@ class LampsRepositoryImpl @Inject constructor(
         val KEY_SECONDS_STAY = doublePreferencesKey(name = "secondsStay")
         val KEY_IS_LOOPING = booleanPreferencesKey(name = "isLooping")
 
+        private const val TAG = "LampsRepositoryImpl"
     }
 }
