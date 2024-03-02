@@ -16,14 +16,14 @@ private const val TAG = "BindingAdapters"
 
 @BindingAdapter("dipolLabelColor")
 fun bindDipolLabelColor(view: View, colorList: List<Double>?) {
-//    Log.d("View", "colorlist $colorList $view ")
+    Log.d(TAG, "bindDipolLabelColor: colorlist = $colorList ")
     val list = colorList ?: listOf(0.0, 0.0, 0.0)
     view.setBackgroundColor(Color.parseColor(colorToUI(list)))
 }
 
 @BindingAdapter("fiveLightsLabelColor")
 fun bindFiveLightsLabelColor(view: View, colorList: List<Double>?) {
-//    Log.d("View", "colorlist $colorList $view ")
+    Log.d(TAG, "bindFiveLightsLabelColor: colorlist = $colorList")
     val list = colorList ?: listOf(0.0, 0.0, 0.0, 0.0, 0.0)
     view.setBackgroundColor(Color.parseColor(colorFiveLightsToUI(list)))
 }
@@ -80,7 +80,7 @@ fun setSelectedVisibility(view: View, isSelected: Boolean) {
 
 @BindingAdapter("pleaseSelectTextViewVisibility")
 fun setPleaseSelectTextViewVisibility(view: View, visible: Boolean) {
-    Log.d(TAG, "setPleaseSelectTextViewVisibility: visible = $visible")
+//    Log.d(TAG, "setPleaseSelectTextViewVisibility: visible = $visible")
     if (visible) {view.visibility = VISIBLE
     } else {
         view.visibility = INVISIBLE
@@ -89,7 +89,7 @@ fun setPleaseSelectTextViewVisibility(view: View, visible: Boolean) {
 
 @BindingAdapter("dipolControlLayoutVisibility")
 fun setDipolControlLayoutVisibility(view: View, visible: Boolean) {
-    Log.d(TAG, "setDipolControlLayoutVisibility: visible = $visible")
+//    Log.d(TAG, "setDipolControlLayoutVisibility: visible = $visible")
     if (visible) {
         view.visibility = VISIBLE
     } else {
@@ -99,7 +99,7 @@ fun setDipolControlLayoutVisibility(view: View, visible: Boolean) {
 
 @BindingAdapter("fiveLightsControlLayoutVisibility")
 fun setFiveLightsControlLayoutVisibility(view: View, visible: Boolean) {
-    Log.d(TAG, "setFiveLightsControlLayoutVisibility: visible = $visible")
+//    Log.d(TAG, "setFiveLightsControlLayoutVisibility: visible = $visible")
     if (visible) {
         view.visibility = VISIBLE
     } else {

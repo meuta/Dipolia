@@ -206,7 +206,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        localModeViewModel.newSelectedDipolLD.observe(this) { dipol ->
+        localModeViewModel.selectedDipolLD.observe(this) { dipol ->
             Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: ${dipol?.id}")
             dipol?.let {
                 setDipolSeekbarsProgress(dipol)
@@ -214,7 +214,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        localModeViewModel.newSelectedFiveLightsLD.observe(this) { fiveLights ->
+        localModeViewModel.selectedFiveLightsLD.observe(this) { fiveLights ->
             Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: ${fiveLights?.id}")
             fiveLights?.let {
                 setFiveLightsSeekbarsProgress(fiveLights)

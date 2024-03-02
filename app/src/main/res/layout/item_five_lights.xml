@@ -62,7 +62,8 @@
                 android:layout_height="@dimen/item_lamp_color_label_height"
                 android:layout_gravity="center"
                 android:background="@color/colorPrimary"
-                app:dipolLabelColor="@{fiveLightsItem.c}" />
+                app:fiveLightsLabelColor="@{fiveLightsItem.c}"
+                />
 
         </LinearLayout>
 

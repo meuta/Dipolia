@@ -88,15 +88,32 @@ class LocalModeViewModel @Inject constructor(
     val fiveLightsControlLayoutVisibilityLD: LiveData<Boolean>
         get() = _fiveLightsControlLayoutVisibilityLD
 
-    private var _newSelectedDipolLD = MutableLiveData<DipolDomainEntity?>(null)
-    val newSelectedDipolLD: LiveData<DipolDomainEntity?>
-        get() = _newSelectedDipolLD
+    private var _selectedDipolLD = MutableLiveData<DipolDomainEntity?>(null)
+    val selectedDipolLD: LiveData<DipolDomainEntity?>
+        get() = _selectedDipolLD
 
-    private var _newSelectedFiveLightsLD = MutableLiveData<FiveLightsDomainEntity?>(null)
-    val newSelectedFiveLightsLD: LiveData<FiveLightsDomainEntity?>
-        get() = _newSelectedFiveLightsLD
+    private var _selectedFiveLightsLD = MutableLiveData<FiveLightsDomainEntity?>(null)
+    val selectedFiveLightsLD: LiveData<FiveLightsDomainEntity?>
+        get() = _selectedFiveLightsLD
+
+
+    private var _selectedDipolColorLabel1LD = MutableLiveData<List<Double>?>(null)
+    val selectedDipolColorLabel1LD: LiveData<List<Double>?>
+        get() = _selectedDipolColorLabel1LD
+
+    private var _selectedDipolColorLabel2LD = MutableLiveData<List<Double>?>(null)
+    val selectedDipolColorLabel2LD: LiveData<List<Double>?>
+        get() = _selectedDipolColorLabel2LD
+
+    private var _selectedFiveLightsColorLabelLD = MutableLiveData<List<Double>?>(null)
+    val selectedFiveLightsColorLabelLD: LiveData<List<Double>?>
+        get() = _selectedFiveLightsColorLabelLD
+
+
 
     init{
+        collectListUseCase()
+
         viewModelScope.launch {
             myLampsSharedFlow.collect{ list ->
                 val connectedList = list.filter { it.connected }
@@ -115,8 +132,15 @@ class LocalModeViewModel @Inject constructor(
                             _pleaseSelectTextViewVisibilityLD.value = false
                         }
 
-                        if (_newSelectedDipolLD.value?.id != selected.id){
-                            _newSelectedDipolLD.value = mapper.mapLampEntityToDipolEntity(selected)
+                        if (_selectedDipolLD.value?.id != selected.id){
+                            _selectedDipolLD.value = mapper.mapLampEntityToDipolEntity(selected)
+                        }
+
+                        if (_selectedDipolColorLabel1LD.value != selected.c.colors.take(3)){
+                            _selectedDipolColorLabel1LD.value = selected.c.colors.take(3)
+                        }
+                        if (_selectedDipolColorLabel2LD.value != selected.c.colors.takeLast(3)){
+                            _selectedDipolColorLabel2LD.value = selected.c.colors.takeLast(3)
                         }
                     }
 
@@ -131,9 +155,14 @@ class LocalModeViewModel @Inject constructor(
                             _pleaseSelectTextViewVisibilityLD.value = false
                         }
 
-                        if (_newSelectedFiveLightsLD.value?.id != selected.id){
-                            _newSelectedFiveLightsLD.value = mapper.mapLampEntityToFiveLightsEntity(selected)
+                        if (_selectedFiveLightsLD.value?.id != selected.id){
+                            _selectedFiveLightsLD.value = mapper.mapLampEntityToFiveLightsEntity(selected)
                         }
+
+                        if (_selectedFiveLightsColorLabelLD.value != selected.c.colors){
+                            _selectedFiveLightsColorLabelLD.value = selected.c.colors
+                        }
+
                     }
 
                     else -> {
@@ -149,8 +178,8 @@ class LocalModeViewModel @Inject constructor(
                             _pleaseSelectTextViewVisibilityLD.value = !isEmpty
                         }
 
-                        _newSelectedDipolLD.value?.let { _newSelectedDipolLD.value = null }
-                        _newSelectedFiveLightsLD.value?.let { _newSelectedFiveLightsLD.value = null }
+                        _selectedDipolLD.value?.let { _selectedDipolLD.value = null }
+                        _selectedFiveLightsLD.value?.let { _selectedFiveLightsLD.value = null }
                     }
                 }
 
@@ -165,6 +194,7 @@ class LocalModeViewModel @Inject constructor(
             .map { lamp -> mapper.mapLampEntityToDipolEntity(lamp) }
             .toList()
     }
+
     val myFiveLightListLD: LiveData<List<FiveLightsDomainEntity>> =
         myLampsLD.map { list ->
             list.asSequence()
@@ -172,41 +202,12 @@ class LocalModeViewModel @Inject constructor(
                 .map { lamp -> mapper.mapLampEntityToFiveLightsEntity(lamp) }
                 .toList()
         }
-    val selectedLampLD: LiveData<LampDomainEntity?> = myLampsLD.map() { list ->
-        val filteredList = list.filter { it.connected }
-        filteredList.find { it.selected }
-            .also {
-            Log.d(TAG, " selected: lampEntity = ${it?.id}, lampType = ${it?.lampType}")
-        }
-    }
-    val selectedDipolLD: LiveData<DipolDomainEntity?> = selectedLampLD.map { lamp ->
-        lamp?.let {
-            if (lamp.lampType == LampType.DIPOL) {
-                mapper.mapLampEntityToDipolEntity(lamp)
-            } else {
-                null
-            }
-        }
-    }
 
-    val selectedFiveLightsLD: LiveData<FiveLightsDomainEntity?> = selectedLampLD.map { lamp ->
-        lamp?.let {
-            if (lamp.lampType == LampType.FIVE_LIGHTS) {
-                mapper.mapLampEntityToFiveLightsEntity(lamp)
-            } else {
-                null
-            }
-        }
-    }
 
     val isLoopingFlow: StateFlow<Boolean> = getIsLoopingUseCase()
     val loopSecondsFlow: StateFlow<Pair<Double, Double>> = getLoopSecondsUseCase()
 
     val loopSecondsLD: LiveData<Pair<Double?, Double?>> = loopSecondsFlow.asLiveData()
-
-    init {
-        collectListUseCase()
-    }
 
 
     fun selectLamp(itemId: String) {
