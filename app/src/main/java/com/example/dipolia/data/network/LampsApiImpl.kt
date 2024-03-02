@@ -8,8 +8,7 @@ import javax.inject.Singleton
 @Singleton
 class LampsApiImpl @Inject constructor(private val receiver: UDPServer): LampsApi {
 
-    private var fiveLightsCounter1 = 0
-    private var fiveLightsCounter2 = 0
+    private var fiveLightsCounter = 0
 
     override suspend fun fetchLampDto(): LampDto? {
         var lampDto : LampDto? = null
@@ -25,12 +24,12 @@ class LampsApiImpl @Inject constructor(private val receiver: UDPServer): LampsAp
             if (lampTypeString == DIPOL || lampTypeString == FIVE_LIGHTS) {
                 Log.d("receiveLocalModeData", "ip = ${it.second}, lampType = $lampTypeString")
                 if (lampTypeString == FIVE_LIGHTS) {
-                    fiveLightsCounter2++
-                    fiveLightsCounter2 %= 2
+                    fiveLightsCounter++
+                    fiveLightsCounter %= 2
 
-                    Log.d("receiveLocalModeData", "fiveLightsCounter = $fiveLightsCounter1")
+                    Log.d("receiveLocalModeData", "fiveLightsCounter = $fiveLightsCounter")
                 }
-                if (lampTypeString == DIPOL || (fiveLightsCounter2 == 0)) {
+                if (lampTypeString == DIPOL || (fiveLightsCounter == 0)) {
                     Log.d("receiveLocalModeData", "inside if: ip = ${it.second}, lampType = $lampTypeString")
                     val id = ar[1].substring(0, ar[1].length - 1)
 
