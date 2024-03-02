@@ -60,7 +60,7 @@ class LampsRepositoryImpl @Inject constructor(
                         Log.d(TAG, "run: emit(lampEntityList)")
                 }
             }
-        }, 0, 1000)
+        }, 0, 100)
 
     awaitClose()
     }.shareIn(scope, SharingStarted.Lazily)
