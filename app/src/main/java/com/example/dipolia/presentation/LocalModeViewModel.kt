@@ -71,7 +71,7 @@ class LocalModeViewModel @Inject constructor(
     val uiStateFlow = MutableStateFlow(UiState())
 
 
-    var myLampsSharedFlow: SharedFlow<List<LampDomainEntity>> = getLampsUseCase()
+    private var myLampsSharedFlow: SharedFlow<List<LampDomainEntity>> = getLampsUseCase()
 
     var myLampsLD: LiveData<List<LampDomainEntity>> = myLampsSharedFlow.asLiveData()
 
@@ -88,11 +88,21 @@ class LocalModeViewModel @Inject constructor(
     val fiveLightsControlLayoutVisibilityLD: LiveData<Boolean>
         get() = _fiveLightsControlLayoutVisibilityLD
 
+    private var _newSelectedDipolLD = MutableLiveData<DipolDomainEntity?>(null)
+    val newSelectedDipolLD: LiveData<DipolDomainEntity?>
+        get() = _newSelectedDipolLD
+
+    private var _newSelectedFiveLightsLD = MutableLiveData<FiveLightsDomainEntity?>(null)
+    val newSelectedFiveLightsLD: LiveData<FiveLightsDomainEntity?>
+        get() = _newSelectedFiveLightsLD
+
     init{
         viewModelScope.launch {
             myLampsSharedFlow.collect{ list ->
                 val connectedList = list.filter { it.connected }
-                when (connectedList.find { it.selected }?.lampType) {
+                val selected = connectedList.find { it.selected }
+
+                when (selected?.lampType) {
 
                     LampType.DIPOL -> {
                         if (_dipolControlLayoutVisibilityLD.value == false) {
@@ -103,6 +113,10 @@ class LocalModeViewModel @Inject constructor(
                         }
                         if (_pleaseSelectTextViewVisibilityLD.value == true) {
                             _pleaseSelectTextViewVisibilityLD.value = false
+                        }
+
+                        if (_newSelectedDipolLD.value?.id != selected.id){
+                            _newSelectedDipolLD.value = mapper.mapLampEntityToDipolEntity(selected)
                         }
                     }
 
@@ -116,6 +130,10 @@ class LocalModeViewModel @Inject constructor(
                         if (_pleaseSelectTextViewVisibilityLD.value == true) {
                             _pleaseSelectTextViewVisibilityLD.value = false
                         }
+
+                        if (_newSelectedFiveLightsLD.value?.id != selected.id){
+                            _newSelectedFiveLightsLD.value = mapper.mapLampEntityToFiveLightsEntity(selected)
+                        }
                     }
 
                     else -> {
@@ -127,8 +145,12 @@ class LocalModeViewModel @Inject constructor(
                         }
                         val isEmpty = connectedList.isEmpty()
                         Log.d(TAG, "init: list.isEmpty = $isEmpty")
-                        if (_pleaseSelectTextViewVisibilityLD.value != !isEmpty)
+                        if (_pleaseSelectTextViewVisibilityLD.value != !isEmpty) {
                             _pleaseSelectTextViewVisibilityLD.value = !isEmpty
+                        }
+
+                        _newSelectedDipolLD.value?.let { _newSelectedDipolLD.value = null }
+                        _newSelectedFiveLightsLD.value?.let { _newSelectedFiveLightsLD.value = null }
                     }
                 }
 

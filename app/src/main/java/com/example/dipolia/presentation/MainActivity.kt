@@ -17,7 +17,6 @@ import com.example.dipolia.databinding.ActivityLocalModeBinding
 import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
-import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.presentation.adaptes.DipolListAdapter
 import com.example.dipolia.presentation.adaptes.FiveLightsListAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -206,17 +205,23 @@ class MainActivity : AppCompatActivity() {
                 fiveLightsListAdapter.submitList(list)
         }
 
-        localModeViewModel.selectedLampLD.observe(this) { lamp ->
-            lamp?.let {
-                Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: ${lamp.id}, ${lamp.c} ")
-                if (it.lampType == LampType.DIPOL) {
-                    setDipolSeekbarsProgress(mapper.mapLampEntityToDipolEntity(it))
-                } else if (it.lampType == LampType.FIVE_LIGHTS) {
-                    setFiveLightsSeekbarsProgress(mapper.mapLampEntityToFiveLightsEntity(it))
-                }
-                selectedLampId = it.id
+
+        localModeViewModel.newSelectedDipolLD.observe(this) { dipol ->
+            Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: ${dipol?.id}")
+            dipol?.let {
+                setDipolSeekbarsProgress(dipol)
+                selectedLampId = dipol.id
             }
         }
+
+        localModeViewModel.newSelectedFiveLightsLD.observe(this) { fiveLights ->
+            Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: ${fiveLights?.id}")
+            fiveLights?.let {
+                setFiveLightsSeekbarsProgress(fiveLights)
+                selectedLampId = fiveLights.id
+            }
+        }
+
 
         localModeViewModel.isBackGroundWork.observe(this) {
             Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
@@ -382,7 +387,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setFiveLightsSeekbarsProgress(fiveLightsDomainEntity: FiveLightsDomainEntity?) {
-        Log.d("onDipolItemClickListener", "setFiveLightsSeekbars")
+        Log.d("setFiveLightsSeekbars", "fiveLightsDomainEntity = $fiveLightsDomainEntity")
         val fiveLights = fiveLightsDomainEntity ?: FiveLightsDomainEntity(
             "",
             "",
