@@ -1,6 +1,7 @@
 package com.example.dipolia.presentation
 
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -96,21 +97,21 @@ class LocalModeViewModel @Inject constructor(
     }
 
 
-    private var _recyclerViewsDividerVisibilityLD = MutableLiveData<Boolean>(false)
-    val recyclerViewsDividerVisibilityLD: LiveData<Boolean>
+    private var _recyclerViewsDividerVisibilityLD = MutableLiveData<Int>(View.INVISIBLE)
+    val recyclerViewsDividerVisibilityLD: LiveData<Int>
         get() = _recyclerViewsDividerVisibilityLD
 
 
-    private var _pleaseSelectTextViewVisibilityLD = MutableLiveData<Boolean>(false)
-    val pleaseSelectTextViewVisibilityLD: LiveData<Boolean>
+    private var _pleaseSelectTextViewVisibilityLD = MutableLiveData<Int>(View.INVISIBLE)
+    val pleaseSelectTextViewVisibilityLD: LiveData<Int>
         get() = _pleaseSelectTextViewVisibilityLD
 
-    private var _dipolControlLayoutVisibilityLD = MutableLiveData<Boolean>(false)
-    val dipolControlLayoutVisibilityLD: LiveData<Boolean>
+    private var _dipolControlLayoutVisibilityLD = MutableLiveData<Int>(View.INVISIBLE)
+    val dipolControlLayoutVisibilityLD: LiveData<Int>
         get() = _dipolControlLayoutVisibilityLD
 
-    private var _fiveLightsControlLayoutVisibilityLD = MutableLiveData<Boolean>(false)
-    val fiveLightsControlLayoutVisibilityLD: LiveData<Boolean>
+    private var _fiveLightsControlLayoutVisibilityLD = MutableLiveData<Int>(View.INVISIBLE)
+    val fiveLightsControlLayoutVisibilityLD: LiveData<Int>
         get() = _fiveLightsControlLayoutVisibilityLD
 
 
@@ -136,15 +137,18 @@ class LocalModeViewModel @Inject constructor(
         get() = _selectedFiveLightsColorLabelLD
 
 
-    init{
+    init {
         collectListUseCase()
 
         viewModelScope.launch {
-            myLampsSharedFlow.collect{ list ->
+            myLampsSharedFlow.collect { list ->
                 val connectedList = list.filter { it.connected }
 
-                if (_recyclerViewsDividerVisibilityLD.value != connectedList.isNotEmpty()) {
-                    _recyclerViewsDividerVisibilityLD.value = connectedList.isNotEmpty()
+                val recyclerViewsDividerVisibility =
+                    if (connectedList.isNotEmpty()) View.VISIBLE else View.INVISIBLE
+
+                if (_recyclerViewsDividerVisibilityLD.value != recyclerViewsDividerVisibility) {
+                    _recyclerViewsDividerVisibilityLD.value = recyclerViewsDividerVisibility
                 }
 
                 val selectedLamp = connectedList.find { it.selected }
@@ -152,60 +156,65 @@ class LocalModeViewModel @Inject constructor(
                 when (selectedLamp?.lampType) {
 
                     LampType.DIPOL -> {
-                        if (_dipolControlLayoutVisibilityLD.value == false) {
-                            _dipolControlLayoutVisibilityLD.value = true
+                        if (_dipolControlLayoutVisibilityLD.value == View.INVISIBLE) {
+                            _dipolControlLayoutVisibilityLD.value = View.VISIBLE
                         }
-                        if (_fiveLightsControlLayoutVisibilityLD.value == true) {
-                            _fiveLightsControlLayoutVisibilityLD.value = false
+                        if (_fiveLightsControlLayoutVisibilityLD.value == View.VISIBLE) {
+                            _fiveLightsControlLayoutVisibilityLD.value = View.INVISIBLE
                         }
-                        if (_pleaseSelectTextViewVisibilityLD.value == true) {
-                            _pleaseSelectTextViewVisibilityLD.value = false
+                        if (_pleaseSelectTextViewVisibilityLD.value == View.VISIBLE) {
+                            _pleaseSelectTextViewVisibilityLD.value = View.INVISIBLE
                         }
 
-                        if (_selectedDipolLD.value?.id != selectedLamp.id){
+                        if (_selectedDipolLD.value?.id != selectedLamp.id) {
                             _selectedDipolLD.value = mapper.mapLampEntityToDipolEntity(selectedLamp)
                         }
 
-                        if (_selectedDipolColorLabel1LD.value != selectedLamp.c.colors.take(3)){
+                        if (_selectedDipolColorLabel1LD.value != selectedLamp.c.colors.take(3)) {
                             _selectedDipolColorLabel1LD.value = selectedLamp.c.colors.take(3)
                         }
-                        if (_selectedDipolColorLabel2LD.value != selectedLamp.c.colors.takeLast(3)){
+                        if (_selectedDipolColorLabel2LD.value != selectedLamp.c.colors.takeLast(3)) {
                             _selectedDipolColorLabel2LD.value = selectedLamp.c.colors.takeLast(3)
                         }
                     }
 
                     LampType.FIVE_LIGHTS -> {
-                        if (_fiveLightsControlLayoutVisibilityLD.value == false){
-                            _fiveLightsControlLayoutVisibilityLD.value = true
+                        if (_fiveLightsControlLayoutVisibilityLD.value == View.INVISIBLE) {
+                            _fiveLightsControlLayoutVisibilityLD.value = View.VISIBLE
                         }
-                        if (_dipolControlLayoutVisibilityLD.value == true){
-                            _dipolControlLayoutVisibilityLD.value = false
+                        if (_dipolControlLayoutVisibilityLD.value == View.VISIBLE) {
+                            _dipolControlLayoutVisibilityLD.value = View.INVISIBLE
                         }
-                        if (_pleaseSelectTextViewVisibilityLD.value == true) {
-                            _pleaseSelectTextViewVisibilityLD.value = false
-                        }
-
-                        if (_selectedFiveLightsLD.value?.id != selectedLamp.id){
-                            _selectedFiveLightsLD.value = mapper.mapLampEntityToFiveLightsEntity(selectedLamp)
+                        if (_pleaseSelectTextViewVisibilityLD.value == View.VISIBLE) {
+                            _pleaseSelectTextViewVisibilityLD.value = View.INVISIBLE
                         }
 
-                        if (_selectedFiveLightsColorLabelLD.value != selectedLamp.c.colors){
+                        if (_selectedFiveLightsLD.value?.id != selectedLamp.id) {
+                            _selectedFiveLightsLD.value =
+                                mapper.mapLampEntityToFiveLightsEntity(selectedLamp)
+                        }
+
+                        if (_selectedFiveLightsColorLabelLD.value != selectedLamp.c.colors) {
                             _selectedFiveLightsColorLabelLD.value = selectedLamp.c.colors
                         }
 
                     }
 
                     else -> {
-                        if (_dipolControlLayoutVisibilityLD.value == true){
-                            _dipolControlLayoutVisibilityLD.value = false
+                        if (_dipolControlLayoutVisibilityLD.value == View.VISIBLE) {
+                            _dipolControlLayoutVisibilityLD.value = View.INVISIBLE
                         }
-                        if (_fiveLightsControlLayoutVisibilityLD.value == true){
-                            _fiveLightsControlLayoutVisibilityLD.value = false
+                        if (_fiveLightsControlLayoutVisibilityLD.value == View.VISIBLE) {
+                            _fiveLightsControlLayoutVisibilityLD.value = View.INVISIBLE
                         }
                         val isEmpty = connectedList.isEmpty()
                         Log.d(TAG, "init: list.isEmpty = $isEmpty")
-                        if (_pleaseSelectTextViewVisibilityLD.value != !isEmpty) {
-                            _pleaseSelectTextViewVisibilityLD.value = !isEmpty
+
+                        val pleaseSelectTextViewVisibility =
+                            if (connectedList.isEmpty()) View.INVISIBLE else View.VISIBLE
+
+                        if (_pleaseSelectTextViewVisibilityLD.value != pleaseSelectTextViewVisibility) {
+                            _pleaseSelectTextViewVisibilityLD.value = pleaseSelectTextViewVisibility
                         }
 
                         _selectedDipolLD.value?.let { _selectedDipolLD.value = null }
@@ -284,7 +293,7 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
-    companion object{
+    companion object {
 
         private const val TAG = "LocalModeViewModel"
     }

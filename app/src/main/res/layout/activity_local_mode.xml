@@ -51,7 +51,7 @@
             android:layout_width="@dimen/recycler_view_dipols_width"
             android:layout_height="@dimen/view_buttons_divider_height"
             android:background="@color/colorSeekbarProgressWhite"
-            app:recyclerViewsDividerVisibility="@{viewModel.recyclerViewsDividerVisibilityLD}"
+            android:visibility="@{viewModel.recyclerViewsDividerVisibilityLD}"
             app:layout_constraintBottom_toTopOf="@id/rv_five_lights_item_list"
             app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
             app:layout_constraintStart_toStartOf="parent"
@@ -89,14 +89,14 @@
                 android:gravity="center"
                 android:text="@string/please_select_the_lamp"
                 android:textIsSelectable="true"
-                app:pleaseSelectTextViewVisibility="@{viewModel.pleaseSelectTextViewVisibilityLD}"
+                android:visibility="@{viewModel.pleaseSelectTextViewVisibilityLD}"
                 tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/dipol_control_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:dipolControlLayoutVisibility="@{viewModel.dipolControlLayoutVisibilityLD}"
+                android:visibility="@{viewModel.dipolControlLayoutVisibilityLD}"
                 tools:visibility="visible">
 
 
@@ -258,7 +258,7 @@
                 android:id="@+id/five_lights_control_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:fiveLightsControlLayoutVisibility="@{viewModel.fiveLightsControlLayoutVisibilityLD}"
+                android:visibility="@{viewModel.fiveLightsControlLayoutVisibilityLD}"
                 tools:visibility="visible">
 
                 <LinearLayout

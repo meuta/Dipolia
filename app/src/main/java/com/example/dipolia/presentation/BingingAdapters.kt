@@ -1,7 +1,6 @@
 package com.example.dipolia.presentation
 
 import android.graphics.Color
-import android.util.Log
 import android.view.View
 import android.view.View.*
 import android.widget.EditText
@@ -77,36 +76,6 @@ fun setSelectedVisibility(view: View, isSelected: Boolean) {
 
 
 
-@BindingAdapter("pleaseSelectTextViewVisibility")
-fun setPleaseSelectTextViewVisibility(view: View, visible: Boolean) {
-//    Log.d(TAG, "setPleaseSelectTextViewVisibility: visible = $visible")
-    if (visible) {view.visibility = VISIBLE
-    } else {
-        view.visibility = INVISIBLE
-    }
-}
-
-@BindingAdapter("dipolControlLayoutVisibility")
-fun setDipolControlLayoutVisibility(view: View, visible: Boolean) {
-//    Log.d(TAG, "setDipolControlLayoutVisibility: visible = $visible")
-    if (visible) {
-        view.visibility = VISIBLE
-    } else {
-        view.visibility = INVISIBLE
-    }
-}
-
-@BindingAdapter("fiveLightsControlLayoutVisibility")
-fun setFiveLightsControlLayoutVisibility(view: View, visible: Boolean) {
-//    Log.d(TAG, "setFiveLightsControlLayoutVisibility: visible = $visible")
-    if (visible) {
-        view.visibility = VISIBLE
-    } else {
-        view.visibility = INVISIBLE
-    }
-}
-
-
 @BindingAdapter("workerButtonText")
 fun setWorkerButtonText(textView: TextView, isRunning: Boolean) {
 //    Log.d(TAG, "setWorkerButtonText: isRunning = $isRunning ")
@@ -122,11 +91,4 @@ fun setWorkerButtonText(textView: TextView, isRunning: Boolean) {
 fun setEtLoopSecondsText(editText: EditText, seconds: Double) {
     editText.setText(seconds.toString())
 
-}
-
-
-@BindingAdapter("recyclerViewsDividerVisibility")
-fun setRecyclerViewsDividerVisibility(view: View, visible: Boolean) {
-    Log.d(TAG, "setRecyclerViewsDividerVisibility: visible = $visible")
-    view.visibility =  if (visible) VISIBLE else INVISIBLE
 }
