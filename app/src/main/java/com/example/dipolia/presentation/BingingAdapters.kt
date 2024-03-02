@@ -1,6 +1,7 @@
 package com.example.dipolia.presentation
 
 import android.graphics.Color
+import android.util.Log
 import android.view.View
 import android.view.View.*
 import android.widget.EditText
@@ -52,38 +53,24 @@ private fun colorToUI(colorList: List<Double>): String {
 
 @BindingAdapter("selectedBackground")
 fun setSelectedBackground(textView: TextView, isSelected: Boolean) {
-//    Log.d("setSelectedBackground", "$isSelected")
-    if (isSelected) {
-        textView.setBackgroundColor(ContextCompat.getColor(textView.context, R.color.colorSelect))
-    } else {
-        textView.setBackgroundColor(
-            ContextCompat.getColor(
-                textView.context,
-                R.color.colorPrimaryDark
-            )
-        )
-    }
+    Log.d(TAG, "setSelectedBackground: isSelected = $isSelected")
+    textView.setBackgroundColor(ContextCompat.getColor(
+        textView.context,
+        if (isSelected) R.color.colorSelect else R.color.colorPrimaryDark
+    ))
 }
 
 @BindingAdapter("selectedVisibility")
 fun setSelectedVisibility(view: View, isSelected: Boolean) {
-    if (isSelected) {
-        view.visibility = VISIBLE
-    } else {
-        view.visibility = INVISIBLE
-    }
+    Log.d(TAG, "setSelectedVisibility: isSelected = $isSelected")
+    view.visibility = if (isSelected) VISIBLE else INVISIBLE
 }
-
 
 
 @BindingAdapter("workerButtonText")
 fun setWorkerButtonText(textView: TextView, isRunning: Boolean) {
 //    Log.d(TAG, "setWorkerButtonText: isRunning = $isRunning ")
-    if (isRunning) {
-        textView.text = textView.context.getString(R.string.background_work_stop)
-    } else {
-        textView.text = textView.context.getString(R.string.background_work_start)
-    }
+    textView.text = if (isRunning) textView.context.getString(R.string.background_work_stop) else textView.context.getString(R.string.background_work_start)
 }
 
 
