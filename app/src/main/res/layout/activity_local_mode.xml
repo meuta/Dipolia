@@ -51,7 +51,7 @@
             android:layout_width="@dimen/recycler_view_dipols_width"
             android:layout_height="@dimen/view_buttons_divider_height"
             android:background="@color/colorSeekbarProgressWhite"
-            app:recyclerViewsDividerVisibility="@{viewModel.myLampsLD}"
+            app:recyclerViewsDividerVisibility="@{viewModel.recyclerViewsDividerVisibilityLD}"
             app:layout_constraintBottom_toTopOf="@id/rv_five_lights_item_list"
             app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
             app:layout_constraintStart_toStartOf="parent"

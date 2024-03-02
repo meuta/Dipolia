@@ -71,9 +71,34 @@ class LocalModeViewModel @Inject constructor(
     val uiStateFlow = MutableStateFlow(UiState())
 
 
+    val isLoopingFlow: StateFlow<Boolean> = getIsLoopingUseCase()
+    val loopSecondsFlow: StateFlow<Pair<Double, Double>> = getLoopSecondsUseCase()
+
+    val loopSecondsLD: LiveData<Pair<Double?, Double?>> = loopSecondsFlow.asLiveData()
+
+
     private var myLampsSharedFlow: SharedFlow<List<LampDomainEntity>> = getLampsUseCase()
 
     var myLampsLD: LiveData<List<LampDomainEntity>> = myLampsSharedFlow.asLiveData()
+
+    val myDipolsListLD: LiveData<List<DipolDomainEntity>> = myLampsLD.map { list ->
+        list.asSequence()
+            .filter { it.lampType == LampType.DIPOL && it.connected }
+            .map { lamp -> mapper.mapLampEntityToDipolEntity(lamp) }
+            .toList()
+    }
+
+    val myFiveLightListLD: LiveData<List<FiveLightsDomainEntity>> = myLampsLD.map { list ->
+        list.asSequence()
+            .filter { it.lampType == LampType.FIVE_LIGHTS && it.connected }
+            .map { lamp -> mapper.mapLampEntityToFiveLightsEntity(lamp) }
+            .toList()
+    }
+
+
+    private var _recyclerViewsDividerVisibilityLD = MutableLiveData<Boolean>(false)
+    val recyclerViewsDividerVisibilityLD: LiveData<Boolean>
+        get() = _recyclerViewsDividerVisibilityLD
 
 
     private var _pleaseSelectTextViewVisibilityLD = MutableLiveData<Boolean>(false)
@@ -87,6 +112,7 @@ class LocalModeViewModel @Inject constructor(
     private var _fiveLightsControlLayoutVisibilityLD = MutableLiveData<Boolean>(false)
     val fiveLightsControlLayoutVisibilityLD: LiveData<Boolean>
         get() = _fiveLightsControlLayoutVisibilityLD
+
 
     private var _selectedDipolLD = MutableLiveData<DipolDomainEntity?>(null)
     val selectedDipolLD: LiveData<DipolDomainEntity?>
@@ -110,16 +136,20 @@ class LocalModeViewModel @Inject constructor(
         get() = _selectedFiveLightsColorLabelLD
 
 
-
     init{
         collectListUseCase()
 
         viewModelScope.launch {
             myLampsSharedFlow.collect{ list ->
                 val connectedList = list.filter { it.connected }
-                val selected = connectedList.find { it.selected }
 
-                when (selected?.lampType) {
+                if (_recyclerViewsDividerVisibilityLD.value != connectedList.isNotEmpty()) {
+                    _recyclerViewsDividerVisibilityLD.value = connectedList.isNotEmpty()
+                }
+
+                val selectedLamp = connectedList.find { it.selected }
+
+                when (selectedLamp?.lampType) {
 
                     LampType.DIPOL -> {
                         if (_dipolControlLayoutVisibilityLD.value == false) {
@@ -132,15 +162,15 @@ class LocalModeViewModel @Inject constructor(
                             _pleaseSelectTextViewVisibilityLD.value = false
                         }
 
-                        if (_selectedDipolLD.value?.id != selected.id){
-                            _selectedDipolLD.value = mapper.mapLampEntityToDipolEntity(selected)
+                        if (_selectedDipolLD.value?.id != selectedLamp.id){
+                            _selectedDipolLD.value = mapper.mapLampEntityToDipolEntity(selectedLamp)
                         }
 
-                        if (_selectedDipolColorLabel1LD.value != selected.c.colors.take(3)){
-                            _selectedDipolColorLabel1LD.value = selected.c.colors.take(3)
+                        if (_selectedDipolColorLabel1LD.value != selectedLamp.c.colors.take(3)){
+                            _selectedDipolColorLabel1LD.value = selectedLamp.c.colors.take(3)
                         }
-                        if (_selectedDipolColorLabel2LD.value != selected.c.colors.takeLast(3)){
-                            _selectedDipolColorLabel2LD.value = selected.c.colors.takeLast(3)
+                        if (_selectedDipolColorLabel2LD.value != selectedLamp.c.colors.takeLast(3)){
+                            _selectedDipolColorLabel2LD.value = selectedLamp.c.colors.takeLast(3)
                         }
                     }
 
@@ -155,12 +185,12 @@ class LocalModeViewModel @Inject constructor(
                             _pleaseSelectTextViewVisibilityLD.value = false
                         }
 
-                        if (_selectedFiveLightsLD.value?.id != selected.id){
-                            _selectedFiveLightsLD.value = mapper.mapLampEntityToFiveLightsEntity(selected)
+                        if (_selectedFiveLightsLD.value?.id != selectedLamp.id){
+                            _selectedFiveLightsLD.value = mapper.mapLampEntityToFiveLightsEntity(selectedLamp)
                         }
 
-                        if (_selectedFiveLightsColorLabelLD.value != selected.c.colors){
-                            _selectedFiveLightsColorLabelLD.value = selected.c.colors
+                        if (_selectedFiveLightsColorLabelLD.value != selectedLamp.c.colors){
+                            _selectedFiveLightsColorLabelLD.value = selectedLamp.c.colors
                         }
 
                     }
@@ -186,29 +216,6 @@ class LocalModeViewModel @Inject constructor(
             }
         }
     }
-
-
-    val myDipolsListLD: LiveData<List<DipolDomainEntity>> = myLampsLD.map { list ->
-        list.asSequence()
-            .filter { it.lampType == LampType.DIPOL && it.connected }
-            .map { lamp -> mapper.mapLampEntityToDipolEntity(lamp) }
-            .toList()
-    }
-
-    val myFiveLightListLD: LiveData<List<FiveLightsDomainEntity>> =
-        myLampsLD.map { list ->
-            list.asSequence()
-                .filter { it.lampType == LampType.FIVE_LIGHTS && it.connected }
-                .map { lamp -> mapper.mapLampEntityToFiveLightsEntity(lamp) }
-                .toList()
-        }
-
-
-    val isLoopingFlow: StateFlow<Boolean> = getIsLoopingUseCase()
-    val loopSecondsFlow: StateFlow<Pair<Double, Double>> = getLoopSecondsUseCase()
-
-    val loopSecondsLD: LiveData<Pair<Double?, Double?>> = loopSecondsFlow.asLiveData()
-
 
     fun selectLamp(itemId: String) {
         selectItemUseCase(itemId)

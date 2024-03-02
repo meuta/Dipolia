@@ -9,21 +9,20 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.example.dipolia.R
-import com.example.dipolia.domain.entities.LampDomainEntity
 
 
 private const val TAG = "BindingAdapters"
 
 @BindingAdapter("dipolLabelColor")
 fun bindDipolLabelColor(view: View, colorList: List<Double>?) {
-    Log.d(TAG, "bindDipolLabelColor: colorlist = $colorList ")
+//    Log.d(TAG, "bindDipolLabelColor: colorlist = $colorList ")
     val list = colorList ?: listOf(0.0, 0.0, 0.0)
     view.setBackgroundColor(Color.parseColor(colorToUI(list)))
 }
 
 @BindingAdapter("fiveLightsLabelColor")
 fun bindFiveLightsLabelColor(view: View, colorList: List<Double>?) {
-    Log.d(TAG, "bindFiveLightsLabelColor: colorlist = $colorList")
+//    Log.d(TAG, "bindFiveLightsLabelColor: colorlist = $colorList")
     val list = colorList ?: listOf(0.0, 0.0, 0.0, 0.0, 0.0)
     view.setBackgroundColor(Color.parseColor(colorFiveLightsToUI(list)))
 }
@@ -110,6 +109,7 @@ fun setFiveLightsControlLayoutVisibility(view: View, visible: Boolean) {
 
 @BindingAdapter("workerButtonText")
 fun setWorkerButtonText(textView: TextView, isRunning: Boolean) {
+//    Log.d(TAG, "setWorkerButtonText: isRunning = $isRunning ")
     if (isRunning) {
         textView.text = textView.context.getString(R.string.background_work_stop)
     } else {
@@ -126,6 +126,7 @@ fun setEtLoopSecondsText(editText: EditText, seconds: Double) {
 
 
 @BindingAdapter("recyclerViewsDividerVisibility")
-fun setRecyclerViewsDividerVisibility(view: View, list: List<LampDomainEntity>?) {
-    view.visibility = if (list?.filter { it.connected }.isNullOrEmpty()) INVISIBLE else VISIBLE
+fun setRecyclerViewsDividerVisibility(view: View, visible: Boolean) {
+    Log.d(TAG, "setRecyclerViewsDividerVisibility: visible = $visible")
+    view.visibility =  if (visible) VISIBLE else INVISIBLE
 }
