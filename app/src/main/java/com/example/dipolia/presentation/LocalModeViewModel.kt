@@ -2,9 +2,11 @@ package com.example.dipolia.presentation
 
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
 import com.example.dipolia.data.mapper.DipoliaMapper
@@ -73,6 +75,68 @@ class LocalModeViewModel @Inject constructor(
 
     var myLampsLD: LiveData<List<LampDomainEntity>> = myLampsSharedFlow.asLiveData()
 
+
+    private var _pleaseSelectTextViewVisibilityLD = MutableLiveData<Boolean>(false)
+    val pleaseSelectTextViewVisibilityLD: LiveData<Boolean>
+        get() = _pleaseSelectTextViewVisibilityLD
+
+    private var _dipolControlLayoutVisibilityLD = MutableLiveData<Boolean>(false)
+    val dipolControlLayoutVisibilityLD: LiveData<Boolean>
+        get() = _dipolControlLayoutVisibilityLD
+
+    private var _fiveLightsControlLayoutVisibilityLD = MutableLiveData<Boolean>(false)
+    val fiveLightsControlLayoutVisibilityLD: LiveData<Boolean>
+        get() = _fiveLightsControlLayoutVisibilityLD
+
+    init{
+        viewModelScope.launch {
+            myLampsSharedFlow.collect{ list ->
+                val connectedList = list.filter { it.connected }
+                when (connectedList.find { it.selected }?.lampType) {
+
+                    LampType.DIPOL -> {
+                        if (_dipolControlLayoutVisibilityLD.value == false) {
+                            _dipolControlLayoutVisibilityLD.value = true
+                        }
+                        if (_fiveLightsControlLayoutVisibilityLD.value == true) {
+                            _fiveLightsControlLayoutVisibilityLD.value = false
+                        }
+                        if (_pleaseSelectTextViewVisibilityLD.value == true) {
+                            _pleaseSelectTextViewVisibilityLD.value = false
+                        }
+                    }
+
+                    LampType.FIVE_LIGHTS -> {
+                        if (_fiveLightsControlLayoutVisibilityLD.value == false){
+                            _fiveLightsControlLayoutVisibilityLD.value = true
+                        }
+                        if (_dipolControlLayoutVisibilityLD.value == true){
+                            _dipolControlLayoutVisibilityLD.value = false
+                        }
+                        if (_pleaseSelectTextViewVisibilityLD.value == true) {
+                            _pleaseSelectTextViewVisibilityLD.value = false
+                        }
+                    }
+
+                    else -> {
+                        if (_dipolControlLayoutVisibilityLD.value == true){
+                            _dipolControlLayoutVisibilityLD.value = false
+                        }
+                        if (_fiveLightsControlLayoutVisibilityLD.value == true){
+                            _fiveLightsControlLayoutVisibilityLD.value = false
+                        }
+                        val isEmpty = connectedList.isEmpty()
+                        Log.d(TAG, "init: list.isEmpty = $isEmpty")
+                        if (_pleaseSelectTextViewVisibilityLD.value != !isEmpty)
+                            _pleaseSelectTextViewVisibilityLD.value = !isEmpty
+                    }
+                }
+
+            }
+        }
+    }
+
+
     val myDipolsListLD: LiveData<List<DipolDomainEntity>> = myLampsLD.map { list ->
         list.asSequence()
             .filter { it.lampType == LampType.DIPOL && it.connected }
@@ -87,7 +151,11 @@ class LocalModeViewModel @Inject constructor(
                 .toList()
         }
     val selectedLampLD: LiveData<LampDomainEntity?> = myLampsLD.map() { list ->
-        list.find { it.selected }
+        val filteredList = list.filter { it.connected }
+        filteredList.find { it.selected }
+            .also {
+            Log.d(TAG, " selected: lampEntity = ${it?.id}, lampType = ${it?.lampType}")
+        }
     }
     val selectedDipolLD: LiveData<DipolDomainEntity?> = selectedLampLD.map { lamp ->
         lamp?.let {
@@ -186,4 +254,8 @@ class LocalModeViewModel @Inject constructor(
         }
     }
 
+    companion object{
+
+        private const val TAG = "LocalModeViewModel"
+    }
 }

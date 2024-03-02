@@ -89,15 +89,14 @@
                 android:gravity="center"
                 android:text="@string/please_select_the_lamp"
                 android:textIsSelectable="true"
-                app:pleaseSelectTextViewVisibility="@{viewModel.selectedLampLD.lampType}"
-                app:viewPleaseSelectText="@{!viewModel.myLampsLD.empty}"
+                app:pleaseSelectTextViewVisibility="@{viewModel.pleaseSelectTextViewVisibilityLD}"
                 tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/dipol_control_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:dipolControlLayoutVisibility="@{viewModel.selectedLampLD.lampType}"
+                app:dipolControlLayoutVisibility="@{viewModel.dipolControlLayoutVisibilityLD}"
                 tools:visibility="visible">
 
 
@@ -259,7 +258,7 @@
                 android:id="@+id/five_lights_control_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:fiveLightsControlLayoutVisibility="@{viewModel.selectedLampLD.lampType}"
+                app:fiveLightsControlLayoutVisibility="@{viewModel.fiveLightsControlLayoutVisibilityLD}"
                 tools:visibility="visible">
 
                 <LinearLayout

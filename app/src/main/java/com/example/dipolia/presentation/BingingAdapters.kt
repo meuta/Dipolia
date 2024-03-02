@@ -10,8 +10,9 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.example.dipolia.R
 import com.example.dipolia.domain.entities.LampDomainEntity
-import com.example.dipolia.domain.entities.LampType
 
+
+private const val TAG = "BindingAdapters"
 
 @BindingAdapter("dipolLabelColor")
 fun bindDipolLabelColor(view: View, colorList: List<Double>?) {
@@ -76,33 +77,20 @@ fun setSelectedVisibility(view: View, isSelected: Boolean) {
 }
 
 
-@BindingAdapter("viewPleaseSelectText")
-fun setViewPleaseSelectText(textView: TextView, notEmpty: Boolean) {
-    Log.d("setLampControlLayoutVisibility", "$notEmpty")
-    if (notEmpty) {
-        textView.text = String.format(
-            textView.context.getString(R.string.please_select_the_lamp)
-        )
-    } else {
-        textView.text = ""
-    }
-}
-
 
 @BindingAdapter("pleaseSelectTextViewVisibility")
-fun setPleaseSelectTextViewVisibility(view: View, lampType: LampType?) {
-//    Log.d("setSelectedPleaseSelectTextViewVisibility", "$lampType")
-    if (lampType == LampType.DIPOL || lampType == LampType.FIVE_LIGHTS) {
-        view.visibility = INVISIBLE
+fun setPleaseSelectTextViewVisibility(view: View, visible: Boolean) {
+    Log.d(TAG, "setPleaseSelectTextViewVisibility: visible = $visible")
+    if (visible) {view.visibility = VISIBLE
     } else {
-        view.visibility = VISIBLE
+        view.visibility = INVISIBLE
     }
 }
 
 @BindingAdapter("dipolControlLayoutVisibility")
-fun setDipolControlLayoutVisibility(view: View, lampType: LampType?) {
-//    Log.d("setDipolControlLayoutVisibility", "$lampType")
-    if (lampType == LampType.DIPOL) {
+fun setDipolControlLayoutVisibility(view: View, visible: Boolean) {
+    Log.d(TAG, "setDipolControlLayoutVisibility: visible = $visible")
+    if (visible) {
         view.visibility = VISIBLE
     } else {
         view.visibility = INVISIBLE
@@ -110,9 +98,9 @@ fun setDipolControlLayoutVisibility(view: View, lampType: LampType?) {
 }
 
 @BindingAdapter("fiveLightsControlLayoutVisibility")
-fun setFiveLightsControlLayoutVisibility(view: View, lampType: LampType?) {
-//    Log.d("setFiveLightsControlLayoutVisibility", "$lampType")
-    if (lampType == LampType.FIVE_LIGHTS) {
+fun setFiveLightsControlLayoutVisibility(view: View, visible: Boolean) {
+    Log.d(TAG, "setFiveLightsControlLayoutVisibility: visible = $visible")
+    if (visible) {
         view.visibility = VISIBLE
     } else {
         view.visibility = INVISIBLE
