@@ -70,6 +70,7 @@ class LocalModeViewModel @Inject constructor(
     }
 
     val uiStateFlow = MutableStateFlow(UiState())
+    val uiStateLD = uiStateFlow.asLiveData()
 
     val isLoopingFlow: StateFlow<Boolean> = getIsLoopingUseCase()
     val loopSecondsFlow: StateFlow<Pair<Double, Double>> = getLoopSecondsUseCase()
@@ -247,10 +248,10 @@ class LocalModeViewModel @Inject constructor(
 //        Log.d("onClick workerStartStop", "WORK_NAME ${SendColorListWorker.WORK_NAME}")
 
         val workInfo = workInfoLF.get()
-        if (workInfo.isNotEmpty()) {
+//        if (workInfo.isNotEmpty()) {
 //            val workState = workInfo[0].state.toString()
 //            Log.d("onClick workerStartStop", "workerState = $workState")
-        }
+//        }
 
         if (workInfo.isNotEmpty() && workInfo[0].state.toString() == "RUNNING") {
 //            Log.d("onClick workerStartStop", "RUNNING")
@@ -274,9 +275,11 @@ class LocalModeViewModel @Inject constructor(
 
 
     fun updateUiState(uiState: UiState) {
-        uiState.isLlLoopSettingsVisible?.let { isLlLoopSettingsVisible ->
-            uiStateFlow.update { uiStateFlow.value.copy(isLlLoopSettingsVisible = isLlLoopSettingsVisible) }
-        }
+        uiStateFlow.update { uiStateFlow.value.copy(
+            isLlLoopSettingsVisible = uiState.isLlLoopSettingsVisible,
+            doNotUpdateETSecondsChange = uiState.doNotUpdateETSecondsChange,
+            doNotUpdateETSecondsStay = uiState.doNotUpdateETSecondsStay
+        )}
     }
 
     fun setLoopSeconds(secondsChange: Double, secondsStay: Double) {

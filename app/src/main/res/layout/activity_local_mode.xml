@@ -414,7 +414,7 @@
             android:gravity="center"
             android:orientation="vertical"
             android:padding="@dimen/ll_loop_settings_padding"
-            android:visibility="@{viewModel.uiStateFlow.component1() ? View.VISIBLE : View.INVISIBLE}"
+            android:visibility="@{viewModel.uiStateFlow.isLlLoopSettingsVisible ? View.VISIBLE : View.INVISIBLE}"
             app:layout_constraintBottom_toTopOf="@id/view_buttons_divider"
 
             app:layout_constraintEnd_toEndOf="parent"
@@ -624,7 +624,7 @@
                 android:paddingVertical="@dimen/button_padding_vertical"
                 android:textColor="@color/colorHighlighted"
                 android:textSize="@dimen/button_text_size"
-                android:text="@{viewModel.uiStateFlow.component1() ? @string/cancel_loop_settings : @string/loop_settings}"
+                android:text="@{viewModel.uiStateFlow.isLlLoopSettingsVisible ? @string/cancel_loop_settings : @string/loop_settings}"
                 />
 
             <RadioGroup

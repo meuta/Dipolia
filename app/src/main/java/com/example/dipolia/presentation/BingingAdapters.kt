@@ -76,5 +76,6 @@ fun setWorkerButtonText(textView: TextView, isRunning: Boolean) {
 
 @BindingAdapter("etLoopSecondsText")
 fun setEtLoopSecondsText(editText: EditText, seconds: Double?) {
+//    Log.d(TAG, "setEtLoopSecondsText: seconds = $seconds ")
     editText.setText(seconds.toString())
 }

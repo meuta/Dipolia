@@ -3,6 +3,7 @@ package com.example.dipolia.presentation
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -14,6 +15,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.databinding.ActivityLocalModeBinding
 import com.example.dipolia.domain.entities.DipolDomainEntity
@@ -22,6 +26,8 @@ import com.example.dipolia.domain.entities.LampDomainEntity
 import com.example.dipolia.presentation.adaptes.DipolListAdapter
 import com.example.dipolia.presentation.adaptes.FiveLightsListAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -82,14 +88,16 @@ class MainActivity : AppCompatActivity() {
         true
     ) {
         override fun handleOnBackPressed() {
-            with(binding) {
-                if (localModeViewModel.uiStateFlow.value.isLlLoopSettingsVisible == true) {
-
-                    localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
-                    etSecondsChange.setText(localModeViewModel.loopSecondsFlow.value.first.toString())
-                    etSecondsStay.setText(localModeViewModel.loopSecondsFlow.value.second.toString())
-//                    Log.d("btnLoopSettings", "$secondsChange")
-                    binding.enableRecyclerView()                }
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    localModeViewModel.uiStateFlow.first {
+                        Log.d(TAG, "handleOnBackPressed: uiStateFlow.collect = $it ")
+                        if (it.isLlLoopSettingsVisible){
+                            localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
+                        }
+                        true
+                    }
+                }
             }
         }
     }
@@ -144,24 +152,18 @@ class MainActivity : AppCompatActivity() {
             }
 
             btnLoopSettings.setOnClickListener {
-                val inputMethodManager =
-                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                val isVisible = localModeViewModel.uiStateFlow.value.isLlLoopSettingsVisible
-                if (isVisible == true) {
-                    localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
-                    etSecondsChange.setText(localModeViewModel.loopSecondsFlow.value.first.toString())
-                    etSecondsStay.setText(localModeViewModel.loopSecondsFlow.value.second.toString())
-                    inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
-//                    Log.d("btnLoopSettings", "$secondsChange")
-                    binding.enableRecyclerView()
-                } else {
-                    localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = true))
-                    etSecondsChange.requestFocus()
-                    etSecondsChange.setSelection(etSecondsChange.text.length)
-                    etSecondsStay.setSelection(etSecondsStay.text.length)
-                    inputMethodManager.showSoftInput(etSecondsChange, 0)
-
-                    binding.disableRecyclerView()
+                lifecycleScope.launch {
+                    repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        localModeViewModel.uiStateFlow.first {
+                            Log.d(TAG, "btnLoopSettings: uiStateFlow.collect = $it ")
+                            if (it.isLlLoopSettingsVisible){
+                                localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
+                            } else {
+                                localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = true))
+                            }
+                            true
+                        }
+                    }
                 }
             }
 
@@ -170,12 +172,30 @@ class MainActivity : AppCompatActivity() {
                 val secondsStay = etSecondsStay.text?.toString()?.toDoubleOrNull() ?: 0.0
                 localModeViewModel.setLoopSeconds(secondsChange, secondsStay)
 
-                localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
-                val inputMethodManager =
-                    getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
+                lifecycleScope.launch {
+                    repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        localModeViewModel.loopSecondsFlow.first {
+                            Log.d(TAG, "btnSaveLoopSettings: loopSecondsFlow.first = $it ")
+                            var doNotRefreshETSecondsChange = false
+                            var doNotRefreshETSecondsStay = false
+                            if (it.first != secondsChange || (it.first == secondsChange && etSecondsChange.text?.toString() == secondsChange.toString())) {
+                                Log.d(TAG, "btnSaveLoopSettings: first if ")
+                                doNotRefreshETSecondsChange = true
+                            }
+                            if (it.second != secondsStay || (it.second == secondsStay && etSecondsStay.text?.toString() == secondsStay.toString())) {
+                                Log.d(TAG, "btnSaveLoopSettings: second if ")
+                                doNotRefreshETSecondsStay = true
+                            }
 
-                binding.enableRecyclerView()
+                            localModeViewModel.updateUiState(UiState(
+                                isLlLoopSettingsVisible = false,
+                                doNotUpdateETSecondsChange = doNotRefreshETSecondsChange,
+                                doNotUpdateETSecondsStay = doNotRefreshETSecondsStay
+                            ))
+                            true
+                        }
+                    }
+                }
             }
 
             radioManual.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -265,6 +285,49 @@ class MainActivity : AppCompatActivity() {
 //            Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
         }
 
+        localModeViewModel.uiStateLD.observe(this){uiState ->
+//            Log.d("TEST_OF_SUBSCRIBE", "isVisible: ${uiState.isLlLoopSettingsVisible}")
+            val inputMethodManager =
+                getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            if (!uiState.isLlLoopSettingsVisible) {
+
+                with(binding){
+                    inputMethodManager.hideSoftInputFromWindow(llLoopSettings.windowToken, 0)
+                    if (!uiState.doNotUpdateETSecondsChange) {
+                        lifecycleScope.launch {
+                            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                                localModeViewModel.loopSecondsFlow.first {
+                                    Log.d(TAG, "uiStateLD.observe: loopSecondsFlow.first = $it")
+                                    etSecondsChange.setText(it.first.toString())
+                                    true
+                                }
+                            }
+                        }
+                    }
+                    if (!uiState.doNotUpdateETSecondsStay) {
+                        lifecycleScope.launch {
+                            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                                localModeViewModel.loopSecondsFlow.first {
+                                    Log.d(TAG, "uiStateLD.observe: loopSecondsFlow.first = $it")
+                                    etSecondsStay.setText(it.second.toString())
+                                    true
+                                }
+                            }
+                        }
+                    }
+
+                    enableRecyclerView()
+                }
+            } else {
+                with(binding) {
+                    etSecondsChange.requestFocus()
+                    etSecondsChange.setSelection(etSecondsChange.text.length)
+                    etSecondsStay.setSelection(etSecondsStay.text.length)
+                    inputMethodManager.showSoftInput(etSecondsChange, 0)
+                    disableRecyclerView()
+                }
+            }
+        }
     }
 
     private fun ActivityLocalModeBinding.setEditNameViews(oldLampName: String) {
@@ -298,19 +361,16 @@ class MainActivity : AppCompatActivity() {
         val seekAdapter = object : OnSeekBarChangeListener {
 
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
-                // write custom code for progress is changed
                 if (fromUser) { onUpdateSeekBar(seek) }
 //                Log.d("seekAdapter", "onProgressChanged ${seek.id} fromUser = $fromUser")
             }
 
             override fun onStartTrackingTouch(seek: SeekBar) {
-                // write custom code for progress is started
                 onUpdateSeekBar(seek)
 //                Log.d("seekAdapter", "onStartTrackingTouch ${seek.id}.")
             }
 
             override fun onStopTrackingTouch(seek: SeekBar) {
-                // write custom code for progress is stopped
                 onUpdateSeekBar(seek)
 //                Log.d("seekAdapter", "onStopTrackingTouch ${seek.id}")
             }
@@ -362,8 +422,16 @@ class MainActivity : AppCompatActivity() {
 
     private val addNewItemListener = object : ViewGroup.OnHierarchyChangeListener {
         override fun onChildViewAdded(parent: View?, child: View?) {
-            if (localModeViewModel.uiStateFlow.value.isLlLoopSettingsVisible == true) {
-                child?.isEnabled = false
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    localModeViewModel.uiStateFlow.first {
+                        Log.d(TAG, "addNewItemListener: uiStateFlow.collect = $it ")
+                        if (it.isLlLoopSettingsVisible){
+                            child?.isEnabled = false
+                        }
+                        true
+                    }
+                }
             }
         }
         override fun onChildViewRemoved(parent: View?, child: View?) {
