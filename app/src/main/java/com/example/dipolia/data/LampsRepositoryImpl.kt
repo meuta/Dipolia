@@ -57,7 +57,7 @@ class LampsRepositoryImpl @Inject constructor(
             override fun run() {
                 launch {
                         send(lampEntityList)
-                        Log.d(TAG, "run: emit(lampEntityList)")
+//                        Log.d(TAG, "run selected: ${lampEntityList.find { it.selected }?.lampName}")
                 }
             }
         }, 0, 100)
@@ -74,7 +74,7 @@ class LampsRepositoryImpl @Inject constructor(
             override fun run() {
                 scope.launch {
                     sender.sendUDPSuspend("Follow me")
-                    Log.d(TAG, "run: Follow me")
+//                    Log.d(TAG, "run: Follow me")
                 }
             }
         }, 0, 1000)
@@ -85,17 +85,17 @@ class LampsRepositoryImpl @Inject constructor(
                     if (lampDto.id in lampEntityList.map { it.id }) {
                         lampEntityList.find { lamp -> lamp.id == lampDto.id }?.let {
                             it.lastConnection = lampDto.lastConnection
-                            Log.d("collectList", "collect ${
-                                    lampEntityList.map { lamp -> listOf(lamp.id, lamp.lastConnection) }
-                                }"
-                            )
+//                            Log.d("collectList", "collect ${
+//                                    lampEntityList.map { lamp -> listOf(lamp.id, lamp.lastConnection) }
+//                                }"
+//                            )
                         }
 
                     } else {
                         val lampDomainEntity = mapper.mapLampDtoToEntity(lampDto)
 
                         val itemFromDb = dipolsDao.getLampItemById(lampDto.id)
-                        Log.d("collectList", "itemFromDb = $itemFromDb")
+//                        Log.d("collectList", "itemFromDb = $itemFromDb")
                         if (itemFromDb == null) {
                             val itemToAdd = mapper.mapLampDtoToDbModel(lampDto)
                             dipolsDao.addLampItem(itemToAdd)
@@ -106,13 +106,13 @@ class LampsRepositoryImpl @Inject constructor(
                         lampEntityList.add(lampDomainEntity)
 
                     }
-                    Log.d("TEST", " = ${lampEntityList.map { it.id to it.lastConnection }}")
+//                    Log.d("TEST", " = ${lampEntityList.map { it.id to it.lastConnection }}")
                 }
         }
     }
 
     override fun getLatestLampList(): SharedFlow<List<LampDomainEntity>> {
-        Log.d("getLatestLampList", " lampListFlow: $lampListFlow")
+//        Log.d("getLatestLampList", " lampListFlow: $lampListFlow")
         return lampListFlow
     }
 
@@ -132,7 +132,7 @@ class LampsRepositoryImpl @Inject constructor(
     }
 
     override fun changeLocalState(id: String, index: Int, value: Double) {
-        Log.d("LampsRepositoryImpl", "changeLocalState $id $index $value")
+//        Log.d("LampsRepositoryImpl", "changeLocalState $id $index $value")
 
         lampEntityList.find { lamp -> lamp.id == id }?.let {
             var colorList = it.c.colors.toMutableList()

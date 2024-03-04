@@ -53,7 +53,7 @@ private fun colorToUI(colorList: List<Double>): String {
 
 @BindingAdapter("selectedBackground")
 fun setSelectedBackground(textView: TextView, isSelected: Boolean) {
-    Log.d(TAG, "setSelectedBackground: isSelected = $isSelected")
+//    Log.d(TAG, "setSelectedBackground: isSelected = $isSelected")
     textView.setBackgroundColor(ContextCompat.getColor(
         textView.context,
         if (isSelected) R.color.colorSelect else R.color.colorPrimaryDark
@@ -62,7 +62,7 @@ fun setSelectedBackground(textView: TextView, isSelected: Boolean) {
 
 @BindingAdapter("selectedVisibility")
 fun setSelectedVisibility(view: View, isSelected: Boolean) {
-    Log.d(TAG, "setSelectedVisibility: isSelected = $isSelected")
+//    Log.d(TAG, "setSelectedVisibility: isSelected = $isSelected")
     view.visibility = if (isSelected) VISIBLE else INVISIBLE
 }
 
@@ -75,7 +75,6 @@ fun setWorkerButtonText(textView: TextView, isRunning: Boolean) {
 
 
 @BindingAdapter("etLoopSecondsText")
-fun setEtLoopSecondsText(editText: EditText, seconds: Double) {
+fun setEtLoopSecondsText(editText: EditText, seconds: Double?) {
     editText.setText(seconds.toString())
-
 }

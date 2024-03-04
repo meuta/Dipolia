@@ -46,15 +46,15 @@ class SendColorListWorker @AssistedInject constructor(
 
         this.launch {
             getIsLoopingUseCase().collectLatest { isL ->
-                Log.d("getIsLoopingUseCase ", "isLooping = $isL")
+//                Log.d("getIsLoopingUseCase ", "isLooping = $isL")
                 isLooping = isL
             }
         }
 
         this.launch {
             getLoopSecondsUseCase().collectLatest { pair ->
-                Log.d("getLoopSecondsUseCase ", "secondsChange = ${pair.first}")
-                Log.d("getLoopSecondsUseCase ", "secondsStay = ${pair.second}")
+//                Log.d("getLoopSecondsUseCase ", "secondsChange = ${pair.first}")
+//                Log.d("getLoopSecondsUseCase ", "secondsStay = ${pair.second}")
                 secChange = (pair.first * 10).toInt()
                 secStay = (pair.second * 10).toInt()
                 period = (secChange + secStay) * 2
@@ -63,7 +63,7 @@ class SendColorListWorker @AssistedInject constructor(
 
         this.launch {
             getLampsUseCase().collectLatest { lamps ->
-                Log.d("SendColorListWorker", "LampDomainEntityList = ${lamps.map { it.id to it.c }}")
+//                Log.d("SendColorListWorker", "LampDomainEntityList = ${lamps.map { it.id to it.c }}")
 //                Log.d("getLampsUseCase().collect ", "isLooping = $isLooping")
 //                Log.d("getLampsUseCase().collect ", "secondsChange = $secondsChange")
 //                Log.d("getLampsUseCase().collect ", "secondsStay = $secondsStay")
@@ -81,22 +81,22 @@ class SendColorListWorker @AssistedInject constructor(
 
 
                         if (lamp.lampType == LampType.DIPOL) {
-                            Log.d("SendColorListWorker", "Lamp = ${lamp.id to lamp.c}")
+//                            Log.d("SendColorListWorker", "Lamp = ${lamp.id to lamp.c}")
 
 
                             if (isLooping && (secChange > 0)) {
-                                Log.d(
-                                    "isLooping && (paceChange > 0) ",
-                                    "isLooping = $isLooping"
-                                )
-                                Log.d(
-                                    "isLooping && (paceChange > 0) ",
-                                    "secondsChange = $secChange"
-                                )
-                                Log.d(
-                                    "isLooping && (paceChange > 0) ",
-                                    "secondsStay = $secStay"
-                                )
+//                                Log.d(
+//                                    "isLooping && (paceChange > 0) ",
+//                                    "isLooping = $isLooping"
+//                                )
+//                                Log.d(
+//                                    "isLooping && (paceChange > 0) ",
+//                                    "secondsChange = $secChange"
+//                                )
+//                                Log.d(
+//                                    "isLooping && (paceChange > 0) ",
+//                                    "secondsStay = $secStay"
+//                                )
 
                                 factor = when (count) {
                                     in 1..secChange -> count
@@ -120,7 +120,7 @@ class SendColorListWorker @AssistedInject constructor(
                             stringToSend =
                                 "r1=${tints[0]};g1=${tints[1]};b1=${tints[2]};r2=${tints[3]};g2=${tints[4]};b2=${tints[5]};rcs=$rcs"
 
-                            Log.d(TAG, "doWork: Lamp = ${lamp.id}, ip = ${lamp.ip}, count = $count  string =  $stringToSend")
+//                            Log.d(TAG, "doWork: Lamp = ${lamp.id}, ip = ${lamp.ip}, count = $count  string =  $stringToSend")
 
                         } else if (lamp.lampType == LampType.FIVE_LIGHTS) {
                             tints = lamp.c.colors.map {
@@ -130,9 +130,9 @@ class SendColorListWorker @AssistedInject constructor(
                                 )
                             }
                             stringToSend =
-                                "r=${tints[0]};g=${tints[1]};b=${tints[2]};w=${tints[3]};u=${tints[4]}};rcs=$rcs"
+                                "r=${tints[0]};g=${tints[1]};b=${tints[2]};w=${tints[3]};u=${tints[4]};rcs=$rcs"
 
-                            Log.d(TAG, "doWork: Lamp = ${lamp.id}, ip = ${lamp.ip}, string =  $stringToSend")
+//                            Log.d(TAG, "doWork: Lamp = ${lamp.id}, ip = ${lamp.ip}, string =  $stringToSend")
                         }
 
                         sender.sendUDPSuspend(stringToSend, sender.getInetAddressByName(lamp.ip))

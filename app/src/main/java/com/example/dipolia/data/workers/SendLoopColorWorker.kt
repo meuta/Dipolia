@@ -35,15 +35,15 @@ class SendLoopColorWorker @AssistedInject constructor(
         var varianceB = 1.0
         var count = 0
         while (true) {
-            Log.d("SendLoopColorWorker", "while (true)")
+//            Log.d("SendLoopColorWorker", "while (true)")
 
 //            getLampsUseCase().collectLatest { lamps ->
             getLampsUseCase().collect { lamps ->
 //                Log.d("SendColorListWorker", "LampDomainEntityList = ${lamps.map { it.id to it.c }}")
-                Log.d("WO isLooping = ", "$isLooping")
+//                Log.d("WO isLooping = ", "$isLooping")
                 count += 1
                 count %= 301
-                Log.d("SendLoopColorWorker variance", "count    =  $count")
+//                Log.d("SendLoopColorWorker variance", "count    =  $count")
 
                 if (count <= 100) {varianceR += 0.01} else {varianceR -= 0.01}
                 varianceR = when (count) {
@@ -62,14 +62,14 @@ class SendLoopColorWorker @AssistedInject constructor(
                         else -> (BigDecimal(varianceB + 0.01).setScale(3, RoundingMode.HALF_DOWN)).toDouble()
                 }
 
-                Log.d("SendLoopColorWorker variance", "varianceR=  $varianceR")
-                Log.d("SendLoopColorWorker variance", "varianceG=  $varianceG")
-                Log.d("SendLoopColorWorker variance", "varianceB=  $varianceB")
+//                Log.d("SendLoopColorWorker variance", "varianceR=  $varianceR")
+//                Log.d("SendLoopColorWorker variance", "varianceG=  $varianceG")
+//                Log.d("SendLoopColorWorker variance", "varianceB=  $varianceB")
 
                 for (lamp in lamps ) {
-                    Log.d("SendLoopColorWorker", "LampDomainEntityList = ${lamps.map { it.id to it.c }}")
-
-                    Log.d("SendLoopColorWorker", "Lamp = ${lamp.id to lamp.c }")
+//                    Log.d("SendLoopColorWorker", "LampDomainEntityList = ${lamps.map { it.id to it.c }}")
+//
+//                    Log.d("SendLoopColorWorker", "Lamp = ${lamp.id to lamp.c }")
 
 
                         val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
@@ -98,7 +98,7 @@ class SendLoopColorWorker @AssistedInject constructor(
                             stringToSend = "r=$r;g=$g;b=$b;w=$w;u=$u;rcs=$rcs"
                         }
                         val address = sender.getInetAddressByName(lamp.ip)
-                        Log.d("sendColors variance", "string   =  $stringToSend, $address")
+//                        Log.d("sendColors variance", "string   =  $stringToSend, $address")
                         sender.sendUDPSuspend(stringToSend, address)
 
                     delay(100)

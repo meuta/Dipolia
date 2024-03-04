@@ -26,11 +26,11 @@ class FiveLightsListAdapter : ListAdapter<FiveLightsDomainEntity, FiveLightsItem
 
 
     override fun onBindViewHolder(holder: FiveLightsItemViewHolder, position: Int) {
-        Log.d("onBindViewHolder", "position")
+//        Log.d("onBindViewHolder", "position")
         val dipolItem = getItem(position)
 
         val binding = holder.binding
-        Log.d("onBindViewHolder", binding.toString())
+//        Log.d("onBindViewHolder", binding.toString())
 
         binding.fiveLightsItem = dipolItem
 

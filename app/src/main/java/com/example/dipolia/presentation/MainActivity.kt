@@ -3,15 +3,17 @@ package com.example.dipolia.presentation
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.forEach
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.databinding.ActivityLocalModeBinding
 import com.example.dipolia.domain.entities.DipolDomainEntity
@@ -43,9 +45,6 @@ class MainActivity : AppCompatActivity() {
     private var selectedLampId: String? = null
     private var editableNameLampId: String? = null
 
-    private var secondsChange: Double? = null
-    private var secondsStay: Double? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
 
@@ -69,6 +68,30 @@ class MainActivity : AppCompatActivity() {
 
         observeViewModel()
 
+        setOnBackPressedCallback()
+    }
+
+    private fun setOnBackPressedCallback() {
+        onBackPressedDispatcher.addCallback(
+            this,
+            onBackPressedCallback
+        )
+    }
+
+    private val onBackPressedCallback = object : OnBackPressedCallback(
+        true
+    ) {
+        override fun handleOnBackPressed() {
+            with(binding) {
+                if (localModeViewModel.uiStateFlow.value.isLlLoopSettingsVisible == true) {
+
+                    localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
+                    etSecondsChange.setText(localModeViewModel.loopSecondsFlow.value.first.toString())
+                    etSecondsStay.setText(localModeViewModel.loopSecondsFlow.value.second.toString())
+//                    Log.d("btnLoopSettings", "$secondsChange")
+                    binding.enableRecyclerView()                }
+            }
+        }
     }
 
     private fun setupLoopSection() {
@@ -126,41 +149,42 @@ class MainActivity : AppCompatActivity() {
                 val isVisible = localModeViewModel.uiStateFlow.value.isLlLoopSettingsVisible
                 if (isVisible == true) {
                     localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
-                etSecondsChange.setText(secondsChange.toString())
-                etSecondsStay.setText(secondsStay.toString())
+                    etSecondsChange.setText(localModeViewModel.loopSecondsFlow.value.first.toString())
+                    etSecondsStay.setText(localModeViewModel.loopSecondsFlow.value.second.toString())
                     inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
-                    Log.d("btnLoopSettings", "$secondsChange")
+//                    Log.d("btnLoopSettings", "$secondsChange")
+                    binding.enableRecyclerView()
                 } else {
                     localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = true))
                     etSecondsChange.requestFocus()
                     etSecondsChange.setSelection(etSecondsChange.text.length)
                     etSecondsStay.setSelection(etSecondsStay.text.length)
                     inputMethodManager.showSoftInput(etSecondsChange, 0)
+
+                    binding.disableRecyclerView()
                 }
             }
 
             btnSaveLoopSettings.setOnClickListener {
                 val secondsChange = etSecondsChange.text?.toString()?.toDoubleOrNull() ?: 0.0
                 val secondsStay = etSecondsStay.text?.toString()?.toDoubleOrNull() ?: 0.0
-                localModeViewModel.setLoopSeconds(
-                    secondsChange.also { etSecondsChange.setText(it.toString()) },
-                    secondsStay.also { etSecondsStay.setText(it.toString()) }
-                )
+                localModeViewModel.setLoopSeconds(secondsChange, secondsStay)
 
                 localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
                 val inputMethodManager =
                     getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
 
+                binding.enableRecyclerView()
             }
 
             radioManual.setOnCheckedChangeListener { buttonView, isChecked ->
-                Log.d("RADIO", "MANUAL is checked: $isChecked")
+//                Log.d("RADIO", "MANUAL is checked: $isChecked")
                 localModeViewModel.setIsLooping(isLooping = !isChecked)
             }
 
             radioLoop.setOnCheckedChangeListener { buttonView, isChecked ->
-                Log.d("RADIO", "LOOP is checked: $isChecked")
+//                Log.d("RADIO", "LOOP is checked: $isChecked")
                 localModeViewModel.setIsLooping(isLooping = isChecked)
             }
 
@@ -169,45 +193,59 @@ class MainActivity : AppCompatActivity() {
                 editableNameLampId?.let { id ->
                     localModeViewModel.editLampName(id, newName)
                 }
-                exitEditNameViews(it)
+                binding.exitEditNameViews(it)
             }
 
             btnCancelSaveLampName.setOnClickListener {
-                exitEditNameViews(it)
+                binding.exitEditNameViews(it)
             }
         }
     }
 
+    private fun ActivityLocalModeBinding.disableRecyclerView() {
+        rvDipolItemList.forEach { it.isEnabled = false }
+        rvFiveLightsItemList.forEach { it.isEnabled = false }
+        btnUnselect.isEnabled = false
+    }
+
+
+    private fun ActivityLocalModeBinding.enableRecyclerView() {
+        rvDipolItemList.forEach { it.isEnabled = true }
+        rvFiveLightsItemList.forEach { it.isEnabled = true }
+        btnUnselect.isEnabled = true
+    }
+
+
     private fun observeViewModel() {
         localModeViewModel.myLampsLD.observe(this) {
             if (it.isNotEmpty()) {
-                Log.d(
-                    "TEST_OF_SUBSCRIBE",
-                    "myLamps: ${it.map { item -> "${item.id}, ${item.selected}, ${item.c}" }}"
-                )
+//                Log.d(
+//                    "TEST_OF_SUBSCRIBE",
+//                    "myLamps: ${it.map { item -> "${item.id}, ${item.selected}, ${item.c}" }}"
+//                )
                 currentLamps = it
             }
         }
 
         localModeViewModel.myDipolsListLD.observe(this) {list ->
-            Log.d(
-                "TEST_OF_SUBSCRIBE",
-                "dipolList: ${list.map { item -> "${item.id}, ${item.selected}, ${item.c1}, ${item.c2}" }}"
-            )
+//            Log.d(
+//                "TEST_OF_SUBSCRIBE",
+//                "dipolList: ${list.map { item -> "${item.id}, ${item.selected}, ${item.c1}, ${item.c2}" }}"
+//            )
             dipolListAdapter.submitList(list)
         }
 
         localModeViewModel.myFiveLightListLD.observe(this) { list ->
-                Log.d(
-                    "TEST_OF_SUBSCRIBE",
-                    "fiveLightsList: ${list.map { item -> "${item.id}, ${item.selected}, ${item.c}" }}"
-                )
+//                Log.d(
+//                    "TEST_OF_SUBSCRIBE",
+//                    "fiveLightsList: ${list.map { item -> "${item.id}, ${item.selected}, ${item.c}" }}"
+//                )
                 fiveLightsListAdapter.submitList(list)
         }
 
 
         localModeViewModel.selectedDipolLD.observe(this) { dipol ->
-            Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: ${dipol?.id}")
+//            Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: dipol ${dipol?.lampName}")
             dipol?.let {
                 setDipolSeekbarsProgress(dipol)
                 selectedLampId = dipol.id
@@ -215,7 +253,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         localModeViewModel.selectedFiveLightsLD.observe(this) { fiveLights ->
-            Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: ${fiveLights?.id}")
+//            Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: fiveLights ${fiveLights?.lampName}")
             fiveLights?.let {
                 setFiveLightsSeekbarsProgress(fiveLights)
                 selectedLampId = fiveLights.id
@@ -224,21 +262,9 @@ class MainActivity : AppCompatActivity() {
 
 
         localModeViewModel.isBackGroundWork.observe(this) {
-            Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
+//            Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
         }
 
-
-        localModeViewModel.loopSecondsLD.observe(this) { pair ->
-            Log.d("TEST_OF_SUBSCRIBE_LoopSettings", "Pair: $pair")
-            Log.d("TEST_OF_SUBSCRIBE_LoopSettings", "change1 $secondsChange")
-            Log.d("TEST_OF_SUBSCRIBE_LoopSettings", "stay1 $secondsStay")
-//            secondsChange = pair.first ?: 0.0
-            secondsChange = (pair.first ?: 0.0).also { binding.etSecondsChange.setText(it.toString()) }
-            Log.d("TEST_OF_SUBSCRIBE_LoopSettings", "change2 $secondsChange")
-//            secondsStay = pair.second ?: 0.0
-            secondsStay = (pair.second ?: 0.0).also { binding.etSecondsStay.setText(it.toString()) }
-            Log.d("TEST_OF_SUBSCRIBE_LoopSettings", "stay2 $secondsStay")
-        }
     }
 
     private fun ActivityLocalModeBinding.setEditNameViews(oldLampName: String) {
@@ -247,12 +273,6 @@ class MainActivity : AppCompatActivity() {
         etEditLampName.requestFocus()
         val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.showSoftInput(etEditLampName, 0)
-
-        if (llLoopSettings.visibility == View.VISIBLE) {
-            etSecondsChange.setText(secondsChange.toString())
-            etSecondsStay.setText(secondsStay.toString())
-            localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
-        }
 
         llEditLampName.visibility = View.VISIBLE
         currentLampLayout.visibility = View.INVISIBLE
@@ -280,19 +300,19 @@ class MainActivity : AppCompatActivity() {
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
                 // write custom code for progress is changed
                 if (fromUser) { onUpdateSeekBar(seek) }
-                Log.d("seekAdapter", "onProgressChanged ${seek.id} fromUser = $fromUser")
+//                Log.d("seekAdapter", "onProgressChanged ${seek.id} fromUser = $fromUser")
             }
 
             override fun onStartTrackingTouch(seek: SeekBar) {
                 // write custom code for progress is started
                 onUpdateSeekBar(seek)
-                Log.d("seekAdapter", "onStartTrackingTouch ${seek.id}.")
+//                Log.d("seekAdapter", "onStartTrackingTouch ${seek.id}.")
             }
 
             override fun onStopTrackingTouch(seek: SeekBar) {
                 // write custom code for progress is stopped
                 onUpdateSeekBar(seek)
-                Log.d("seekAdapter", "onStopTrackingTouch ${seek.id}")
+//                Log.d("seekAdapter", "onStopTrackingTouch ${seek.id}")
             }
         }
 
@@ -335,16 +355,29 @@ class MainActivity : AppCompatActivity() {
         fiveLightsListAdapter = FiveLightsListAdapter()
         binding.rvDipolItemList.adapter = dipolListAdapter
         binding.rvFiveLightsItemList.adapter = fiveLightsListAdapter
+
+        binding.rvDipolItemList.setOnHierarchyChangeListener(addNewItemListener)
+        binding.rvFiveLightsItemList.setOnHierarchyChangeListener(addNewItemListener)
+    }
+
+    private val addNewItemListener = object : ViewGroup.OnHierarchyChangeListener {
+        override fun onChildViewAdded(parent: View?, child: View?) {
+            if (localModeViewModel.uiStateFlow.value.isLlLoopSettingsVisible == true) {
+                child?.isEnabled = false
+            }
+        }
+        override fun onChildViewRemoved(parent: View?, child: View?) {
+        }
     }
 
     private fun setupClickListener() {
         dipolListAdapter.onDipolItemClickListener = {
+//            Log.d("onDipolItemClickListener", "select: ${it.id}, ${it.lampName}")
             selectLamp(it.id)
-            Log.d("onDipolItemClickListener", "$it")
         }
         fiveLightsListAdapter.onFiveLightsItemClickListener = {
+//            Log.d("onFiveLightsItemClickListener", "select: ${it.id}, ${it.lampName}")
             selectLamp(it.id)
-            Log.d("onFiveLightsItemClickListener", "$it")
         }
     }
 
@@ -355,7 +388,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupLongClickListener() {
         dipolListAdapter.onDipolItemLongClickListener = {
-            Log.d("setupLongClickListener", "dipolListAdapter.setOnLongClickListener")
+//            Log.d("setupLongClickListener", "dipolListAdapter.setOnLongClickListener")
             editableNameLampId = it.id
             val oldLampName = it.currentLampName
 
@@ -363,7 +396,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         fiveLightsListAdapter.onFiveLightsItemLongClickListener = {
-            Log.d("setupLongClickListener", "fiveLightsListAdapter.setOnLongClickListener")
+//            Log.d("setupLongClickListener", "fiveLightsListAdapter.setOnLongClickListener")
             editableNameLampId = it.id
             val oldLampName = it.currentLampName
 
@@ -373,7 +406,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setDipolSeekbarsProgress(dipolDomainEntity: DipolDomainEntity?) {
-        Log.d("setDipolSeekbars", "dipolDomainEntity = $dipolDomainEntity")
+//        Log.d("setDipolSeekbars", "dipolDomainEntity = $dipolDomainEntity")
         val dipol = dipolDomainEntity ?: DipolDomainEntity(
             "",
             "",
@@ -387,7 +420,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setFiveLightsSeekbarsProgress(fiveLightsDomainEntity: FiveLightsDomainEntity?) {
-        Log.d("setFiveLightsSeekbars", "fiveLightsDomainEntity = $fiveLightsDomainEntity")
+//        Log.d("setFiveLightsSeekbars", "fiveLightsDomainEntity = $fiveLightsDomainEntity")
         val fiveLights = fiveLightsDomainEntity ?: FiveLightsDomainEntity(
             "",
             "",
@@ -400,10 +433,16 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onStop() {
-        Log.d("onStop", "here")
+//        Log.d("onStop", "here")
         localModeViewModel.saveLampList()
         Toast.makeText(this@MainActivity, "Lamps have been saved", Toast.LENGTH_SHORT).show()
         super.onStop()
     }
 
+
+
+    companion object{
+
+        private const val TAG = "MainActivity"
+    }
 }

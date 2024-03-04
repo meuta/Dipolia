@@ -78,7 +78,7 @@ class UDPServer @Inject constructor() {
                 var string = String(packet.data)
 //                Log.d("UDPServer", "String $string ")
                 string = string.substring(0, packet.length)
-                Log.d("UDPServer", "message substring $string ")
+//                Log.d("UDPServer", "message substring $string ")
 
                 return Pair(string, packet.address)
             }

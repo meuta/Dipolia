@@ -22,15 +22,15 @@ class LampsApiImpl @Inject constructor(private val receiver: UDPServer): LampsAp
 //            Log.d("receiveLocalModeData", "lampTypeString = $lampTypeString")
 
             if (lampTypeString == DIPOL || lampTypeString == FIVE_LIGHTS) {
-                Log.d("receiveLocalModeData", "ip = ${it.second}, lampType = $lampTypeString")
+//                Log.d("receiveLocalModeData", "ip = ${it.second}, lampType = $lampTypeString")
                 if (lampTypeString == FIVE_LIGHTS) {
                     fiveLightsCounter++
                     fiveLightsCounter %= 2
 
-                    Log.d("receiveLocalModeData", "fiveLightsCounter = $fiveLightsCounter")
+//                    Log.d("receiveLocalModeData", "fiveLightsCounter = $fiveLightsCounter")
                 }
                 if (lampTypeString == DIPOL || (fiveLightsCounter == 0)) {
-                    Log.d("receiveLocalModeData", "inside if: ip = ${it.second}, lampType = $lampTypeString")
+//                    Log.d("receiveLocalModeData", "inside if: ip = ${it.second}, lampType = $lampTypeString")
                     val id = ar[1].substring(0, ar[1].length - 1)
 
                     val lampType = when (lampTypeString) {

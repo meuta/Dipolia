@@ -26,11 +26,11 @@ class DipolListAdapter : ListAdapter<DipolDomainEntity, DipolItemViewHolder>(Dip
 
 
     override fun onBindViewHolder(holder: DipolItemViewHolder, position: Int) {
-        Log.d("onBindViewHolder", "position")
+//        Log.d("onBindViewHolder", "position")
         val dipolItem = getItem(position)
 
         val binding = holder.binding
-        Log.d("onBindViewHolder", binding.toString())
+//        Log.d("onBindViewHolder", binding.toString())
 
         binding.dipolItem = dipolItem
 
@@ -42,6 +42,5 @@ class DipolListAdapter : ListAdapter<DipolDomainEntity, DipolItemViewHolder>(Dip
             true
         }
 
-//        binding.etDipolName.setText(dipolItem.lampName)
     }
 }

@@ -64,19 +64,15 @@ class LocalModeViewModel @Inject constructor(
             workManager.getWorkInfosForUniqueWorkLiveData(SendColorListWorker.WORK_NAME)
 
         return infoLDManual.map {
-            Log.d("getIsSteaming", "$it")
+//            Log.d("getIsSteaming", "$it")
             it.isNotEmpty() && it[0].state.toString() == "RUNNING"
         }
     }
 
     val uiStateFlow = MutableStateFlow(UiState())
 
-
     val isLoopingFlow: StateFlow<Boolean> = getIsLoopingUseCase()
     val loopSecondsFlow: StateFlow<Pair<Double, Double>> = getLoopSecondsUseCase()
-
-    val loopSecondsLD: LiveData<Pair<Double?, Double?>> = loopSecondsFlow.asLiveData()
-
 
     private var myLampsSharedFlow: SharedFlow<List<LampDomainEntity>> = getLampsUseCase()
 
@@ -139,7 +135,6 @@ class LocalModeViewModel @Inject constructor(
 
     init {
         collectListUseCase()
-
         viewModelScope.launch {
             myLampsSharedFlow.collect { list ->
                 val connectedList = list.filter { it.connected }
@@ -152,7 +147,7 @@ class LocalModeViewModel @Inject constructor(
                 }
 
                 val selectedLamp = connectedList.find { it.selected }
-
+//                Log.d(TAG, "init: selectedLamp?.lampType = ${selectedLamp?.lampType}")
                 when (selectedLamp?.lampType) {
 
                     LampType.DIPOL -> {
@@ -165,6 +160,8 @@ class LocalModeViewModel @Inject constructor(
                         if (_pleaseSelectTextViewVisibilityLD.value == View.VISIBLE) {
                             _pleaseSelectTextViewVisibilityLD.value = View.INVISIBLE
                         }
+
+                        _selectedFiveLightsLD.value?.let { _selectedFiveLightsLD.value = null }
 
                         if (_selectedDipolLD.value?.id != selectedLamp.id) {
                             _selectedDipolLD.value = mapper.mapLampEntityToDipolEntity(selectedLamp)
@@ -189,6 +186,8 @@ class LocalModeViewModel @Inject constructor(
                             _pleaseSelectTextViewVisibilityLD.value = View.INVISIBLE
                         }
 
+                        _selectedDipolLD.value?.let { _selectedDipolLD.value = null }
+
                         if (_selectedFiveLightsLD.value?.id != selectedLamp.id) {
                             _selectedFiveLightsLD.value =
                                 mapper.mapLampEntityToFiveLightsEntity(selectedLamp)
@@ -207,8 +206,6 @@ class LocalModeViewModel @Inject constructor(
                         if (_fiveLightsControlLayoutVisibilityLD.value == View.VISIBLE) {
                             _fiveLightsControlLayoutVisibilityLD.value = View.INVISIBLE
                         }
-                        val isEmpty = connectedList.isEmpty()
-                        Log.d(TAG, "init: list.isEmpty = $isEmpty")
 
                         val pleaseSelectTextViewVisibility =
                             if (connectedList.isEmpty()) View.INVISIBLE else View.VISIBLE
@@ -227,6 +224,7 @@ class LocalModeViewModel @Inject constructor(
     }
 
     fun selectLamp(itemId: String) {
+//        Log.d(TAG, "selectLamp: itemId = $itemId")
         selectItemUseCase(itemId)
     }
 
@@ -250,15 +248,15 @@ class LocalModeViewModel @Inject constructor(
 
         val workInfo = workInfoLF.get()
         if (workInfo.isNotEmpty()) {
-            val workState = workInfo[0].state.toString()
-            Log.d("onClick workerStartStop", "workerState = $workState")
+//            val workState = workInfo[0].state.toString()
+//            Log.d("onClick workerStartStop", "workerState = $workState")
         }
 
         if (workInfo.isNotEmpty() && workInfo[0].state.toString() == "RUNNING") {
-            Log.d("onClick workerStartStop", "RUNNING")
+//            Log.d("onClick workerStartStop", "RUNNING")
             workManager.cancelUniqueWork(SendColorListWorker.WORK_NAME)
         } else {
-            Log.d("onClick workerStartStop", "NOT RUNNING")
+//            Log.d("onClick workerStartStop", "NOT RUNNING")
             workManager.enqueueUniqueWork(
                 SendColorListWorker.WORK_NAME,
                 ExistingWorkPolicy.REPLACE,  //what to do, if another worker will be started
