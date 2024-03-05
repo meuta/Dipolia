@@ -15,7 +15,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.databinding.ActivityLocalModeBinding
 import com.example.dipolia.domain.entities.DipolDomainEntity
@@ -31,12 +33,15 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+
     private val localModeViewModel: LocalModeViewModel by viewModels()
 
     @Inject
     lateinit var mapper: DipoliaMapper
 
     private lateinit var binding: ActivityLocalModeBinding
+
+    private lateinit var inputMethodManager : InputMethodManager
 
     private lateinit var dipolListAdapter: DipolListAdapter
     private lateinit var fiveLightsListAdapter: FiveLightsListAdapter
@@ -49,10 +54,12 @@ class MainActivity : AppCompatActivity() {
     private var selectedLampId: String? = null
     private var editableNameLampId: String? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
-
-
         super.onCreate(savedInstanceState)
+
+        inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+
         binding = ActivityLocalModeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -164,11 +171,13 @@ class MainActivity : AppCompatActivity() {
             btnSaveLoopSettings.setOnClickListener {
                 val secondsChange = etSecondsChange.text?.toString()?.toDoubleOrNull() ?: 0.0
                 val secondsStay = etSecondsStay.text?.toString()?.toDoubleOrNull() ?: 0.0
-                localModeViewModel.setLoopSeconds(secondsChange, secondsStay)
 
                 lifecycleScope.launch {
                     localModeViewModel.loopSecondsFlow.first {
                         Log.d(TAG, "btnSaveLoopSettings: loopSecondsFlow.first = $it ")
+
+                        localModeViewModel.setLoopSeconds(secondsChange, secondsStay)
+
                         var doNotRefreshETSecondsChange = false
                         var doNotRefreshETSecondsStay = false
                         if (it.first != secondsChange || etSecondsChange.text?.toString() == secondsChange.toString()) {
@@ -279,41 +288,44 @@ class MainActivity : AppCompatActivity() {
 //            Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
         }
 
-        localModeViewModel.uiStateLD.observe(this) { uiState ->
+        lifecycleScope.launch{
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                localModeViewModel.uiStateFlow.collect{ uiState ->
 //            Log.d("TEST_OF_SUBSCRIBE", "isVisible: ${uiState.isLlLoopSettingsVisible}")
-            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-            if (!uiState.isLlLoopSettingsVisible) {
+                    if (!uiState.isLlLoopSettingsVisible) {
 
-                with(binding) {
-                    inputMethodManager.hideSoftInputFromWindow(llLoopSettings.windowToken, 0)
-                    if (!uiState.doNotUpdateETSecondsChange) {
-                        lifecycleScope.launch {
-                            localModeViewModel.loopSecondsFlow.first {
-                                Log.d(TAG, "uiStateLD.observe: loopSecondsFlow.first = $it")
-                                etSecondsChange.setText(it.first.toString())
-                                true
+                        with(binding) {
+                            inputMethodManager.hideSoftInputFromWindow(llLoopSettings.windowToken, 0)
+                            if (!uiState.doNotUpdateETSecondsChange) {
+                                lifecycleScope.launch {
+                                    localModeViewModel.loopSecondsFlow.first {
+                                        Log.d(TAG, "UpdateETSecondsChange: loopSecondsFlow.first = $it")
+                                        etSecondsChange.setText(it.first.toString())
+                                        true
+                                    }
+                                }
                             }
+                            if (!uiState.doNotUpdateETSecondsStay) {
+                                lifecycleScope.launch {
+                                    localModeViewModel.loopSecondsFlow.first {
+                                        Log.d(TAG, "UpdateETSecondsStay: loopSecondsFlow.first = $it")
+                                        etSecondsStay.setText(it.second.toString())
+                                        true
+                                    }
+                                }
+                            }
+
+                            enableRecyclerView()
+                        }
+                    } else {
+                        with(binding) {
+                            etSecondsChange.requestFocus()
+                            etSecondsChange.setSelection(etSecondsChange.text.length)
+                            etSecondsStay.setSelection(etSecondsStay.text.length)
+                            inputMethodManager.showSoftInput(etSecondsChange, 0)
+                            disableRecyclerView()
                         }
                     }
-                    if (!uiState.doNotUpdateETSecondsStay) {
-                        lifecycleScope.launch {
-                            localModeViewModel.loopSecondsFlow.first {
-                                Log.d(TAG, "uiStateLD.observe: loopSecondsFlow.first = $it")
-                                etSecondsStay.setText(it.second.toString())
-                                true
-                            }
-                        }
-                    }
-
-                    enableRecyclerView()
-                }
-            } else {
-                with(binding) {
-                    etSecondsChange.requestFocus()
-                    etSecondsChange.setSelection(etSecondsChange.text.length)
-                    etSecondsStay.setSelection(etSecondsStay.text.length)
-                    inputMethodManager.showSoftInput(etSecondsChange, 0)
-                    disableRecyclerView()
                 }
             }
         }
@@ -323,7 +335,6 @@ class MainActivity : AppCompatActivity() {
         tvEditLampName.text = oldLampName
         etEditLampName.setText(oldLampName)
         etEditLampName.requestFocus()
-        val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.showSoftInput(etEditLampName, 0)
 
         llEditLampName.visibility = View.VISIBLE
@@ -337,8 +348,6 @@ class MainActivity : AppCompatActivity() {
         etEditLampName.clearFocus()
         llButtons.visibility = View.VISIBLE
         llEditLampNameButtons.visibility = View.INVISIBLE
-        val inputMethodManager =
-            getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(llEditLampName.windowToken, 0)
         editableNameLampId = null
     }

@@ -70,7 +70,6 @@ class LocalModeViewModel @Inject constructor(
     }
 
     val uiStateFlow = MutableStateFlow(UiState())
-    val uiStateLD = uiStateFlow.asLiveData()
 
     val isLoopingFlow: StateFlow<Boolean> = getIsLoopingUseCase()
     val loopSecondsFlow: StateFlow<Pair<Double, Double>> = getLoopSecondsUseCase()
