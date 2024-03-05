@@ -15,9 +15,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.databinding.ActivityLocalModeBinding
 import com.example.dipolia.domain.entities.DipolDomainEntity
@@ -89,14 +87,12 @@ class MainActivity : AppCompatActivity() {
     ) {
         override fun handleOnBackPressed() {
             lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    localModeViewModel.uiStateFlow.first {
-                        Log.d(TAG, "handleOnBackPressed: uiStateFlow.collect = $it ")
-                        if (it.isLlLoopSettingsVisible){
-                            localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
-                        }
-                        true
+                localModeViewModel.uiStateFlow.first {
+                    Log.d(TAG, "handleOnBackPressed: uiStateFlow.collect = $it ")
+                    if (it.isLlLoopSettingsVisible) {
+                        localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
                     }
+                    true
                 }
             }
         }
@@ -153,16 +149,14 @@ class MainActivity : AppCompatActivity() {
 
             btnLoopSettings.setOnClickListener {
                 lifecycleScope.launch {
-                    repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        localModeViewModel.uiStateFlow.first {
-                            Log.d(TAG, "btnLoopSettings: uiStateFlow.collect = $it ")
-                            if (it.isLlLoopSettingsVisible){
-                                localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
-                            } else {
-                                localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = true))
-                            }
-                            true
+                    localModeViewModel.uiStateFlow.first {
+                        Log.d(TAG, "btnLoopSettings: uiStateFlow.collect = $it ")
+                        if (it.isLlLoopSettingsVisible) {
+                            localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
+                        } else {
+                            localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = true))
                         }
+                        true
                     }
                 }
             }
@@ -173,27 +167,27 @@ class MainActivity : AppCompatActivity() {
                 localModeViewModel.setLoopSeconds(secondsChange, secondsStay)
 
                 lifecycleScope.launch {
-                    repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        localModeViewModel.loopSecondsFlow.first {
-                            Log.d(TAG, "btnSaveLoopSettings: loopSecondsFlow.first = $it ")
-                            var doNotRefreshETSecondsChange = false
-                            var doNotRefreshETSecondsStay = false
-                            if (it.first != secondsChange || etSecondsChange.text?.toString() == secondsChange.toString()) {
-                                Log.d(TAG, "btnSaveLoopSettings: first if ")
-                                doNotRefreshETSecondsChange = true
-                            }
-                            if (it.second != secondsStay || etSecondsStay.text?.toString() == secondsStay.toString()) {
-                                Log.d(TAG, "btnSaveLoopSettings: second if ")
-                                doNotRefreshETSecondsStay = true
-                            }
+                    localModeViewModel.loopSecondsFlow.first {
+                        Log.d(TAG, "btnSaveLoopSettings: loopSecondsFlow.first = $it ")
+                        var doNotRefreshETSecondsChange = false
+                        var doNotRefreshETSecondsStay = false
+                        if (it.first != secondsChange || etSecondsChange.text?.toString() == secondsChange.toString()) {
+                            Log.d(TAG, "btnSaveLoopSettings: first if ")
+                            doNotRefreshETSecondsChange = true
+                        }
+                        if (it.second != secondsStay || etSecondsStay.text?.toString() == secondsStay.toString()) {
+                            Log.d(TAG, "btnSaveLoopSettings: second if ")
+                            doNotRefreshETSecondsStay = true
+                        }
 
-                            localModeViewModel.updateUiState(UiState(
+                        localModeViewModel.updateUiState(
+                            UiState(
                                 isLlLoopSettingsVisible = false,
                                 doNotUpdateETSecondsChange = doNotRefreshETSecondsChange,
                                 doNotUpdateETSecondsStay = doNotRefreshETSecondsStay
-                            ))
-                            true
-                        }
+                            )
+                        )
+                        true
                     }
                 }
             }
@@ -247,7 +241,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        localModeViewModel.myDipolsListLD.observe(this) {list ->
+        localModeViewModel.myDipolsListLD.observe(this) { list ->
 //            Log.d(
 //                "TEST_OF_SUBSCRIBE",
 //                "dipolList: ${list.map { item -> "${item.id}, ${item.selected}, ${item.c1}, ${item.c2}" }}"
@@ -260,7 +254,7 @@ class MainActivity : AppCompatActivity() {
 //                    "TEST_OF_SUBSCRIBE",
 //                    "fiveLightsList: ${list.map { item -> "${item.id}, ${item.selected}, ${item.c}" }}"
 //                )
-                fiveLightsListAdapter.submitList(list)
+            fiveLightsListAdapter.submitList(list)
         }
 
 
@@ -285,33 +279,28 @@ class MainActivity : AppCompatActivity() {
 //            Log.d("TEST_OF_SUBSCRIBE", "isBackGroundWorker: $it")
         }
 
-        localModeViewModel.uiStateLD.observe(this){uiState ->
+        localModeViewModel.uiStateLD.observe(this) { uiState ->
 //            Log.d("TEST_OF_SUBSCRIBE", "isVisible: ${uiState.isLlLoopSettingsVisible}")
-            val inputMethodManager =
-                getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             if (!uiState.isLlLoopSettingsVisible) {
 
-                with(binding){
+                with(binding) {
                     inputMethodManager.hideSoftInputFromWindow(llLoopSettings.windowToken, 0)
                     if (!uiState.doNotUpdateETSecondsChange) {
                         lifecycleScope.launch {
-                            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                                localModeViewModel.loopSecondsFlow.first {
-                                    Log.d(TAG, "uiStateLD.observe: loopSecondsFlow.first = $it")
-                                    etSecondsChange.setText(it.first.toString())
-                                    true
-                                }
+                            localModeViewModel.loopSecondsFlow.first {
+                                Log.d(TAG, "uiStateLD.observe: loopSecondsFlow.first = $it")
+                                etSecondsChange.setText(it.first.toString())
+                                true
                             }
                         }
                     }
                     if (!uiState.doNotUpdateETSecondsStay) {
                         lifecycleScope.launch {
-                            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                                localModeViewModel.loopSecondsFlow.first {
-                                    Log.d(TAG, "uiStateLD.observe: loopSecondsFlow.first = $it")
-                                    etSecondsStay.setText(it.second.toString())
-                                    true
-                                }
+                            localModeViewModel.loopSecondsFlow.first {
+                                Log.d(TAG, "uiStateLD.observe: loopSecondsFlow.first = $it")
+                                etSecondsStay.setText(it.second.toString())
+                                true
                             }
                         }
                     }
@@ -359,7 +348,9 @@ class MainActivity : AppCompatActivity() {
         val seekAdapter = object : OnSeekBarChangeListener {
 
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
-                if (fromUser) { onUpdateSeekBar(seek) }
+                if (fromUser) {
+                    onUpdateSeekBar(seek)
+                }
 //                Log.d("seekAdapter", "onProgressChanged ${seek.id} fromUser = $fromUser")
             }
 
@@ -421,17 +412,16 @@ class MainActivity : AppCompatActivity() {
     private val addNewItemListener = object : ViewGroup.OnHierarchyChangeListener {
         override fun onChildViewAdded(parent: View?, child: View?) {
             lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    localModeViewModel.uiStateFlow.first {
-                        Log.d(TAG, "addNewItemListener: uiStateFlow.collect = $it ")
-                        if (it.isLlLoopSettingsVisible){
-                            child?.isEnabled = false
-                        }
-                        true
+                localModeViewModel.uiStateFlow.first {
+                    Log.d(TAG, "addNewItemListener: uiStateFlow.collect = $it ")
+                    if (it.isLlLoopSettingsVisible) {
+                        child?.isEnabled = false
                     }
+                    true
                 }
             }
         }
+
         override fun onChildViewRemoved(parent: View?, child: View?) {
         }
     }
@@ -479,9 +469,11 @@ class MainActivity : AppCompatActivity() {
             listOf(0.0, 0.0, 0.0),
             listOf(0.0, 0.0, 0.0)
         )
-        dipol.let {lamp ->
-            seekBarDipolList.take(3).mapIndexed { index, seek -> seek.progress =  (lamp.c1[index] * 100).toInt() }
-            seekBarDipolList.takeLast(3).mapIndexed { index, seek -> seek.progress =  (lamp.c2[index] * 100).toInt() }
+        dipol.let { lamp ->
+            seekBarDipolList.take(3)
+                .mapIndexed { index, seek -> seek.progress = (lamp.c1[index] * 100).toInt() }
+            seekBarDipolList.takeLast(3)
+                .mapIndexed { index, seek -> seek.progress = (lamp.c2[index] * 100).toInt() }
         }
     }
 
@@ -493,7 +485,9 @@ class MainActivity : AppCompatActivity() {
             listOf(0.0, 0.0, 0.0, 0.0, 0.0)
         )
         fiveLights.let { lamp ->
-            seekBarFiveLightsList.mapIndexed { index, seek -> seek.progress = (lamp.c[index] * 100).toInt() }
+            seekBarFiveLightsList.mapIndexed { index, seek ->
+                seek.progress = (lamp.c[index] * 100).toInt()
+            }
         }
     }
 
@@ -506,8 +500,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-    companion object{
+    companion object {
 
         private const val TAG = "MainActivity"
     }
