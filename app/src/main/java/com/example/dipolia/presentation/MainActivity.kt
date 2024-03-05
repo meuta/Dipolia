@@ -23,6 +23,7 @@ import com.example.dipolia.databinding.ActivityLocalModeBinding
 import com.example.dipolia.domain.entities.DipolDomainEntity
 import com.example.dipolia.domain.entities.FiveLightsDomainEntity
 import com.example.dipolia.domain.entities.LampDomainEntity
+import com.example.dipolia.domain.entities.LampType
 import com.example.dipolia.presentation.adaptes.DipolListAdapter
 import com.example.dipolia.presentation.adaptes.FiveLightsListAdapter
 import dagger.hilt.android.AndroidEntryPoint
@@ -267,19 +268,15 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        localModeViewModel.selectedDipolLD.observe(this) { dipol ->
-//            Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: dipol ${dipol?.lampName}")
-            dipol?.let {
-                setDipolSeekbarsProgress(dipol)
-                selectedLampId = dipol.id
-            }
-        }
-
-        localModeViewModel.selectedFiveLightsLD.observe(this) { fiveLights ->
+        localModeViewModel.selectedLampLD.observe(this) { lamp ->
 //            Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: fiveLights ${fiveLights?.lampName}")
-            fiveLights?.let {
-                setFiveLightsSeekbarsProgress(fiveLights)
-                selectedLampId = fiveLights.id
+            lamp?.let {
+                when (lamp.lampType) {
+                    LampType.DIPOL -> setDipolSeekbarsProgress(mapper.mapLampEntityToDipolEntity(lamp))
+                    LampType.FIVE_LIGHTS -> setFiveLightsSeekbarsProgress(mapper.mapLampEntityToFiveLightsEntity(lamp))
+                    else -> {}
+                }
+                selectedLampId = lamp.id
             }
         }
 

@@ -111,13 +111,9 @@ class LocalModeViewModel @Inject constructor(
         get() = _fiveLightsControlLayoutVisibilityLD
 
 
-    private var _selectedDipolLD = MutableLiveData<DipolDomainEntity?>(null)
-    val selectedDipolLD: LiveData<DipolDomainEntity?>
-        get() = _selectedDipolLD
-
-    private var _selectedFiveLightsLD = MutableLiveData<FiveLightsDomainEntity?>(null)
-    val selectedFiveLightsLD: LiveData<FiveLightsDomainEntity?>
-        get() = _selectedFiveLightsLD
+    private var _selectedLampLD = MutableLiveData<LampDomainEntity?>(null)
+    val selectedLampLD: LiveData<LampDomainEntity?>
+        get() = _selectedLampLD
 
 
     private var _selectedDipolColorLabel1LD = MutableLiveData<List<Double>?>(null)
@@ -161,10 +157,10 @@ class LocalModeViewModel @Inject constructor(
                             _pleaseSelectTextViewVisibilityLD.value = View.INVISIBLE
                         }
 
-                        _selectedFiveLightsLD.value?.let { _selectedFiveLightsLD.value = null }
+                        _selectedLampLD.value?.let { _selectedLampLD.value = null }
 
-                        if (_selectedDipolLD.value?.id != selectedLamp.id) {
-                            _selectedDipolLD.value = mapper.mapLampEntityToDipolEntity(selectedLamp)
+                        if (_selectedLampLD.value?.id != selectedLamp.id) {
+                            _selectedLampLD.value = selectedLamp
                         }
 
                         if (_selectedDipolColorLabel1LD.value != selectedLamp.c.colors.take(3)) {
@@ -186,11 +182,10 @@ class LocalModeViewModel @Inject constructor(
                             _pleaseSelectTextViewVisibilityLD.value = View.INVISIBLE
                         }
 
-                        _selectedDipolLD.value?.let { _selectedDipolLD.value = null }
+                        _selectedLampLD.value?.let { _selectedLampLD.value = null }
 
-                        if (_selectedFiveLightsLD.value?.id != selectedLamp.id) {
-                            _selectedFiveLightsLD.value =
-                                mapper.mapLampEntityToFiveLightsEntity(selectedLamp)
+                        if (_selectedLampLD.value?.id != selectedLamp.id) {
+                            _selectedLampLD.value = selectedLamp
                         }
 
                         if (_selectedFiveLightsColorLabelLD.value != selectedLamp.c.colors) {
@@ -214,8 +209,7 @@ class LocalModeViewModel @Inject constructor(
                             _pleaseSelectTextViewVisibilityLD.value = pleaseSelectTextViewVisibility
                         }
 
-                        _selectedDipolLD.value?.let { _selectedDipolLD.value = null }
-                        _selectedFiveLightsLD.value?.let { _selectedFiveLightsLD.value = null }
+                        _selectedLampLD.value?.let { _selectedLampLD.value = null }
                     }
                 }
 
