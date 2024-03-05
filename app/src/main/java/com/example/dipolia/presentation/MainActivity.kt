@@ -178,11 +178,11 @@ class MainActivity : AppCompatActivity() {
                             Log.d(TAG, "btnSaveLoopSettings: loopSecondsFlow.first = $it ")
                             var doNotRefreshETSecondsChange = false
                             var doNotRefreshETSecondsStay = false
-                            if (it.first != secondsChange || (it.first == secondsChange && etSecondsChange.text?.toString() == secondsChange.toString())) {
+                            if (it.first != secondsChange || etSecondsChange.text?.toString() == secondsChange.toString()) {
                                 Log.d(TAG, "btnSaveLoopSettings: first if ")
                                 doNotRefreshETSecondsChange = true
                             }
-                            if (it.second != secondsStay || (it.second == secondsStay && etSecondsStay.text?.toString() == secondsStay.toString())) {
+                            if (it.second != secondsStay || etSecondsStay.text?.toString() == secondsStay.toString()) {
                                 Log.d(TAG, "btnSaveLoopSettings: second if ")
                                 doNotRefreshETSecondsStay = true
                             }
@@ -213,11 +213,11 @@ class MainActivity : AppCompatActivity() {
                 editableNameLampId?.let { id ->
                     localModeViewModel.editLampName(id, newName)
                 }
-                binding.exitEditNameViews(it)
+                binding.exitEditNameViews()
             }
 
             btnCancelSaveLampName.setOnClickListener {
-                binding.exitEditNameViews(it)
+                binding.exitEditNameViews()
             }
         }
     }
@@ -338,21 +338,19 @@ class MainActivity : AppCompatActivity() {
         inputMethodManager.showSoftInput(etEditLampName, 0)
 
         llEditLampName.visibility = View.VISIBLE
-        currentLampLayout.visibility = View.INVISIBLE
         llButtons.visibility = View.INVISIBLE
         llEditLampNameButtons.visibility = View.VISIBLE
     }
 
-    private fun ActivityLocalModeBinding.exitEditNameViews(it: View) {
+    private fun ActivityLocalModeBinding.exitEditNameViews() {
         llEditLampName.visibility = View.INVISIBLE
-        currentLampLayout.visibility = View.VISIBLE
         etEditLampName.setText("")
         etEditLampName.clearFocus()
         llButtons.visibility = View.VISIBLE
         llEditLampNameButtons.visibility = View.INVISIBLE
         val inputMethodManager =
             getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(it.windowToken, 0)
+        inputMethodManager.hideSoftInputFromWindow(llEditLampName.windowToken, 0)
         editableNameLampId = null
     }
 
