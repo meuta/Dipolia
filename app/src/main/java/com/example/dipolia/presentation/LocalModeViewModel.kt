@@ -157,8 +157,6 @@ class LocalModeViewModel @Inject constructor(
                             _pleaseSelectTextViewVisibilityLD.value = View.INVISIBLE
                         }
 
-                        _selectedLampLD.value?.let { _selectedLampLD.value = null }
-
                         if (_selectedLampLD.value?.id != selectedLamp.id) {
                             _selectedLampLD.value = selectedLamp
                         }
@@ -182,8 +180,6 @@ class LocalModeViewModel @Inject constructor(
                             _pleaseSelectTextViewVisibilityLD.value = View.INVISIBLE
                         }
 
-                        _selectedLampLD.value?.let { _selectedLampLD.value = null }
-
                         if (_selectedLampLD.value?.id != selectedLamp.id) {
                             _selectedLampLD.value = selectedLamp
                         }
@@ -191,7 +187,6 @@ class LocalModeViewModel @Inject constructor(
                         if (_selectedFiveLightsColorLabelLD.value != selectedLamp.c.colors) {
                             _selectedFiveLightsColorLabelLD.value = selectedLamp.c.colors
                         }
-
                     }
 
                     else -> {
