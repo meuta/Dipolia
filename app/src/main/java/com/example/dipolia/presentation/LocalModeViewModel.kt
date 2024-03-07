@@ -111,9 +111,8 @@ class LocalModeViewModel @Inject constructor(
         get() = _fiveLightsControlLayoutVisibilityLD
 
 
-    private var _selectedLampLD = MutableLiveData<LampDomainEntity?>(null)
-    val selectedLampLD: LiveData<LampDomainEntity?>
-        get() = _selectedLampLD
+    private val _selectedLampFlow = MutableStateFlow<LampDomainEntity?>(null)
+    val selectedLampFlow: StateFlow<LampDomainEntity?> = _selectedLampFlow
 
 
     private var _selectedDipolColorLabel1LD = MutableLiveData<List<Double>?>(null)
@@ -157,8 +156,8 @@ class LocalModeViewModel @Inject constructor(
                             _pleaseSelectTextViewVisibilityLD.value = View.INVISIBLE
                         }
 
-                        if (_selectedLampLD.value?.id != selectedLamp.id) {
-                            _selectedLampLD.value = selectedLamp
+                        if (_selectedLampFlow.value?.id != selectedLamp.id) {
+                            _selectedLampFlow.value = selectedLamp
                         }
 
                         if (_selectedDipolColorLabel1LD.value != selectedLamp.c.colors.take(3)) {
@@ -180,8 +179,8 @@ class LocalModeViewModel @Inject constructor(
                             _pleaseSelectTextViewVisibilityLD.value = View.INVISIBLE
                         }
 
-                        if (_selectedLampLD.value?.id != selectedLamp.id) {
-                            _selectedLampLD.value = selectedLamp
+                        if (_selectedLampFlow.value?.id != selectedLamp.id) {
+                            _selectedLampFlow.value = selectedLamp
                         }
 
                         if (_selectedFiveLightsColorLabelLD.value != selectedLamp.c.colors) {
@@ -204,7 +203,7 @@ class LocalModeViewModel @Inject constructor(
                             _pleaseSelectTextViewVisibilityLD.value = pleaseSelectTextViewVisibility
                         }
 
-                        _selectedLampLD.value?.let { _selectedLampLD.value = null }
+                        _selectedLampFlow.value?.let { _selectedLampFlow.value = null }
                     }
                 }
 

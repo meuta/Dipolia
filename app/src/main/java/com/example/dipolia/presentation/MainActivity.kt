@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         override fun handleOnBackPressed() {
             lifecycleScope.launch {
                 localModeViewModel.uiStateFlow.first {
-                    Log.d(TAG, "handleOnBackPressed: uiStateFlow.collect = $it ")
+//                    Log.d(TAG, "handleOnBackPressed: uiStateFlow.collect = $it ")
                     if (it.isLlLoopSettingsVisible) {
                         localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
                     }
@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity() {
             btnLoopSettings.setOnClickListener {
                 lifecycleScope.launch {
                     localModeViewModel.uiStateFlow.first {
-                        Log.d(TAG, "btnLoopSettings: uiStateFlow.collect = $it ")
+//                        Log.d(TAG, "btnLoopSettings: uiStateFlow.collect = $it ")
                         if (it.isLlLoopSettingsVisible) {
                             localModeViewModel.updateUiState(UiState(isLlLoopSettingsVisible = false))
                         } else {
@@ -175,18 +175,18 @@ class MainActivity : AppCompatActivity() {
 
                 lifecycleScope.launch {
                     localModeViewModel.loopSecondsFlow.first {
-                        Log.d(TAG, "btnSaveLoopSettings: loopSecondsFlow.first = $it ")
+//                        Log.d(TAG, "btnSaveLoopSettings: loopSecondsFlow.first = $it ")
 
                         localModeViewModel.setLoopSeconds(secondsChange, secondsStay)
 
                         var doNotRefreshETSecondsChange = false
                         var doNotRefreshETSecondsStay = false
                         if (it.first != secondsChange || etSecondsChange.text?.toString() == secondsChange.toString()) {
-                            Log.d(TAG, "btnSaveLoopSettings: first if ")
+//                            Log.d(TAG, "btnSaveLoopSettings: first if ")
                             doNotRefreshETSecondsChange = true
                         }
                         if (it.second != secondsStay || etSecondsStay.text?.toString() == secondsStay.toString()) {
-                            Log.d(TAG, "btnSaveLoopSettings: second if ")
+//                            Log.d(TAG, "btnSaveLoopSettings: second if ")
                             doNotRefreshETSecondsStay = true
                         }
 
@@ -202,12 +202,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            radioManual.setOnCheckedChangeListener { buttonView, isChecked ->
+            radioManual.setOnCheckedChangeListener { _, isChecked ->
 //                Log.d("RADIO", "MANUAL is checked: $isChecked")
                 localModeViewModel.setIsLooping(isLooping = !isChecked)
             }
 
-            radioLoop.setOnCheckedChangeListener { buttonView, isChecked ->
+            radioLoop.setOnCheckedChangeListener { _, isChecked ->
 //                Log.d("RADIO", "LOOP is checked: $isChecked")
                 localModeViewModel.setIsLooping(isLooping = isChecked)
             }
@@ -268,15 +268,19 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        localModeViewModel.selectedLampLD.observe(this) { lamp ->
+        lifecycleScope.launch{
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                localModeViewModel.selectedLampFlow.collect{ lamp ->
 //            Log.d("TEST_OF_SUBSCRIBE", "selectedLamp: fiveLights ${fiveLights?.lampName}")
-            lamp?.let {
-                when (lamp.lampType) {
-                    LampType.DIPOL -> setDipolSeekbarsProgress(mapper.mapLampEntityToDipolEntity(lamp))
-                    LampType.FIVE_LIGHTS -> setFiveLightsSeekbarsProgress(mapper.mapLampEntityToFiveLightsEntity(lamp))
-                    else -> {}
+                    lamp?.let {
+                        when (lamp.lampType) {
+                            LampType.DIPOL -> setDipolSeekbarsProgress(mapper.mapLampEntityToDipolEntity(lamp))
+                            LampType.FIVE_LIGHTS -> setFiveLightsSeekbarsProgress(mapper.mapLampEntityToFiveLightsEntity(lamp))
+                            else -> {}
+                        }
+                        selectedLampId = lamp.id
+                    }
                 }
-                selectedLampId = lamp.id
             }
         }
 
@@ -294,18 +298,18 @@ class MainActivity : AppCompatActivity() {
                         with(binding) {
                             inputMethodManager.hideSoftInputFromWindow(llLoopSettings.windowToken, 0)
                             if (!uiState.doNotUpdateETSecondsChange) {
-                                lifecycleScope.launch {
+                                launch {
                                     localModeViewModel.loopSecondsFlow.first {
-                                        Log.d(TAG, "UpdateETSecondsChange: loopSecondsFlow.first = $it")
+//                                        Log.d(TAG, "UpdateETSecondsChange: loopSecondsFlow.first = $it")
                                         etSecondsChange.setText(it.first.toString())
                                         true
                                     }
                                 }
                             }
                             if (!uiState.doNotUpdateETSecondsStay) {
-                                lifecycleScope.launch {
+                                launch {
                                     localModeViewModel.loopSecondsFlow.first {
-                                        Log.d(TAG, "UpdateETSecondsStay: loopSecondsFlow.first = $it")
+//                                        Log.d(TAG, "UpdateETSecondsStay: loopSecondsFlow.first = $it")
                                         etSecondsStay.setText(it.second.toString())
                                         true
                                     }
@@ -419,7 +423,7 @@ class MainActivity : AppCompatActivity() {
         override fun onChildViewAdded(parent: View?, child: View?) {
             lifecycleScope.launch {
                 localModeViewModel.uiStateFlow.first {
-                    Log.d(TAG, "addNewItemListener: uiStateFlow.collect = $it ")
+//                    Log.d(TAG, "addNewItemListener: uiStateFlow.collect = $it ")
                     if (it.isLlLoopSettingsVisible) {
                         child?.isEnabled = false
                     }
