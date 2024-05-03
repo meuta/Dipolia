@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">Dipolia</string>
+    <string name="test_btn">TEST</string>
+    <string name="refresh_list_btn">REMOVE\nNOT\nCONNECTED\nDIPOLS</string>
+    <string name="please_select_the_lamp">please select the lamp</string>
+    <string name="unselect_lamp">UNSELECT\nLAMP</string>
+    <string name="background_work_start">START\nSTREAM</string>
+    <string name="background_work_stop">STOP\nSTREAM</string>
+    <string name="save_lamp">SAVE\nLAMP</string>
+    <string name="save_lamp_list">SAVE\n LAMP LIST</string>
+    <string name="name_hint">name</string>
+    <string name="save_lamp_name">SAVE NAME</string>
+    <string name="cancel">CANCEL</string>
+    <string name="manual_mode">MANUAL MODE</string>
+    <string name="loop_mode">LOOP MODE</string>
+    <string name="loop_settings">LOOP\n SETTINGS</string>
+    <string name="cancel_loop_settings">CANCEL\n LOOP\n SETTINGS</string>
+    <string name="save_loop_settings">SAVE LOOP SETTINGS</string>
+    <string name="_.">.</string>
+    <string name="_0.0">0.0</string>
+    <string name="seconds_to_stay">seconds to stay :</string>
+    <string name="seconds_to_change">seconds to change :</string>
 </resources>

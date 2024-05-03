@@ -1,0 +1,679 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+
+        <variable
+            name="viewModel"
+            type="com.example.dipolia.presentation.LocalModeViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:orientation="vertical"
+        tools:context=".activities.MainActivity">
+
+        <View
+            android:id="@+id/superior_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/view_buttons_divider_height"
+            android:background="@color/gray"
+            android:layout_marginVertical="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/rv_dipol_item_list"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_dipol_item_list"
+            android:layout_width="@dimen/recycler_view_dipols_width"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/recycler_view_dipols_margin"
+            app:layout_constraintVertical_weight="1"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/recycler_views_divider"
+            app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/superior_divider"
+            app:layout_constraintVertical_chainStyle="spread_inside"
+            tools:listitem="@layout/item_dipol" />
+
+        <View
+            android:id="@+id/recycler_views_divider"
+            android:layout_width="@dimen/recycler_view_dipols_width"
+            android:layout_height="@dimen/view_buttons_divider_height"
+            android:background="@color/colorSeekbarProgressWhite"
+            android:visibility="@{viewModel.recyclerViewsDividerVisibilityLD}"
+            app:layout_constraintBottom_toTopOf="@id/rv_five_lights_item_list"
+            app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_dipol_item_list" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_five_lights_item_list"
+            android:layout_width="@dimen/recycler_view_dipols_width"
+            android:layout_height="0dp"
+            app:layout_constraintVertical_weight="1"
+            android:layout_margin="@dimen/recycler_view_dipols_margin"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/view_buttons_divider"
+            app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recycler_views_divider"
+            app:layout_constraintVertical_chainStyle="spread_inside"
+            tools:listitem="@layout/item_five_lights" />
+
+
+        <FrameLayout
+            android:id="@+id/current_lamp_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@id/view_buttons_divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/rv_dipol_item_list"
+            app:layout_constraintTop_toBottomOf="@+id/superior_divider"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/view_please_select"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/please_select_the_lamp"
+                android:textIsSelectable="true"
+                android:visibility="@{viewModel.pleaseSelectTextViewVisibilityLD}"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/dipol_control_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{viewModel.dipolControlLayoutVisibilityLD}"
+                tools:visibility="visible">
+
+
+                <LinearLayout
+                    android:id="@+id/ll_local_seekbars_left"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@color/black"
+                    android:baselineAligned="false"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toTopOf="@+id/view_local_color_label_dipol_1"
+                    app:layout_constraintEnd_toStartOf="@+id/ll_local_seekbars_right"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="spread_inside"
+                    tools:visibility="visible">
+
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/seekbar_margin">
+
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_dipol_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_red"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_red" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/seekbar_margin">
+
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_dipol_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_green"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_green" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/seekbar_margin">
+
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_dipol_3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_blue"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_blue" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+
+                </LinearLayout>
+
+
+                <View
+                    android:id="@+id/view_local_color_label_dipol_1"
+                    android:layout_width="@dimen/color_label_dipol_width"
+                    android:layout_height="@dimen/color_label_height"
+                    android:layout_margin="@dimen/color_label_margin"
+                    app:dipolLabelColor="@{viewModel.selectedDipolColorLabel1LD}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/ll_local_seekbars_left"
+                    app:layout_constraintStart_toStartOf="@+id/ll_local_seekbars_left"
+                    app:layout_constraintTop_toBottomOf="@+id/ll_local_seekbars_left"
+                    tools:background="@color/black" />
+
+                <LinearLayout
+                    android:id="@+id/ll_local_seekbars_right"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@color/black"
+                    android:baselineAligned="false"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toTopOf="@id/view_local_color_label_dipol_2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toEndOf="@+id/ll_local_seekbars_left"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="spread_inside">
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/seekbar_margin">
+
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_dipol_4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_red"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_red" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/seekbar_margin">
+
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_dipol_5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_green"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_green" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/seekbar_margin">
+
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_dipol_6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_blue"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_blue" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/view_local_color_label_dipol_2"
+                    android:layout_width="@dimen/color_label_dipol_width"
+                    android:layout_height="@dimen/color_label_height"
+                    android:layout_margin="@dimen/color_label_margin"
+                    app:dipolLabelColor="@{viewModel.selectedDipolColorLabel2LD}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/ll_local_seekbars_right"
+                    app:layout_constraintStart_toStartOf="@+id/ll_local_seekbars_right"
+                    app:layout_constraintTop_toBottomOf="@id/ll_local_seekbars_right"
+                    tools:background="@color/black" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/five_lights_control_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{viewModel.fiveLightsControlLayoutVisibilityLD}"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:id="@+id/ll_local_seekbars_five_lights"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:background="@color/black"
+                    android:baselineAligned="false"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toTopOf="@+id/view_local_color_label_five_lights"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="spread_inside"
+                    tools:visibility="invisible">
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/seekbar_margin">
+
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_five_lights_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_red"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_red" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/seekbar_margin">
+
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_five_lights_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_green"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_green" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/seekbar_margin">
+
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_five_lights_3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_blue"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_blue" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/seekbar_margin">
+
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_five_lights_4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_white"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_white" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+                    <com.example.dipolia.presentation.utils.SeekBarRotator
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="@dimen/seekbar_margin">
+
+                        <SeekBar
+                            android:id="@+id/local_seek_bar_five_lights_5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:progressDrawable="@drawable/custom_seekbar_local_ultra_violet"
+                            android:splitTrack="false"
+                            android:thumb="@drawable/item_custom_thumb_ultra_violet" />
+
+                    </com.example.dipolia.presentation.utils.SeekBarRotator>
+
+
+                </LinearLayout>
+
+
+                <View
+                    android:id="@+id/view_local_color_label_five_lights"
+                    android:layout_width="@dimen/color_label_five_lights_width"
+                    android:layout_height="@dimen/color_label_height"
+                    android:layout_margin="@dimen/color_label_margin"
+                    app:fiveLightsLabelColor="@{viewModel.selectedFiveLightsColorLabelLD}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ll_local_seekbars_five_lights"
+                    tools:background="@color/gray" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_edit_lamp_name"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@id/view_buttons_divider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/rv_dipol_item_list"
+            app:layout_constraintTop_toBottomOf="@+id/superior_divider"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/tv_edit_lamp_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textIsSelectable="true"
+                android:textSize="@dimen/edit_lamp_name_text_size" />
+
+            <EditText
+                android:id="@+id/et_edit_lamp_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:inputType="text"
+                android:textSize="@dimen/edit_lamp_name_text_size"
+                tools:ignore="Autofill, LabelFor" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/ll_loop_settings"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/colorPrimaryDark"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/ll_loop_settings_padding"
+            android:visibility="@{viewModel.uiStateFlow.isLlLoopSettingsVisible ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toTopOf="@id/view_buttons_divider"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/rv_dipol_item_list"
+            app:layout_constraintTop_toBottomOf="@+id/superior_divider"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/loop_settings_edit_line_height"
+                android:gravity="bottom"
+                android:orientation="horizontal"
+                android:padding="@dimen/loop_settings_edit_line_padding">
+
+                <TextView
+                    android:id="@+id/tv_seconds_change"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:background="@color/gray"
+                    android:gravity="center"
+                    android:text="@string/seconds_to_change"
+                    android:textIsSelectable="true"
+                    android:textSize="@dimen/loop_settings_text_view_text_size" />
+
+                <EditText
+                    android:id="@+id/et_seconds_change"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/loop_settings_et_margin"
+                    android:layout_weight="1"
+                    android:background="@color/gray"
+                    android:gravity="center_vertical|end"
+                    android:inputType="numberDecimal"
+                    android:paddingHorizontal="@dimen/loop_settings_et_pading_horizontal"
+                    app:etLoopSecondsText="@{viewModel.loopSecondsFlow.first}"
+                    tools:text="@string/_0.0"
+                    android:textColor="@color/colorHighlighted"
+                    android:textSize="@dimen/loop_settings_et_text_size"
+                    tools:ignore="Autofill, LabelFor" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/loop_settings_edit_line_height"
+                android:gravity="top"
+                android:orientation="horizontal"
+                android:padding="@dimen/loop_settings_edit_line_padding">
+
+                <TextView
+                    android:id="@+id/tv_seconds_stay"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:background="@color/gray"
+                    android:gravity="center"
+                    android:text="@string/seconds_to_stay"
+                    android:textIsSelectable="true"
+                    android:textSize="@dimen/loop_settings_text_view_text_size" />
+
+                <EditText
+                    android:id="@+id/et_seconds_stay"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/loop_settings_et_margin"
+                    android:layout_weight="1"
+                    android:background="@color/gray"
+                    android:gravity="center_vertical|end"
+                    android:inputType="numberDecimal"
+                    android:paddingHorizontal="@dimen/loop_settings_et_pading_horizontal"
+                    app:etLoopSecondsText="@{viewModel.loopSecondsFlow.second}"
+                    tools:text="@string/_0.0"
+                    android:textColor="@color/colorHighlighted"
+                    android:textSize="@dimen/loop_settings_et_text_size"
+                    tools:ignore="Autofill, LabelFor" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_save_loop_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/button_margin_horizontal"
+                android:background="@color/colorPrimary"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:padding="@dimen/button_save_lamp_name_padding_vertical"
+                android:text="@string/save_loop_settings"
+                android:textColor="@color/colorHighlighted"
+                android:textSize="@dimen/button_save_lamp_name_text_size" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view_buttons_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/view_buttons_divider_height"
+            android:background="@color/gray"
+            app:layout_constraintBottom_toTopOf="@id/ll_buttons"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_five_lights_item_list" />
+
+        <LinearLayout
+            android:id="@+id/ll_edit_lamp_name_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/layout_buttons_margin"
+            android:gravity="start"
+            android:orientation="horizontal"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@id/ll_buttons"
+            app:layout_constraintEnd_toEndOf="@id/ll_buttons"
+            app:layout_constraintStart_toStartOf="@id/ll_buttons"
+            app:layout_constraintTop_toTopOf="@id/ll_buttons"
+            tools:visibility="invisible">
+
+            <TextView
+                android:id="@+id/btn_cancel_save_lamp_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/button_margin_horizontal"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/button_padding_horizontal"
+                android:paddingVertical="@dimen/button_save_lamp_name_padding_vertical"
+                android:text="@string/cancel"
+                android:textColor="@color/colorHighlighted"
+                android:textSize="@dimen/button_save_lamp_name_text_size" />
+
+            <TextView
+                android:id="@+id/btn_save_lamp_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/button_margin_horizontal"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/button_padding_horizontal"
+                android:paddingVertical="@dimen/button_save_lamp_name_padding_vertical"
+                android:text="@string/save_lamp_name"
+                android:textColor="@color/colorHighlighted"
+                android:textSize="@dimen/button_save_lamp_name_text_size" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/layout_buttons_margin"
+            android:orientation="horizontal"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@id/view_buttons_divider_bottom"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/view_buttons_divider"
+            tools:visibility="visible">
+
+
+            <TextView
+                android:id="@+id/btn_unselect"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="@dimen/button_margin_horizontal"
+                android:background="@color/colorPrimary"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/button_padding_horizontal"
+                android:paddingVertical="@dimen/button_padding_vertical"
+                android:text="@string/unselect_lamp"
+                android:textColor="@color/colorHighlighted"
+                android:textSize="@dimen/button_text_size" />
+
+            <TextView
+                android:id="@+id/btn_background_work"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="@dimen/button_margin_horizontal"
+                android:background="@color/colorPrimary"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/button_padding_horizontal"
+                android:paddingVertical="@dimen/button_padding_vertical"
+                android:text="@string/background_work_start"
+                android:textColor="@color/colorHighlighted"
+                android:textSize="@dimen/button_text_size"
+                app:workerButtonText="@{viewModel.isBackGroundWork()}" />
+
+            <TextView
+                android:id="@+id/btn_loop_settings"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="@dimen/button_margin_horizontal"
+                android:background="@color/colorPrimary"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                tools:text="@string/loop_settings"
+                android:paddingHorizontal="@dimen/button_padding_horizontal"
+                android:paddingVertical="@dimen/button_padding_vertical"
+                android:textColor="@color/colorHighlighted"
+                android:textSize="@dimen/button_text_size"
+                android:text="@{viewModel.uiStateFlow.isLlLoopSettingsVisible ? @string/cancel_loop_settings : @string/loop_settings}"
+                />
+
+            <RadioGroup
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:layout_marginHorizontal="@dimen/button_margin_horizontal"
+                android:background="@color/colorPrimary"
+                android:orientation="vertical"
+                android:padding="@dimen/radio_group_streaming_mode_padding">
+
+                <RadioButton
+                    android:id="@+id/radio_manual"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/radio_group_streaming_mode_padding"
+                    android:buttonTint="@color/colorHighlighted"
+                    android:text="@string/manual_mode"
+                    android:textColor="@color/colorHighlighted"
+                    android:textSize="@dimen/button_text_size"
+                    android:checked="@{!viewModel.isLoopingFlow()}"
+                    />
+
+                <RadioButton
+                    android:id="@+id/radio_loop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/radio_group_streaming_mode_padding"
+                    android:buttonTint="@color/colorHighlighted"
+                    android:text="@string/loop_mode"
+                    android:textColor="@color/colorHighlighted"
+                    android:textSize="@dimen/button_text_size"
+                    android:checked="@{viewModel.isLoopingFlow()}"
+
+                    />
+            </RadioGroup>
+
+        </LinearLayout>
+
+
+        <View
+            android:id="@+id/view_buttons_divider_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/view_buttons_divider_height"
+            android:layout_marginVertical="@dimen/view_buttons_divider_bottom_margin_vertical"
+            android:background="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
