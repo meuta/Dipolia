@@ -524,7 +524,7 @@
             android:id="@+id/ll_edit_lamp_name_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/layout_buttons_margin"
+            android:layout_margin="@dimen/layout_buttons_margin_vertical"
             android:gravity="start"
             android:orientation="horizontal"
             android:visibility="invisible"
@@ -570,7 +570,8 @@
             android:id="@+id/ll_buttons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/layout_buttons_margin"
+            android:layout_marginHorizontal="@dimen/layout_buttons_margin_horizontal"
+            android:layout_marginVertical="@dimen/layout_buttons_margin_vertical"
             android:orientation="horizontal"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@id/view_buttons_divider_bottom"
@@ -592,6 +593,21 @@
                 android:paddingHorizontal="@dimen/button_padding_horizontal"
                 android:paddingVertical="@dimen/button_padding_vertical"
                 android:text="@string/unselect_lamp"
+                android:textColor="@color/colorHighlighted"
+                android:textSize="@dimen/button_text_size" />
+
+            <TextView
+                android:id="@+id/btn_save_as_default"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="@dimen/button_margin_horizontal"
+                android:background="@color/colorPrimary"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/button_padding_horizontal"
+                android:paddingVertical="@dimen/button_padding_vertical"
+                android:text="@string/save_as_default"
                 android:textColor="@color/colorHighlighted"
                 android:textSize="@dimen/button_text_size" />
 
@@ -631,17 +647,16 @@
             <RadioGroup
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
+                android:layout_weight="1.5"
                 android:layout_marginHorizontal="@dimen/button_margin_horizontal"
                 android:background="@color/colorPrimary"
                 android:orientation="vertical"
-                android:padding="@dimen/radio_group_streaming_mode_padding">
+                android:paddingVertical="@dimen/radio_group_streaming_mode_padding_vertical">
 
                 <RadioButton
                     android:id="@+id/radio_manual"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/radio_group_streaming_mode_padding"
                     android:buttonTint="@color/colorHighlighted"
                     android:text="@string/manual_mode"
                     android:textColor="@color/colorHighlighted"
@@ -653,7 +668,6 @@
                     android:id="@+id/radio_loop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/radio_group_streaming_mode_padding"
                     android:buttonTint="@color/colorHighlighted"
                     android:text="@string/loop_mode"
                     android:textColor="@color/colorHighlighted"

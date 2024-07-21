@@ -151,6 +151,10 @@ class MainActivity : AppCompatActivity() {
                 localModeViewModel.unselectLamp()
             }
 
+            btnSaveAsDefault.setOnClickListener {
+                localModeViewModel.saveAsDefault()
+            }
+
             btnBackgroundWork.setOnClickListener {
                 localModeViewModel.workerStartStop()
             }

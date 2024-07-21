@@ -190,6 +190,13 @@ class LampsRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun saveAsDefault() {
+        lampEntityList.find { it.selected && it.lampType == LampType.FIVE_LIGHTS }?.let {
+            sender.getInetAddressByName(it.ip)
+            sender.sendUDPSuspend("SaveState", sender.getInetAddressByName(it.ip))
+        }
+    }
+
     override fun editLampName(lampId: String, newName: String) {
         lampEntityList.find { lamp -> lamp.id == lampId }?.let { it.lampName = newName }
     }

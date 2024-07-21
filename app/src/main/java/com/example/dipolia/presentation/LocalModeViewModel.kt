@@ -22,6 +22,7 @@ import com.example.dipolia.domain.useCases.EditLampNameUseCase
 import com.example.dipolia.domain.useCases.GetConnectedLampsUseCase
 import com.example.dipolia.domain.useCases.GetIsLoopingUseCase
 import com.example.dipolia.domain.useCases.GetLoopSecondsUseCase
+import com.example.dipolia.domain.useCases.SaveAsDefaultUseCase
 import com.example.dipolia.domain.useCases.SaveLampListUseCase
 import com.example.dipolia.domain.useCases.SelectLampUseCase
 import com.example.dipolia.domain.useCases.SetIsLoopingUseCase
@@ -50,6 +51,7 @@ class LocalModeViewModel @Inject constructor(
     private val mapper: DipoliaMapper,
     private val setLoopSecondsUseCase: SetLoopSecondsUseCase,
     private val setIsLoopingUseCase: SetIsLoopingUseCase,
+    private val saveAsDefaultUseCase: SaveAsDefaultUseCase,
     getIsLoopingUseCase: GetIsLoopingUseCase,
     getLoopSecondsUseCase: GetLoopSecondsUseCase,
 ) : ViewModel() {
@@ -278,6 +280,12 @@ class LocalModeViewModel @Inject constructor(
     fun setIsLooping(isLooping: Boolean) {
         scope.launch {
             setIsLoopingUseCase(isLooping)
+        }
+    }
+
+    fun saveAsDefault() {
+        scope.launch {
+            saveAsDefaultUseCase()
         }
     }
 

@@ -27,9 +27,10 @@
     <dimen name="seekbar_margin">5dp</dimen>
 
     <dimen name="view_buttons_divider_height">2dp</dimen>
-    <dimen name="layout_buttons_margin">10dp</dimen>
+    <dimen name="layout_buttons_margin_vertical">10dp</dimen>
+    <dimen name="layout_buttons_margin_horizontal">5dp</dimen>
     <dimen name="button_margin_horizontal">5dp</dimen>
-    <dimen name="button_padding_horizontal">5dp</dimen>
+    <dimen name="button_padding_horizontal">0dp</dimen>
     <dimen name="button_padding_vertical">10dp</dimen>
     <dimen name="view_buttons_divider_bottom_margin_vertical">5dp</dimen>
     <dimen name="button_text_size">10sp</dimen>
@@ -59,7 +60,8 @@
     <dimen name="loop_settings_edit_line_padding">8dp</dimen>
     <dimen name="loop_settings_et_margin">8dp</dimen>
     <dimen name="loop_settings_et_pading_horizontal">6dp</dimen>
-    <dimen name="radio_group_streaming_mode_padding">6dp</dimen>
+
+    <dimen name="radio_group_streaming_mode_padding_vertical">6dp</dimen>
 
     <dimen name="edit_lamp_name_text_size">32sp</dimen>
     <dimen name="loop_settings_text_view_text_size">16sp</dimen>

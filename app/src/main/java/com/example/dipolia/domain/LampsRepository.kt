@@ -20,6 +20,8 @@ interface LampsRepository {
 
     suspend fun sendColors()
 
+    suspend fun saveAsDefault()
+
     fun editLampName(lampId: String, newName: String)
 
 
