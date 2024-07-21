@@ -16,14 +16,14 @@ private const val TAG = "BindingAdapters"
 @BindingAdapter("dipolLabelColor")
 fun bindDipolLabelColor(view: View, colorList: List<Double>?) {
 //    Log.d(TAG, "bindDipolLabelColor: colorlist = $colorList ")
-    val list = colorList ?: listOf(0.0, 0.0, 0.0)
+    val list = colorList?.ifEmpty { listOf(0.0, 0.0, 0.0) } ?: listOf(0.0, 0.0, 0.0)
     view.setBackgroundColor(Color.parseColor(colorToUI(list)))
 }
 
 @BindingAdapter("fiveLightsLabelColor")
 fun bindFiveLightsLabelColor(view: View, colorList: List<Double>?) {
 //    Log.d(TAG, "bindFiveLightsLabelColor: colorlist = $colorList")
-    val list = colorList ?: listOf(0.0, 0.0, 0.0, 0.0, 0.0)
+    val list = colorList?.ifEmpty { listOf(0.0, 0.0, 0.0, 0.0, 0.0) } ?: listOf(0.0, 0.0, 0.0, 0.0, 0.0)
     view.setBackgroundColor(Color.parseColor(colorFiveLightsToUI(list)))
 }
 
