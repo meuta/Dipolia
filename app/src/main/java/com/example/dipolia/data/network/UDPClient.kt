@@ -7,6 +7,7 @@ import java.io.IOException
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
+import java.net.NetworkInterface
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -64,24 +65,33 @@ class UDPClient @Inject constructor() {
         }
 
     suspend fun sendUDPSuspend(messageStr: String) {
-//        Log.d("UDPClient", "message sendUDPSuspend($messageStr)")
+//        Log.d(TAG, "message sendUDPSuspend($messageStr)")
         val socket = openDatagramSocket()
-//        Log.d("UDPClient", "DatagramSocket($port) $socket ")
 
         socket.broadcast = true
-        val outgoingData = messageStr.toByteArray()
-        val outgoingPacket = DatagramPacket(
-            outgoingData, outgoingData.size,
-            getInetAddressByName("255.255.255.255"),
-            port
-        )
-//        Log.d("UDPClient", "DatagramPacket $outgoingPacket ")
 
-        try {
-//            Log.d("UDPClient", "try ")
-            sendPacket(socket, outgoingPacket)
-        } catch (e: IOException) {
-            //            Log.e(FragmentActivity.TAG, "IOException: " + e.message)
+        val networkInterfaces = NetworkInterface.getNetworkInterfaces().toList()
+//        Log.d(TAG, "sendUDPSuspend: networkInterfaces = \n${networkInterfaces.joinToString("\n")}")
+        val interfaceAddresses = networkInterfaces.map { it.interfaceAddresses }.flatten()
+//        Log.d(TAG, "sendUDPSuspend: interfaceAddresses = \n${interfaceAddresses.joinToString("\n")}")
+
+        val outgoingData = messageStr.toByteArray()
+
+        interfaceAddresses.mapNotNull { it.broadcast }.forEach {
+            Log.d(TAG, "sendUDPSuspend: broadcastAddress = $it")
+            val outgoingPacket = DatagramPacket(
+                outgoingData,
+                outgoingData.size,
+                getInetAddressByName(it.toString().drop(1)),
+                port
+            )
+//        Log.d(TAG, "DatagramPacket $outgoingPacket ")
+
+            try {
+                sendPacket(socket, outgoingPacket)
+            } catch (e: IOException) {
+                Log.e(TAG, "IOException: " + e.message)
+            }
         }
     }
 
@@ -111,5 +121,8 @@ class UDPClient @Inject constructor() {
             Log.e("Q", "IOException: " + e.message)
         }
     }
+    private companion object {
 
+        private const val TAG = "UDPClient"
+    }
 }
