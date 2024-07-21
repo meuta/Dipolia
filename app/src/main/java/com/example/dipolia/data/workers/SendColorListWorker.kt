@@ -29,8 +29,8 @@ class SendColorListWorker @AssistedInject constructor(
 
 
     private var isLooping = false
-    private var secChange = 0
-    private var secStay = 0
+    private var timeChange = 0
+    private var timeStay = 0
 
     override suspend fun doWork(): Result = coroutineScope {
 
@@ -38,10 +38,10 @@ class SendColorListWorker @AssistedInject constructor(
         val rcs = (BigDecimal(rabbitColorSpeed).setScale(3, RoundingMode.HALF_DOWN))
         var stringToSend = ""
 
-        var count = 0
+        var count = -1
         var period = 0
-        var factor: Int
-        val dipolDif = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+
+        val dipolY = MutableList(5) { 0.0 }
         var tints: List<BigDecimal>
 
         this.launch {
@@ -55,9 +55,9 @@ class SendColorListWorker @AssistedInject constructor(
             getLoopSecondsUseCase().collectLatest { pair ->
 //                Log.d("getLoopSecondsUseCase ", "secondsChange = ${pair.first}")
 //                Log.d("getLoopSecondsUseCase ", "secondsStay = ${pair.second}")
-                secChange = (pair.first * 10).toInt()
-                secStay = (pair.second * 10).toInt()
-                period = (secChange + secStay) * 2
+                timeChange = (pair.first * 10).toInt()
+                timeStay = (pair.second * 10).toInt()
+                period = (timeChange + timeStay) * 2
             }
         }
 
@@ -68,9 +68,8 @@ class SendColorListWorker @AssistedInject constructor(
 //                Log.d("getLampsUseCase().collect ", "secondsChange = $secondsChange")
 //                Log.d("getLampsUseCase().collect ", "secondsStay = $secondsStay")
 
-                if (isLooping && (secChange > 0)) {
-                    count += 1
-                    count %= period
+                if (isLooping && (timeChange > 0)) {
+                    count = (count + 1) % period
                 }
 
                 for (lamp in lamps) {
@@ -84,35 +83,33 @@ class SendColorListWorker @AssistedInject constructor(
 //                            Log.d("SendColorListWorker", "Lamp = ${lamp.id to lamp.c}")
 
 
-                            if (isLooping && (secChange > 0)) {
-//                                Log.d(
-//                                    "isLooping && (paceChange > 0) ",
-//                                    "isLooping = $isLooping"
-//                                )
-//                                Log.d(
-//                                    "isLooping && (paceChange > 0) ",
-//                                    "secondsChange = $secChange"
-//                                )
-//                                Log.d(
-//                                    "isLooping && (paceChange > 0) ",
-//                                    "secondsStay = $secStay"
-//                                )
+                            if (isLooping && (timeChange > 0)) {
+//                                Log.d("isLooping && (paceChange > 0) ", "isLooping = $isLooping")
+//                                Log.d("isLooping && (paceChange > 0) ", "secondsChange = $timeChange")
+//                                Log.d("isLooping && (paceChange > 0) ", "secondsStay = $timeStay")
 
-                                factor = when (count) {
-                                    in 1..secChange -> count
-                                    in secChange + 1..secChange + secStay -> secChange
-                                    in secChange + secStay + 1..(secChange * 2 + secStay) -> secChange * 2 + secStay + 1 - count
-                                    in secChange * 2 + secStay + 1..(secChange + secStay) * 2 -> 0
-                                    else -> 0
+                                for (i in dipolY.indices) {
+                                    dipolY[i] = when (count) {
+                                        in 1..timeChange / 2 ->
+                                            lamp.c.colors[i] - 2 * lamp.c.colors[i] * count / timeChange
+                                        in timeChange / 2 + 1 .. timeChange ->
+                                            2 * lamp.c.colors[(i + 3) % 6] * count / timeChange - lamp.c.colors[(i + 3) % 6]
+                                        in timeChange + 1..timeChange + timeStay ->
+                                            lamp.c.colors[(i + 3) % 6]
+                                        in timeChange + timeStay + 1..timeChange * 3 / 2 + timeStay ->
+                                            (timeChange * 3 / 2 + timeStay) * 2 * lamp.c.colors[(i + 3) % 6] / timeChange - 2 * lamp.c.colors[(i + 3) % 6] / timeChange * count
+                                        in timeChange * 3 / 2 + timeStay + 1 .. timeChange * 2 + timeStay ->
+                                            2 * lamp.c.colors[i] / timeChange * count - (timeChange * 3 / 2 + timeStay) * 2 * lamp.c.colors[i] / timeChange
+                                        in timeChange * 2 + timeStay + 1..(timeChange + timeStay) * 2 ->
+                                            lamp.c.colors[i]
+                                        else -> lamp.c.colors[i]
+                                    }
                                 }
 
-                                for (i in dipolDif.indices) {
-                                    dipolDif[i] =
-                                        (lamp.c.colors[i] - lamp.c.colors[(i + 3) % 6]) / secChange * factor
-                                }
                             }
                             tints = lamp.c.colors.withIndex().map {
-                                BigDecimal(it.value - dipolDif[it.index]).setScale(
+//                                BigDecimal(it.value - dipolDif[it.index]).setScale(
+                                BigDecimal(if (isLooping) dipolY[it.index] else it.value).setScale(
                                     3,
                                     RoundingMode.HALF_DOWN
                                 )
