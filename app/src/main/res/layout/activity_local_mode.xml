@@ -31,20 +31,36 @@
             app:layout_constraintTop_toTopOf="parent"
             />
 
-
+        <TextView
+            android:id="@+id/view_dipols"
+            android:layout_width="@dimen/recycler_view_dipols_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/recycler_view_dipols_margin"
+            android:paddingVertical="@dimen/radio_group_streaming_mode_padding_vertical"
+            android:text="@string/view_dipols_text"
+            android:textSize="@dimen/item_lamp_text_size"
+            android:textColor="@color/colorHighlighted"
+            android:background="@color/colorPrimary"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@+id/rv_dipol_item_list"
+            app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/superior_divider"
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_dipol_item_list"
             android:layout_width="@dimen/recycler_view_dipols_width"
             android:layout_height="0dp"
-            android:layout_margin="@dimen/recycler_view_dipols_margin"
+            android:layout_marginBottom="@dimen/recycler_view_dipols_margin"
             app:layout_constraintVertical_weight="1"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/recycler_views_divider"
             app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/superior_divider"
-            app:layout_constraintVertical_chainStyle="spread_inside"
+            app:layout_constraintTop_toBottomOf="@+id/view_dipols"
+            app:layout_constraintVertical_chainStyle="spread"
             tools:listitem="@layout/item_dipol" />
 
         <View
@@ -53,23 +69,41 @@
             android:layout_height="@dimen/view_buttons_divider_height"
             android:background="@color/colorSeekbarProgressWhite"
             android:visibility="@{viewModel.recyclerViewsDividerVisibilityLD}"
-            app:layout_constraintBottom_toTopOf="@id/rv_five_lights_item_list"
+            app:layout_constraintBottom_toTopOf="@id/view_five_lights"
             app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rv_dipol_item_list" />
+
+        <TextView
+            android:id="@+id/view_five_lights"
+            android:layout_width="@dimen/recycler_view_dipols_width"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/recycler_view_dipols_margin"
+            android:paddingVertical="@dimen/radio_group_streaming_mode_padding_vertical"
+            android:text="@string/view_five_lights_text"
+            android:textSize="@dimen/item_lamp_text_size"
+            android:textColor="@color/colorHighlighted"
+            android:background="@color/colorPrimary"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@+id/rv_five_lights_item_list"
+            app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recycler_views_divider"
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_five_lights_item_list"
             android:layout_width="@dimen/recycler_view_dipols_width"
             android:layout_height="0dp"
             app:layout_constraintVertical_weight="1"
-            android:layout_margin="@dimen/recycler_view_dipols_margin"
+            android:layout_marginBottom="@dimen/recycler_view_dipols_margin"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/view_buttons_divider"
             app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recycler_views_divider"
-            app:layout_constraintVertical_chainStyle="spread_inside"
+            app:layout_constraintTop_toBottomOf="@+id/view_five_lights"
+            app:layout_constraintVertical_chainStyle="spread"
             tools:listitem="@layout/item_five_lights" />
 
 

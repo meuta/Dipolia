@@ -14,6 +14,8 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.forEach
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -227,7 +229,33 @@ class MainActivity : AppCompatActivity() {
             btnCancelSaveLampName.setOnClickListener {
                 binding.exitEditNameViews()
             }
+
+            viewDipols.setOnClickListener {
+                showHideTab(it)
+            }
+
+            viewFiveLights.setOnClickListener {
+                showHideTab(it)
+            }
         }
+    }
+
+    private fun ActivityLocalModeBinding.showHideTab(it: View) {
+        //                Log.d(TAG, "setupButtons: it.id = ${it.id}")
+        //                Log.d(TAG, "setupButtons: it.id - 124 = ${it.id - 124}")
+        //                Log.d(TAG, "setupButtons: R.id. = ${R.id.rv_dipol_item_list}")
+        val constraintLayout = root as ConstraintLayout
+        val constraintSet = ConstraintSet().apply { clone(constraintLayout) }
+        val weight = constraintSet.getParameters(it.id - 124).layout.verticalWeight
+//        val weight = constraintSet.getParameters(R.id.rv_dipol_item_list).layout.verticalWeight
+//        val weight = constraintSet.getParameters(R.id.rv_five_lights_item_list).layout.verticalWeight
+
+        val newWeight = (weight + 1) % 2
+        constraintSet.setVerticalWeight(it.id - 124, newWeight)
+
+//        constraintSet.setVerticalWeight(R.id.rv_dipol_item_list, newWeight)
+//        constraintSet.setVerticalWeight(R.id.rv_five_lights_item_list, newWeight)
+        constraintSet.applyTo(constraintLayout)
     }
 
     private fun ActivityLocalModeBinding.disableRecyclerView() {
