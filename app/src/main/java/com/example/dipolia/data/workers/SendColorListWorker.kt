@@ -41,7 +41,7 @@ class SendColorListWorker @AssistedInject constructor(
         var count = -1
         var period = 0
 
-        val dipolY = MutableList(5) { 0.0 }
+        val dipolY = MutableList(6) { 0.0 }
         var tints: List<BigDecimal>
 
         this.launch {
