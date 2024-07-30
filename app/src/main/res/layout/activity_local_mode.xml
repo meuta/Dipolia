@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:keepScreenOn="true"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:keepScreenOn="true">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
 
         <variable
             name="viewModel"
@@ -23,88 +24,92 @@
             android:id="@+id/superior_divider"
             android:layout_width="match_parent"
             android:layout_height="@dimen/view_buttons_divider_height"
-            android:background="@color/gray"
             android:layout_marginVertical="20dp"
-            app:layout_constraintBottom_toTopOf="@+id/rv_dipol_item_list"
+            android:background="@color/gray"
+            app:layout_constraintBottom_toTopOf="@+id/lamps_lists"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/view_dipols"
-            android:layout_width="@dimen/recycler_view_dipols_width"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/recycler_view_dipols_margin"
-            android:paddingVertical="@dimen/radio_group_streaming_mode_padding_vertical"
-            android:text="@string/view_dipols_text"
-            android:textSize="@dimen/item_lamp_text_size"
-            android:textColor="@color/colorHighlighted"
-            android:background="@color/colorPrimary"
-            android:foreground="?android:attr/selectableItemBackgroundBorderless"
-            android:gravity="center"
-            app:layout_constraintBottom_toTopOf="@+id/rv_dipol_item_list"
-            app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/superior_divider"
-            />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_dipol_item_list"
-            android:layout_width="@dimen/recycler_view_dipols_width"
+        <LinearLayout
+            android:id="@+id/lamps_lists"
+            android:layout_width="60dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/recycler_view_dipols_margin"
-            app:layout_constraintVertical_weight="1"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@+id/recycler_views_divider"
-            app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_dipols"
-            app:layout_constraintVertical_chainStyle="spread"
-            tools:listitem="@layout/item_dipol" />
-
-        <View
-            android:id="@+id/recycler_views_divider"
-            android:layout_width="@dimen/recycler_view_dipols_width"
-            android:layout_height="@dimen/view_buttons_divider_height"
-            android:background="@color/colorSeekbarProgressWhite"
-            android:visibility="@{viewModel.recyclerViewsDividerVisibilityLD}"
-            app:layout_constraintBottom_toTopOf="@id/view_five_lights"
-            app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rv_dipol_item_list" />
-
-        <TextView
-            android:id="@+id/view_five_lights"
-            android:layout_width="@dimen/recycler_view_dipols_width"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/recycler_view_dipols_margin"
-            android:paddingVertical="@dimen/radio_group_streaming_mode_padding_vertical"
-            android:text="@string/view_five_lights_text"
-            android:textSize="@dimen/item_lamp_text_size"
-            android:textColor="@color/colorHighlighted"
-            android:background="@color/colorPrimary"
-            android:foreground="?android:attr/selectableItemBackgroundBorderless"
-            android:gravity="center"
-            app:layout_constraintBottom_toTopOf="@+id/rv_five_lights_item_list"
-            app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recycler_views_divider"
-            />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_five_lights_item_list"
-            android:layout_width="@dimen/recycler_view_dipols_width"
-            android:layout_height="0dp"
-            app:layout_constraintVertical_weight="1"
-            android:layout_marginBottom="@dimen/recycler_view_dipols_margin"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="vertical"
             app:layout_constraintBottom_toTopOf="@+id/view_buttons_divider"
             app:layout_constraintEnd_toStartOf="@id/current_lamp_layout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_five_lights"
-            app:layout_constraintVertical_chainStyle="spread"
-            tools:listitem="@layout/item_five_lights" />
+            app:layout_constraintTop_toBottomOf="@+id/superior_divider">
+
+            <LinearLayout
+                android:id="@+id/list_dipols"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/view_dipols"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/recycler_view_dipols_margin"
+                    android:background="@color/colorPrimary"
+                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                    android:gravity="center"
+                    android:paddingVertical="@dimen/radio_group_streaming_mode_padding_vertical"
+                    android:text="@string/view_dipols_text"
+                    android:textColor="@color/colorHighlighted"
+                    android:textSize="@dimen/item_lamp_text_size"
+
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_dipol_item_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/recycler_view_dipols_margin"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_dipol" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/recycler_views_divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/view_buttons_divider_height"
+                android:background="@color/colorSeekbarProgressWhite"
+                android:visibility="@{viewModel.recyclerViewsDividerVisibilityLD}" />
+
+            <LinearLayout
+                android:id="@+id/list_five_lights"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/view_five_lights"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/recycler_view_dipols_margin"
+                    android:background="@color/colorPrimary"
+                    android:foreground="?android:attr/selectableItemBackgroundBorderless"
+                    android:gravity="center"
+                    android:paddingVertical="@dimen/radio_group_streaming_mode_padding_vertical"
+                    android:text="@string/view_five_lights_text"
+                    android:textColor="@color/colorHighlighted"
+                    android:textSize="@dimen/item_lamp_text_size" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_five_lights_item_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/recycler_view_dipols_margin"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_five_lights" />
+            </LinearLayout>
+
+        </LinearLayout>
 
 
         <FrameLayout
@@ -113,7 +118,7 @@
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@id/view_buttons_divider"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/rv_dipol_item_list"
+            app:layout_constraintStart_toEndOf="@+id/lamps_lists"
             app:layout_constraintTop_toBottomOf="@+id/superior_divider"
             tools:visibility="visible">
 
@@ -417,7 +422,7 @@
             android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@id/view_buttons_divider"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/rv_dipol_item_list"
+            app:layout_constraintStart_toEndOf="@+id/lamps_lists"
             app:layout_constraintTop_toBottomOf="@+id/superior_divider"
             tools:visibility="visible">
 
@@ -453,7 +458,7 @@
             app:layout_constraintBottom_toTopOf="@id/view_buttons_divider"
 
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/rv_dipol_item_list"
+            app:layout_constraintStart_toEndOf="@+id/lamps_lists"
             app:layout_constraintTop_toBottomOf="@+id/superior_divider"
             tools:visibility="visible">
 
@@ -485,11 +490,11 @@
                     android:gravity="center_vertical|end"
                     android:inputType="numberDecimal"
                     android:paddingHorizontal="@dimen/loop_settings_et_pading_horizontal"
-                    app:etLoopSecondsText="@{viewModel.loopSecondsFlow.first}"
-                    tools:text="@string/_0.0"
                     android:textColor="@color/colorHighlighted"
                     android:textSize="@dimen/loop_settings_et_text_size"
-                    tools:ignore="Autofill, LabelFor" />
+                    app:etLoopSecondsText="@{viewModel.loopSecondsFlow.first}"
+                    tools:ignore="Autofill, LabelFor"
+                    tools:text="@string/_0.0" />
 
 
             </LinearLayout>
@@ -522,11 +527,11 @@
                     android:gravity="center_vertical|end"
                     android:inputType="numberDecimal"
                     android:paddingHorizontal="@dimen/loop_settings_et_pading_horizontal"
-                    app:etLoopSecondsText="@{viewModel.loopSecondsFlow.second}"
-                    tools:text="@string/_0.0"
                     android:textColor="@color/colorHighlighted"
                     android:textSize="@dimen/loop_settings_et_text_size"
-                    tools:ignore="Autofill, LabelFor" />
+                    app:etLoopSecondsText="@{viewModel.loopSecondsFlow.second}"
+                    tools:ignore="Autofill, LabelFor"
+                    tools:text="@string/_0.0" />
 
             </LinearLayout>
 
@@ -552,7 +557,7 @@
             app:layout_constraintBottom_toTopOf="@id/ll_buttons"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rv_five_lights_item_list" />
+            app:layout_constraintTop_toBottomOf="@id/lamps_lists" />
 
         <LinearLayout
             android:id="@+id/ll_edit_lamp_name_buttons"
@@ -619,8 +624,8 @@
                 android:id="@+id/btn_unselect"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:layout_marginHorizontal="@dimen/button_margin_horizontal"
+                android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:gravity="center"
@@ -634,8 +639,8 @@
                 android:id="@+id/btn_save_as_default"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:layout_marginHorizontal="@dimen/button_margin_horizontal"
+                android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:gravity="center"
@@ -649,8 +654,8 @@
                 android:id="@+id/btn_background_work"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:layout_marginHorizontal="@dimen/button_margin_horizontal"
+                android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:gravity="center"
@@ -665,24 +670,23 @@
                 android:id="@+id/btn_loop_settings"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:layout_marginHorizontal="@dimen/button_margin_horizontal"
+                android:layout_weight="1"
                 android:background="@color/colorPrimary"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:gravity="center"
-                tools:text="@string/loop_settings"
                 android:paddingHorizontal="@dimen/button_padding_horizontal"
                 android:paddingVertical="@dimen/button_padding_vertical"
+                android:text="@{viewModel.uiStateFlow.isLlLoopSettingsVisible ? @string/cancel_loop_settings : @string/loop_settings}"
                 android:textColor="@color/colorHighlighted"
                 android:textSize="@dimen/button_text_size"
-                android:text="@{viewModel.uiStateFlow.isLlLoopSettingsVisible ? @string/cancel_loop_settings : @string/loop_settings}"
-                />
+                tools:text="@string/loop_settings" />
 
             <RadioGroup
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1.5"
                 android:layout_marginHorizontal="@dimen/button_margin_horizontal"
+                android:layout_weight="1.5"
                 android:background="@color/colorPrimary"
                 android:orientation="vertical"
                 android:paddingVertical="@dimen/radio_group_streaming_mode_padding_vertical">
@@ -692,21 +696,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:buttonTint="@color/colorHighlighted"
+                    android:checked="@{!viewModel.isLoopingFlow()}"
                     android:text="@string/manual_mode"
                     android:textColor="@color/colorHighlighted"
-                    android:textSize="@dimen/button_text_size"
-                    android:checked="@{!viewModel.isLoopingFlow()}"
-                    />
+                    android:textSize="@dimen/button_text_size" />
 
                 <RadioButton
                     android:id="@+id/radio_loop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:buttonTint="@color/colorHighlighted"
+                    android:checked="@{viewModel.isLoopingFlow()}"
                     android:text="@string/loop_mode"
                     android:textColor="@color/colorHighlighted"
                     android:textSize="@dimen/button_text_size"
-                    android:checked="@{viewModel.isLoopingFlow()}"
 
                     />
             </RadioGroup>

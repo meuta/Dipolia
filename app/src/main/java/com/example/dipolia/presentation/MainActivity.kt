@@ -8,14 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.forEach
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -240,22 +239,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun ActivityLocalModeBinding.showHideTab(it: View) {
-        //                Log.d(TAG, "setupButtons: it.id = ${it.id}")
-        //                Log.d(TAG, "setupButtons: it.id - 124 = ${it.id - 124}")
-        //                Log.d(TAG, "setupButtons: R.id. = ${R.id.rv_dipol_item_list}")
-        val constraintLayout = root as ConstraintLayout
-        val constraintSet = ConstraintSet().apply { clone(constraintLayout) }
-        val weight = constraintSet.getParameters(it.id - 124).layout.verticalWeight
-//        val weight = constraintSet.getParameters(R.id.rv_dipol_item_list).layout.verticalWeight
-//        val weight = constraintSet.getParameters(R.id.rv_five_lights_item_list).layout.verticalWeight
-
-        val newWeight = (weight + 1) % 2
-        constraintSet.setVerticalWeight(it.id - 124, newWeight)
-
-//        constraintSet.setVerticalWeight(R.id.rv_dipol_item_list, newWeight)
-//        constraintSet.setVerticalWeight(R.id.rv_five_lights_item_list, newWeight)
-        constraintSet.applyTo(constraintLayout)
+    private fun showHideTab(it: View) {
+//        Log.d(TAG, "setupButtons: it.id = ${it.id}")
+        val parent = it.parent as LinearLayout
+//        val nextView = parent.getChildAt(parent.indexOfChild(it) + 1) as RecyclerView
+//        (nextView.layoutParams as LinearLayout.LayoutParams).apply { weight = (weight + 1) % 2 }
+        (parent.layoutParams as LinearLayout.LayoutParams).apply { weight = (weight + 1) % 2 }
+//        parent.layoutParams.apply { height = if (height == 0) LayoutParams.WRAP_CONTENT else 0 }
+        parent.requestLayout()
     }
 
     private fun ActivityLocalModeBinding.disableRecyclerView() {
