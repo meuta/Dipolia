@@ -15,7 +15,7 @@
     <dimen name="item_dipol_color_label_2_margin_start">2dp</dimen>
 
 
-    <dimen name="recycler_view_dipols_width">60dp</dimen>
+    <dimen name="lamp_list_width">60dp</dimen>
     <dimen name="recycler_view_dipols_margin">10dp</dimen>
 
     <dimen name="item_five_lights_height">130dp</dimen>

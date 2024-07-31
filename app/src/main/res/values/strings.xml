@@ -22,4 +22,5 @@
     <string name="seconds_to_change">seconds to change :</string>
     <string name="view_dipols_text">Dipols:</string>
     <string name="view_five_lights_text">5Lights:</string>
+    <string name="arrow_drop_up">arrow drop up</string>
 </resources>

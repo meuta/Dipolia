@@ -1,9 +1,9 @@
 package com.example.dipolia.presentation
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
@@ -19,6 +20,7 @@ import androidx.core.view.forEach
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.dipolia.R
 import com.example.dipolia.data.mapper.DipoliaMapper
 import com.example.dipolia.databinding.ActivityLocalModeBinding
 import com.example.dipolia.domain.entities.DipolDomainEntity
@@ -230,22 +232,35 @@ class MainActivity : AppCompatActivity() {
             }
 
             viewDipols.setOnClickListener {
-                showHideTab(it)
+                showHideLampListSection(it)
             }
 
             viewFiveLights.setOnClickListener {
-                showHideTab(it)
+                showHideLampListSection(it)
             }
         }
     }
 
-    private fun showHideTab(it: View) {
-//        Log.d(TAG, "setupButtons: it.id = ${it.id}")
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun showHideLampListSection(it: View) {
+//        Log.d(TAG, "showHideTab: it.id = ${it.id}")
         val parent = it.parent as LinearLayout
-//        val nextView = parent.getChildAt(parent.indexOfChild(it) + 1) as RecyclerView
-//        (nextView.layoutParams as LinearLayout.LayoutParams).apply { weight = (weight + 1) % 2 }
         (parent.layoutParams as LinearLayout.LayoutParams).apply { weight = (weight + 1) % 2 }
-//        parent.layoutParams.apply { height = if (height == 0) LayoutParams.WRAP_CONTENT else 0 }
+//        Log.d(TAG, "showHideTab: weight = ${(parent.layoutParams as LinearLayout.LayoutParams).weight}")
+
+        (it as TextView).setCompoundDrawablesWithIntrinsicBounds(
+            null,
+            null,
+            null,
+            this.getDrawable(
+                when ((parent.layoutParams as LinearLayout.LayoutParams).weight) {
+                    0F -> R.drawable.baseline_arrow_drop_down_24
+                    1F -> R.drawable.baseline_arrow_drop_up_24
+                    else -> throw IllegalArgumentException("weight must be 0F or 1F")
+                }
+            )
+        )
+
         parent.requestLayout()
     }
 
